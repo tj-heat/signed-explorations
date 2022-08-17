@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="60mm"
+   height="60mm"
+   viewBox="0 0 60 60"
+   version="1.1"
+   id="svg925"
+   inkscape:version="1.0.2-2 (e86c870879, 2021-01-15)"
+   sodipodi:docname="TJHeat_Dark.svg"
+   inkscape:export-filename="C:\Users\Ethan\Documents\MEGA\DECO3801\Logo\TJHeat_D_C_250.png"
+   inkscape:export-xdpi="105.83334"
+   inkscape:export-ydpi="105.83334">
+  <defs
+     id="defs919" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="120.29332"
+     inkscape:cy="106.3562"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:snap-page="true" />
+  <metadata
+     id="metadata922">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#2e2e2e;fill-opacity:1;stroke:none;stroke-width:0.528903;stroke-linecap:round;stroke-linejoin:round;paint-order:fill markers stroke;stop-color:#000000"
+       id="rect1506"
+       width="60"
+       height="60"
+       x="5.7510238e-07"
+       y="-7.99406e-07"
+       rx="30"
+       ry="30" />
+    <g
+       id="g889"
+       transform="matrix(0.80302027,0,0,0.80302027,-20.907318,-171.59997)"
+       style="stroke-width:1.2453">
+      <path
+         style="fill:#ff9955;fill-opacity:1;stroke:none;stroke-width:0.329485px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 42.228147,240.84877 1.417904,23.62253 19.74876,13.0392 -1.417899,-23.62252 z"
+         id="path883"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path885"
+         d="m 63.394811,224.59383 -13.229156,26.45834 13.229156,26.45833 13.22916,-26.45833 z"
+         style="fill:#ff5555;fill-opacity:1;stroke:none;stroke-width:0.329485px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         style="fill:#ffdd55;fill-opacity:1;stroke:none;stroke-width:0.329485px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 84.561476,240.84877 64.81271,253.88798 63.394811,277.5105 83.143571,264.4713 Z"
+         id="path887"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>
