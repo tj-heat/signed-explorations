@@ -13,7 +13,7 @@ Install python from https://www.python.org/downloads/
 
 Run code in terminal (requires pip3) to install arcade
 
-'pip3 install arcade'
+> pip3 install arcade
 
 ### Run game
 
