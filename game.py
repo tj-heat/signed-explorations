@@ -9,7 +9,7 @@ MOVEMENT_SPEED = 3
 SPRITE_IMAGE_SIZE = 250
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
-PLAYER_MOVE_FORCE = 4000
+PLAYER_MOVE_FORCE = 3000
 BULLET_MOVE_FORCE = 2500
 
 STONE_PATH = "assets/tiles/stone_1.png"
@@ -51,6 +51,22 @@ class GameView(arcade.View):
             wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
             wall.center_x = x
             wall.center_y = SPRITE_SIZE/2
+            self.scene.add_sprite("Walls", wall)
+
+            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
+            wall.center_x = x
+            wall.center_y = self.window.height - SPRITE_SIZE/2
+            self.scene.add_sprite("Walls", wall)
+
+        for y in range(SPRITE_SIZE, self.window.height, SPRITE_SIZE):
+            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
+            wall.center_x = SPRITE_SIZE/2
+            wall.center_y = y
+            self.scene.add_sprite("Walls", wall)
+
+            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
+            wall.center_x = self.window.width - SPRITE_SIZE/2
+            wall.center_y = y
             self.scene.add_sprite("Walls", wall)
         
         #Create physics engine
