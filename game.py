@@ -29,6 +29,8 @@ class GameView(arcade.View):
         self.player_sprite = None
         #phys engine
         self.physics_engine = None
+        #Camera
+        self.camera = None
 
         self.left_pressed = False
         self.right_pressed = False
@@ -42,6 +44,7 @@ class GameView(arcade.View):
         self.scene.add_sprite_list("Player")
         self.scene.add_sprite_list("Walls", use_spatial_hash = True)
         self.scene.add_sprite_list("Floor")
+        self.camera = arcade.Camera(self.window.width, self.window.height)
 
         self.player_sprite = arcade.Sprite(CAT_PATH, SPRITE_SCALING) #diff might be in scaling, check val
         self.player_sprite.center_x = self.window.width/2
@@ -85,7 +88,18 @@ class GameView(arcade.View):
             collision_type="wall",
             body_type = PymunkPhysicsEngine.STATIC)
         
+    def center_camera_to_player(self):
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
 
+        # Don't let camera travel past 0
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_y < 0:
+            screen_center_y = 0
+        player_centered = screen_center_x, screen_center_y
+
+        self.camera.move_to(player_centered)
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -133,8 +147,12 @@ class GameView(arcade.View):
         # --- Move items in the physics engine
         self.physics_engine.step()
 
+        # Position the camera
+        self.center_camera_to_player()
+
 
     def on_draw(self):
         """ Draw everything """
         self.clear()
+        self.camera.use()
         self.scene.draw()
