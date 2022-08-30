@@ -24,7 +24,7 @@ LAYER_NAME_WALLS = "Walls"
 LAYER_NAME_NO_PHYS_WALLS = "Lower Walls"
 LAYER_NAME_FLOOR = "Floor"
 LAYER_NAME_DOORS = "Doors"
-LAYER_NAME_KEY = "Keys"
+LAYER_NAME_KEY = "Key"
 
 STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
@@ -94,6 +94,12 @@ class GameView(arcade.View):
             friction = 0.6,
             collision_type="wall",
             body_type = PymunkPhysicsEngine.STATIC)
+
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_NAME_KEY),
+            mass = 0.5,
+            friction = 0.8,
+            damping = 0.4,
+            collision_type = "rock")
         
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
