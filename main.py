@@ -101,7 +101,7 @@ class MenuView(arcade.View):
         pass
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable = True)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE) #resizable = True
     start_view = StartView()
     start_view.setup()
     window.show_view(start_view)
