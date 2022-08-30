@@ -4,13 +4,27 @@ import random
 from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
-SPRITE_SCALING = 0.25
+SPRITE_SCALING = 0.3
 MOVEMENT_SPEED = 3
 SPRITE_IMAGE_SIZE = 250
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
+
+TILE_SCALING = 1
+TILE_SIZE = 62
+GRID_SIZE = TILE_SCALING * TILE_SIZE
+
+PLAYER_START_X = 124
+PLAYER_START_Y = 124
+
 PLAYER_MOVE_FORCE = 3000
 BULLET_MOVE_FORCE = 2500
+
+LAYER_NAME_WALLS = "Walls"
+LAYER_NAME_NO_PHYS_WALLS = "Lower Walls"
+LAYER_NAME_FLOOR = "Floor"
+LAYER_NAME_DOORS = "Doors"
+LAYER_NAME_KEY = "Keys"
 
 STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
@@ -20,9 +34,10 @@ class GameView(arcade.View):
     
     def __init__(self):
         super().__init__()
-        print(SPRITE_SIZE)
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
+        #Tilemap
+        self.tile_map = None
         #Our scene object
         self.scene = None
         #player object
@@ -37,39 +52,34 @@ class GameView(arcade.View):
 
     
     def setup(self):
-        #Initialise scene
-        self.scene = arcade.Scene()
-        self.scene.add_sprite_list("Player")
-        self.scene.add_sprite_list("Walls", use_spatial_hash = True)
-        self.scene.add_sprite_list("Floor")
+
+        self.camera = arcade.Camera(self.window.width, self.window.height)
+
+        #set up tilemap
+
+        map_name = "assets/tilemaps/lvl1.json"
+
+        layer_options = {
+            LAYER_NAME_WALLS: {
+                "use_spation_hash": True,
+            },
+            LAYER_NAME_KEY: {
+                "use_spation_hash": True,
+            },
+            LAYER_NAME_DOORS: {
+                "use_spation_hash": True,
+            },
+        }
+
+        self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+        self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
         self.player_sprite = arcade.Sprite(CAT_PATH, SPRITE_SCALING) #diff might be in scaling, check val
-        self.player_sprite.center_x = self.window.width/2
-        self.player_sprite.center_y = self.window.height/2
+        self.player_sprite.center_x = PLAYER_START_X
+        self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
 
-        for x in range(0, self.window.width, SPRITE_SIZE):
-            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
-            wall.center_x = x
-            wall.center_y = SPRITE_SIZE/2
-            self.scene.add_sprite("Walls", wall)
-
-            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
-            wall.center_x = x
-            wall.center_y = self.window.height - SPRITE_SIZE/2
-            self.scene.add_sprite("Walls", wall)
-
-        for y in range(SPRITE_SIZE, self.window.height - SPRITE_SIZE, SPRITE_SIZE):
-            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
-            wall.center_x = SPRITE_SIZE/2
-            wall.center_y = y
-            self.scene.add_sprite("Walls", wall)
-
-            wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
-            wall.center_x = self.window.width - SPRITE_SIZE/2
-            wall.center_y = y
-            self.scene.add_sprite("Walls", wall)
-        
         #Create physics engine
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
@@ -80,11 +90,25 @@ class GameView(arcade.View):
             damping = 0.01,
             collision_type="player")
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Walls"),
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_NAME_WALLS),
             friction = 0.6,
             collision_type="wall",
             body_type = PymunkPhysicsEngine.STATIC)
         
+    def center_camera_to_player(self):
+        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
+        screen_center_y = self.player_sprite.center_y - (
+            self.camera.viewport_height / 2
+        )
+
+        # Don't let camera travel past 0
+        if screen_center_x < 0:
+            screen_center_x = 0
+        if screen_center_y < 0:
+            screen_center_y = 0
+        player_centered = screen_center_x, screen_center_y
+
+        self.camera.move_to(player_centered)
 
 
     def on_key_press(self, key, modifiers):
@@ -133,8 +157,12 @@ class GameView(arcade.View):
         # --- Move items in the physics engine
         self.physics_engine.step()
 
+        # Position the camera
+        self.center_camera_to_player()
+
 
     def on_draw(self):
         """ Draw everything """
         self.clear()
+        self.camera.use()
         self.scene.draw()
