@@ -20,6 +20,7 @@ class GameView(arcade.View):
     
     def __init__(self):
         super().__init__()
+        print(SPRITE_SIZE)
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
         #Our scene object
@@ -40,12 +41,12 @@ class GameView(arcade.View):
         self.scene = arcade.Scene()
         self.scene.add_sprite_list("Player")
         self.scene.add_sprite_list("Walls", use_spatial_hash = True)
+        self.scene.add_sprite_list("Floor")
 
         self.player_sprite = arcade.Sprite(CAT_PATH, SPRITE_SCALING) #diff might be in scaling, check val
         self.player_sprite.center_x = self.window.width/2
         self.player_sprite.center_y = self.window.height/2
         self.scene.add_sprite("Player", self.player_sprite)
-
 
         for x in range(0, self.window.width, SPRITE_SIZE):
             wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
@@ -58,7 +59,7 @@ class GameView(arcade.View):
             wall.center_y = self.window.height - SPRITE_SIZE/2
             self.scene.add_sprite("Walls", wall)
 
-        for y in range(SPRITE_SIZE, self.window.height, SPRITE_SIZE):
+        for y in range(SPRITE_SIZE, self.window.height - SPRITE_SIZE, SPRITE_SIZE):
             wall = arcade.Sprite(STONE_PATH, SPRITE_SCALING)
             wall.center_x = SPRITE_SIZE/2
             wall.center_y = y
@@ -70,11 +71,9 @@ class GameView(arcade.View):
             self.scene.add_sprite("Walls", wall)
         
         #Create physics engine
-        """self.physics_engine = arcade.PhysicsEngineSimple(
-            self.player_sprite, self.scene.get_sprite_list("Walls")
-        )"""
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
+        
         self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Player"),
             friction = 0.6,
             moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
