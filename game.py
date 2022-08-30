@@ -30,6 +30,7 @@ STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
 CAT_PATH = "assets/sprites/Cat_front.PNG"
 
+
 class GameView(arcade.View):
     
     def __init__(self):
@@ -38,12 +39,12 @@ class GameView(arcade.View):
 
         #Tilemap
         self.tile_map = None
-        #Our scene object
         self.scene = None
-        #player object
         self.player_sprite = None
-        #phys engine
         self.physics_engine = None
+        self.camera = None
+        self.gui_camera = None
+        self.lvl = 1
 
         self.left_pressed = False
         self.right_pressed = False
@@ -54,6 +55,8 @@ class GameView(arcade.View):
     def setup(self):
 
         self.camera = arcade.Camera(self.window.width, self.window.height)
+
+        self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
         #set up tilemap
 
@@ -84,6 +87,7 @@ class GameView(arcade.View):
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
         
+
         self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Player"),
             friction = 0.6,
             moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
@@ -141,6 +145,17 @@ class GameView(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
 
+
+    def on_draw(self):
+        """ Draw everything """
+        self.clear()
+        self.camera.use()
+        self.scene.draw()
+        self.gui_camera.use()
+        lvl_text = f"Level: {self.lvl}"
+        arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
+
+
     def on_update(self, delta_time):
         """ Movement and game logic """
         self.player_sprite.change_x = 0
@@ -165,10 +180,3 @@ class GameView(arcade.View):
 
         # Position the camera
         self.center_camera_to_player()
-
-
-    def on_draw(self):
-        """ Draw everything """
-        self.clear()
-        self.camera.use()
-        self.scene.draw()
