@@ -1,5 +1,6 @@
 import arcade
 import arcade.gui
+import game
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
@@ -87,7 +88,7 @@ class MenuView(arcade.View):
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
     def on_click_start(self, event):
-        game_view = GameView()
+        game_view = game.GameView()
         game_view.setup()
         self.window.show_view(game_view)
 
@@ -98,19 +99,6 @@ class MenuView(arcade.View):
 
     def setup(self):
         pass
-    
-class GameView(arcade.View):
-    
-    def __init__(self):
-        super().__init__()
-        arcade.set_background_color(arcade.color.GREEN)
-
-    def on_draw(self):
-        self.clear()
-
-    def setup(self):
-        pass
-
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable = True)
