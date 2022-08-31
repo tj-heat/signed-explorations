@@ -1,3 +1,4 @@
+from pickle import FROZENSET
 import arcade
 import math
 import random
@@ -18,7 +19,6 @@ PLAYER_START_X = 124
 PLAYER_START_Y = 124
 
 PLAYER_MOVE_FORCE = 3000
-BULLET_MOVE_FORCE = 2500
 
 LAYER_NAME_WALLS = "Walls"
 LAYER_NAME_NO_PHYS_WALLS = "Lower Walls"
@@ -28,7 +28,53 @@ LAYER_NAME_KEY = "Key"
 
 STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
-CAT_PATH = "assets/sprites/Cat_front.PNG"
+CAT_PATH = "assets/sprites/cat/Cat_"
+
+FRONT_FACING = 0
+BACK_FACING = 1
+RIGHT_FACING = 0
+LEFT_FACING = 1
+
+def load_texture_pair(filename):
+    """
+    Load a texture pair, with the second being a mirror image.
+    """
+    return [
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, flipped_horizontally=True),
+    ]
+
+
+class Cat(arcade.Sprite):
+    def __init__(self):
+        super().__init__()
+
+        self.cur_texture= 0
+        self.scale = SPRITE_SCALING
+
+        #texture 0 is right facing
+        self.side_texture_pair = load_texture_pair(f"{CAT_PATH}side.PNG")
+        #texture 0 is front
+        self.front_texture_pair = [arcade.load_texture(f"{CAT_PATH}front.PNG"),
+                                    arcade.load_texture(f"{CAT_PATH}back.PNG")]
+
+        self.texture = self.front_texture_pair[0]
+
+        self.hit_box = self.texture.hit_box_points
+
+    def update_animation(self, delta_time: float = 1 / 60):
+        if self.change_x < 0:
+            self.texture = self.side_texture_pair[LEFT_FACING]
+        if self.change_x > 0:
+            self.texture = self.side_texture_pair[RIGHT_FACING]
+        if self.change_y > 0:
+            self.texture = self.front_texture_pair[BACK_FACING]
+        if self.change_y < 0:
+            self.texture = self.front_texture_pair[FRONT_FACING]
+        if self.change_x == 0 and self.change_y == 0:
+            self.texture = self.front_texture_pair[FRONT_FACING]
+        return
+
 
 
 class GameView(arcade.View):
@@ -78,7 +124,7 @@ class GameView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.player_sprite = arcade.Sprite(CAT_PATH, SPRITE_SCALING) #diff might be in scaling, check val
+        self.player_sprite = Cat() #arcade.Sprite("assets/sprites/Cat_front.PNG", SPRITE_SCALING) #diff might be in scaling, check val
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
@@ -107,9 +153,7 @@ class GameView(arcade.View):
         
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
-        )
+        screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
 
         # Don't let camera travel past 0
         if screen_center_x < 0:
@@ -177,6 +221,8 @@ class GameView(arcade.View):
 
         # --- Move items in the physics engine
         self.physics_engine.step()
+
+        self.scene.update_animation(delta_time, ["Player"])
 
         # Position the camera
         self.center_camera_to_player()
