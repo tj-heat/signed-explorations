@@ -1,11 +1,8 @@
 import arcade
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+import character
 
-SPRITE_SCALING = 0.3
 MOVEMENT_SPEED = 3
-SPRITE_IMAGE_SIZE = 250
-SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
-
 
 TILE_SCALING = 1
 TILE_SIZE = 62
@@ -24,57 +21,6 @@ LAYER_NAME_KEY = "Key"
 
 STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
-CAT_PATH = "assets/sprites/cat/Cat_"
-
-FRONT_FACING = 0
-BACK_FACING = 1
-RIGHT_FACING = 0
-LEFT_FACING = 1
-
-def load_texture_pair(filename):
-    """
-    Load a texture pair, with the second being a mirror image.
-    """
-    return [
-        arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True),
-    ]
-
-
-class Cat(arcade.Sprite):
-    def __init__(self):
-        super().__init__()
-
-        self.cur_texture= 0
-        self.scale = SPRITE_SCALING
-
-        #texture 0 is right facing
-        self.side_texture_pair = load_texture_pair(f"{CAT_PATH}side.PNG")
-        #texture 0 is front
-        self.front_texture_pair = [arcade.load_texture(f"{CAT_PATH}front.PNG"),
-                                    arcade.load_texture(f"{CAT_PATH}back.PNG")]
-
-        self.texture = self.front_texture_pair[0]
-
-        self.hit_box = self.texture.hit_box_points
-
-        self.actual_force = (0,0)
-
-    def update_animation(self, delta_time: float = 1 / 60):
-        x, y = self.actual_force
-        if x < 0:
-            self.texture = self.side_texture_pair[LEFT_FACING]
-        if x > 0:
-            self.texture = self.side_texture_pair[RIGHT_FACING]
-        if y > 0:
-            self.texture = self.front_texture_pair[BACK_FACING]
-        if y < 0:
-            self.texture = self.front_texture_pair[FRONT_FACING]
-        if x == 0 and y == 0:
-            self.texture = self.front_texture_pair[FRONT_FACING]
-        return
-
-
 
 class GameView(arcade.View):
     
@@ -123,7 +69,7 @@ class GameView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.player_sprite = Cat() #arcade.Sprite("assets/sprites/Cat_front.PNG", SPRITE_SCALING) #diff might be in scaling, check val
+        self.player_sprite = character.Cat()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
