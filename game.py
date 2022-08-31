@@ -1,8 +1,4 @@
-from pickle import FROZENSET
 import arcade
-import math
-import random
-from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 SPRITE_SCALING = 0.3
@@ -62,16 +58,19 @@ class Cat(arcade.Sprite):
 
         self.hit_box = self.texture.hit_box_points
 
+        self.actual_force = (0,0)
+
     def update_animation(self, delta_time: float = 1 / 60):
-        if self.change_x < 0:
+        x, y = self.actual_force
+        if x < 0:
             self.texture = self.side_texture_pair[LEFT_FACING]
-        if self.change_x > 0:
+        if x > 0:
             self.texture = self.side_texture_pair[RIGHT_FACING]
-        if self.change_y > 0:
+        if y > 0:
             self.texture = self.front_texture_pair[BACK_FACING]
-        if self.change_y < 0:
+        if y < 0:
             self.texture = self.front_texture_pair[FRONT_FACING]
-        if self.change_x == 0 and self.change_y == 0:
+        if x == 0 and y == 0:
             self.texture = self.front_texture_pair[FRONT_FACING]
         return
 
@@ -205,6 +204,8 @@ class GameView(arcade.View):
         self.player_sprite.change_x = 0
         self.player_sprite.change_y = 0
 
+        force = (0,0)
+
         if self.up_pressed and not self.down_pressed:
             force = (0, PLAYER_MOVE_FORCE)
             self.physics_engine.apply_force(self.player_sprite, force)
@@ -219,10 +220,9 @@ class GameView(arcade.View):
             force = (PLAYER_MOVE_FORCE, 0)
             self.physics_engine.apply_force(self.player_sprite, force)
 
-        # --- Move items in the physics engine
-        self.physics_engine.step()
-
+        self.player_sprite.actual_force = force
         self.scene.update_animation(delta_time, ["Player"])
+        self.physics_engine.step()
 
         # Position the camera
         self.center_camera_to_player()
