@@ -27,3 +27,4 @@ Open signed-explorations directory in preferred terminal and run 'python main.py
 - Hannah Hinckfuss, 45840047
 - Joseph Metcalfe, 44822279
 - Aditya Modi, 45892046
+- Thomas Webber, 44349945
