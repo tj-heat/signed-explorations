@@ -95,14 +95,13 @@ class MenuView(arcade.View):
     def on_draw(self):
         self.clear()
         self.manager.draw()
-        
 
     def setup(self):
         pass
 
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE) #resizable = True
-    start_view = StartView() #game.GameView() 
+    start_view = StartView() #StartView() #game.GameView() 
     start_view.setup()
     window.show_view(start_view)
     arcade.run()

@@ -15,12 +15,12 @@ PLAYER_START_Y = 124
 
 PLAYER_MOVE_FORCE = 3000
 
-LAYER_NAME_WALLS = "Walls"
-LAYER_NAME_NO_PHYS_WALLS = "Lower Walls"
-LAYER_NAME_FLOOR = "Floor"
-LAYER_NAME_DOORS = "Doors"
-LAYER_NAME_KEY = "Key"
-LAYER_NAME_CHARACTERS = "Characters"
+LAYER_WALLS = "Walls"
+LAYER_LOW_WALLS = "Lower Walls"
+LAYER_FLOOR = "Floor"
+LAYER_DOORS = "Doors"
+LAYER_KEY = "Key"
+LAYER_CHARACTERS = "Characters"
 
 STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
@@ -35,24 +35,19 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
         self.player_sprite: Optional[arcade.Sprite] = None
-        self.physics_engine = None
+        self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
-                # Player sprite
+        # Player sprite
         self.player_sprite: Optional[arcade.Sprite] = None
-
-        # Sprite lists we need
-        self.player_list: Optional[arcade.SpriteList] = None
-        self.wall_list: Optional[arcade.SpriteList] = None
-        self.item_list: Optional[arcade.SpriteList] = None
 
         self.camera = None
         self.gui_camera = None
         self.lvl = 1
 
-        self.left_pressed = False
-        self.right_pressed = False
-        self.up_pressed = False
-        self.down_pressed = False
+        self.left_pressed: bool = False
+        self.right_pressed: bool = False
+        self.up_pressed: bool = False
+        self.down_pressed: bool = False
 
     
     def setup(self):
@@ -64,13 +59,13 @@ class GameView(arcade.View):
 
         map_name = "assets/tilemaps/lvl1.json"
         layer_options = {
-            LAYER_NAME_WALLS: {
+            LAYER_WALLS: {
                 "use_spation_hash": True,
             },
-            LAYER_NAME_KEY: {
+            LAYER_KEY: {
                 "use_spation_hash": True,
             },
-            LAYER_NAME_DOORS: {
+            LAYER_DOORS: {
                 "use_spation_hash": True,
             },
         }
@@ -78,17 +73,12 @@ class GameView(arcade.View):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        #self.wall_list = self.tile_map.sprite_lists[LAYER_NAME_WALLS]
-        #self.item_list = self.tile_map.sprite_lists[LAYER_NAME_KEY]
-
-
         self.player_sprite = character.Cat()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
-        #self.player_list.append(self.player_sprite)
 
-        npc_layer = self.tile_map.object_lists[LAYER_NAME_CHARACTERS]
+        npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
 
         #Create physics engine
 
@@ -112,7 +102,7 @@ class GameView(arcade.View):
                 body.boundary_left = npc.properties["boundary_bottom"]
             """
 
-            self.scene.add_sprite(LAYER_NAME_CHARACTERS, body)
+            self.scene.add_sprite(LAYER_CHARACTERS, body)
             
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
@@ -122,26 +112,43 @@ class GameView(arcade.View):
             friction = 0.6,
             moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
             damping = 0.01,
-            collision_type="player")
+            collision_type = "player"
+        )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_NAME_WALLS),
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_WALLS),
             friction = 0.6,
-            collision_type="wall",
-            body_type = PymunkPhysicsEngine.STATIC)
+            collision_type = "wall",
+            body_type = PymunkPhysicsEngine.STATIC
+        )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_NAME_KEY),
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_KEY),
             mass = 0.5,
             friction = 0.8,
             damping = 0.4,
-            collision_type = "rock")
-
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_NAME_CHARACTERS),
-            friction = 0.6,
-            moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
-            damping = 0.01,
-            collision_type="npc"
+            collision_type = "key"
         )
+
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_CHARACTERS),
+            friction = 0.6,
+            moment_of_intertia = PymunkPhysicsEngine.MOMENT_INF,
+            damping = 0.01,
+            collision_type = "npc"
+        )
+
+        def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
+            #
+            pass
+
+        def item_hit_handler(npc_sprite, key_sprite, _arbiter, _space, _data):
+            pass
+
+
+        self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
+        self.physics_engine.add_collision_handler("npc", "key", post_handler = item_hit_handler)
+
         
+
+
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
         screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
@@ -167,6 +174,9 @@ class GameView(arcade.View):
             self.left_pressed = True
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = True
+        elif key == arcade.key.E:
+            pass
+
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -179,6 +189,8 @@ class GameView(arcade.View):
             self.left_pressed = False
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
+        elif key == arcade.key.E:
+            pass
 
 
     def on_draw(self):
@@ -211,9 +223,11 @@ class GameView(arcade.View):
         elif self.right_pressed and not self.left_pressed:
             force = (PLAYER_MOVE_FORCE, 0)
             self.physics_engine.apply_force(self.player_sprite, force)
+        else:
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
 
         self.player_sprite.actual_force = force
-        self.scene.update_animation(delta_time, ["Player", LAYER_NAME_CHARACTERS])
+        self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
 
         """
         for npc in self.scene[LAYER_NAME_CHARACTERS]:
