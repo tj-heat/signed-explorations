@@ -1,0 +1,60 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "lvl1.json",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "Door.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Key.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "lvl1.json": {
+            "scale": 0.581875,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 961.5467239527391,
+                "y": 640.1718582169708
+            }
+        },
+        "stone_1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "wood_1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "C:/Users/treff/Documents/UQ/DECO3801/signed-explorations/assets/tilemaps",
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "openFiles": [
+        "lvl1.json",
+        "Door.tsx",
+        "Key.tsx",
+        "stone_1.tsx",
+        "wood_1.tsx"
+    ],
+    "project": "sign-exp.tiled-project",
+    "property.type": "float",
+    "recentFiles": [
+        "wood_1.tsx",
+        "stone_1.tsx",
+        "Key.tsx",
+        "Door.tsx",
+        "lvl1.json"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}
