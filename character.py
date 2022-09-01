@@ -61,3 +61,6 @@ class Cat(Animal):
 class Dog(Animal):
     def __init__(self):
         super().__init__(DOG_PATH)
+
+        self.force = 2000
+        self.task = False

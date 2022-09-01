@@ -44,6 +44,7 @@
         "wood_1.tsx"
     ],
     "project": "sign-exp.tiled-project",
+    "property.type": "float",
     "recentFiles": [
         "wood_1.tsx",
         "stone_1.tsx",

@@ -1,6 +1,8 @@
 import arcade
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import character
+import math
+from typing import Optional
 
 MOVEMENT_SPEED = 3
 
@@ -32,8 +34,17 @@ class GameView(arcade.View):
         #Tilemap
         self.tile_map = None
         self.scene = None
-        self.player_sprite = None
+        self.player_sprite: Optional[arcade.Sprite] = None
         self.physics_engine = None
+
+                # Player sprite
+        self.player_sprite: Optional[arcade.Sprite] = None
+
+        # Sprite lists we need
+        self.player_list: Optional[arcade.SpriteList] = None
+        self.wall_list: Optional[arcade.SpriteList] = None
+        self.item_list: Optional[arcade.SpriteList] = None
+
         self.camera = None
         self.gui_camera = None
         self.lvl = 1
@@ -47,13 +58,11 @@ class GameView(arcade.View):
     def setup(self):
 
         self.camera = arcade.Camera(self.window.width, self.window.height)
-
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
         #set up tilemap
 
         map_name = "assets/tilemaps/lvl1.json"
-
         layer_options = {
             LAYER_NAME_WALLS: {
                 "use_spation_hash": True,
@@ -67,18 +76,44 @@ class GameView(arcade.View):
         }
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
-
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        #self.wall_list = self.tile_map.sprite_lists[LAYER_NAME_WALLS]
+        #self.item_list = self.tile_map.sprite_lists[LAYER_NAME_KEY]
 
 
         self.player_sprite = character.Cat()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
+        #self.player_list.append(self.player_sprite)
 
         npc_layer = self.tile_map.object_lists[LAYER_NAME_CHARACTERS]
 
         #Create physics engine
+
+        for npc in npc_layer:
+            cartesian = self.tile_map.get_cartesian(npc.shape[0], npc.shape[1])
+            if npc.name == "Dog":
+                body = character.Dog() 
+            else: 
+                raise Exception(f"Unknown npc type {npc.name}")
+            body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+
+            """
+            if "boundary_left" in npc.properties:
+                body.boundary_left = npc.properties["boundary_left"]
+            if "boundary_right" in npc.properties:
+                body.boundary_left = npc.properties["boundary_right"]
+            if "boundary_top" in npc.properties:
+                body.boundary_left = npc.properties["boundary_top"]
+            if "boundary_bottom" in npc.properties:
+                body.boundary_left = npc.properties["boundary_bottom"]
+            """
+
+            self.scene.add_sprite(LAYER_NAME_CHARACTERS, body)
+            
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
         
@@ -99,6 +134,13 @@ class GameView(arcade.View):
             friction = 0.8,
             damping = 0.4,
             collision_type = "rock")
+
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_NAME_CHARACTERS),
+            friction = 0.6,
+            moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
+            damping = 0.01,
+            collision_type="npc"
+        )
         
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
@@ -171,7 +213,17 @@ class GameView(arcade.View):
             self.physics_engine.apply_force(self.player_sprite, force)
 
         self.player_sprite.actual_force = force
-        self.scene.update_animation(delta_time, ["Player"])
+        self.scene.update_animation(delta_time, ["Player", LAYER_NAME_CHARACTERS])
+
+        """
+        for npc in self.scene[LAYER_NAME_CHARACTERS]:
+            if (
+                npc.boundary_right 
+                and npc.right > npc.boundary_right
+                and npc.
+            )
+        """
+
         self.physics_engine.step()
 
         # Position the camera
