@@ -18,6 +18,7 @@ LAYER_NAME_NO_PHYS_WALLS = "Lower Walls"
 LAYER_NAME_FLOOR = "Floor"
 LAYER_NAME_DOORS = "Doors"
 LAYER_NAME_KEY = "Key"
+LAYER_NAME_CHARACTERS = "Characters"
 
 STONE_PATH = "assets/tiles/stone_1.png"
 WOOD_PATH = "assets/tiles/wood_1.png"
@@ -69,10 +70,13 @@ class GameView(arcade.View):
 
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
+
         self.player_sprite = character.Cat()
         self.player_sprite.center_x = PLAYER_START_X
         self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
+
+        npc_layer = self.tile_map.object_lists[LAYER_NAME_CHARACTERS]
 
         #Create physics engine
 

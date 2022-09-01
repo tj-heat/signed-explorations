@@ -4,6 +4,7 @@ SPRITE_SCALING = 0.3
 SPRITE_IMAGE_SIZE = 250
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 CAT_PATH = "assets/sprites/cat/Cat_"
+DOG_PATH = "assets/sprites/dog/Dog_"
 
 FRONT_FACING = 0
 BACK_FACING = 1
@@ -56,3 +57,7 @@ class Animal(arcade.Sprite):
 class Cat(Animal):
     def __init__(self):
         super().__init__(CAT_PATH)
+
+class Dog(Animal):
+    def __init__(self):
+        super().__init__(DOG_PATH)
