@@ -11,6 +11,8 @@ BACK_FACING = 1
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
+DEAD_ZONE = 0.1
+
 def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
@@ -40,6 +42,9 @@ class Animal(arcade.Sprite):
 
         self.actual_force = (0,0)
 
+        self.x_odometer = 0
+        self.y_odometer = 0
+
     def update_animation(self, delta_time: float = 1 / 60):
         x, y = self.actual_force
         if x < 0:
@@ -54,9 +59,42 @@ class Animal(arcade.Sprite):
             self.texture = self.front_texture_pair[FRONT_FACING]
         return
 
+"""
+    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
+        if dy < -DEAD_ZONE:
+            self.texture = self.front_texture_pair[FRONT_FACING]
+        if dy > DEAD_ZONE:
+            self.texture = self.front_texture_pair[BACK_FACING]
+        if dx < -DEAD_ZONE:
+            self.texture = self.side_texture_pair[LEFT_FACING]
+        if dx > DEAD_ZONE:
+            self.texture = self.side_texture_pair[RIGHT_FACING]
+
+        #self.x_odometer += dx // only needed for walk cycles
+        #self.y_odometer += dy
+        if abs(dx) <= DEAD_ZONE:
+            self.texture = self.front_texture_pair[FRONT_FACING]
+            return
+"""
+
+
 class Cat(Animal):
     def __init__(self):
         super().__init__(CAT_PATH)
+        self.npc_interaction = None
+        self.touched = False
+
+    def set_npc_interaction(self, npc):
+        self.npc_interaction = npc
+
+    def null_npc_interaction(self):
+        self.npc_interaction = None
+
+    def untouched(self):
+        self.touched = False
+
+    def is_touched(self):
+        return self.touched
 
 class Dog(Animal):
     def __init__(self):
@@ -64,3 +102,4 @@ class Dog(Animal):
 
         self.force = 2000
         self.task = False
+        self.inventory = []
