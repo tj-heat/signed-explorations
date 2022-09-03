@@ -3,6 +3,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import character
 import math
 from typing import Optional
+from sign_view import SignView
 
 MOVEMENT_SPEED = 3
 
@@ -136,8 +137,11 @@ class GameView(arcade.View):
         )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
-            #
-            pass
+            #if _arbiter.is_first_contact():
+            #player_sprite.touched()
+            #print(f"player : {player_sprite.is_touched()}")
+            player_sprite.touched = True
+
 
         def item_hit_handler(npc_sprite, key_sprite, _arbiter, _space, _data):
             pass
@@ -190,7 +194,9 @@ class GameView(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
         elif key == arcade.key.E:
-            pass
+            sign_view = SignView(self)
+            sign_view.setup()
+            self.window.show_view(sign_view)
 
 
     def on_draw(self):
@@ -228,6 +234,7 @@ class GameView(arcade.View):
 
         self.player_sprite.actual_force = force
         self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
+        self.player_sprite.untouched()
 
         """
         for npc in self.scene[LAYER_NAME_CHARACTERS]:

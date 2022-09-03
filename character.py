@@ -81,6 +81,20 @@ class Animal(arcade.Sprite):
 class Cat(Animal):
     def __init__(self):
         super().__init__(CAT_PATH)
+        self.npc_interaction = None
+        self.touched = False
+
+    def set_npc_interaction(self, npc):
+        self.npc_interaction = npc
+
+    def null_npc_interaction(self):
+        self.npc_interaction = None
+
+    def untouched(self):
+        self.touched = False
+
+    def is_touched(self):
+        return self.touched
 
 class Dog(Animal):
     def __init__(self):
