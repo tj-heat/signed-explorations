@@ -1,4 +1,5 @@
 import arcade
+from enum import Enum
 
 SPRITE_SCALING = 0.3
 SPRITE_IMAGE_SIZE = 250
@@ -12,6 +13,18 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 
 DEAD_ZONE = 0.1
+
+#Dog tasks
+FOLLOW = 0
+KEY = 1
+DOOR = 2
+DOG_TASKS = [FOLLOW, KEY, DOOR]
+
+class Task(Enum):
+    NONE = 0
+    KEY = 1
+    DOOR = 2
+    FOLLOW = 3
 
 def load_texture_pair(filename):
     """
@@ -101,5 +114,11 @@ class Dog(Animal):
         super().__init__(DOG_PATH)
 
         self.force = 2000
-        self.task = False
+        self.task = Task.NONE
         self.inventory = []
+
+    def change_task(self, task):
+        self.task = task
+
+    def get_actions(self):
+        return self.task

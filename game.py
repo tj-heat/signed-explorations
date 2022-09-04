@@ -1,6 +1,8 @@
+from pickle import NONE
 import arcade
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import character
+from character import Task
 import math
 from typing import Optional
 from sign_view import SignView
@@ -149,6 +151,8 @@ class GameView(arcade.View):
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "key", post_handler = item_hit_handler)
+        #for x in self.scene.get_sprite_list([LAYER_CHARACTERS]).sprite_list:
+            #print(x)
 
         
 
@@ -194,9 +198,10 @@ class GameView(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
         elif key == arcade.key.E:
-            sign_view = SignView(self)
-            sign_view.setup()
-            self.window.show_view(sign_view)
+            if self.player_sprite.is_touched():
+                sign_view = SignView(self)
+                sign_view.setup()
+                self.window.show_view(sign_view)
 
 
     def on_draw(self):
@@ -208,6 +213,12 @@ class GameView(arcade.View):
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
 
+
+    def dog_actions(self, action):
+        if action == Task.NONE:
+            pass
+        elif action == Task.FOLLOW:
+            print(f"player location: {self.player_sprite.center_x},{self.player_sprite.center_y}")
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -235,6 +246,8 @@ class GameView(arcade.View):
         self.player_sprite.actual_force = force
         self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
         self.player_sprite.untouched()
+
+        #self.dog_actions()
 
         """
         for npc in self.scene[LAYER_NAME_CHARACTERS]:
