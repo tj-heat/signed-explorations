@@ -5,6 +5,7 @@
     },
     "activeFile": "lvl1.json",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "Door.tsx": {
@@ -17,10 +18,10 @@
         },
         "lvl1.json": {
             "scale": 0.581875,
-            "selectedLayer": 5,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 443.3941997851772,
-                "y": 1051.7722878625134
+                "x": 963.2653061224489,
+                "y": 640.1718582169708
             }
         },
         "stone_1.tsx": {
