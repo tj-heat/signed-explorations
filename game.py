@@ -59,7 +59,7 @@ class GameView(arcade.View):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
         #set up tilemap
-
+ 
         map_name = "assets/tilemaps/lvl1.json"
         layer_options = {
             LAYER_WALLS: {
@@ -94,17 +94,6 @@ class GameView(arcade.View):
             body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
 
-            """
-            if "boundary_left" in npc.properties:
-                body.boundary_left = npc.properties["boundary_left"]
-            if "boundary_right" in npc.properties:
-                body.boundary_left = npc.properties["boundary_right"]
-            if "boundary_top" in npc.properties:
-                body.boundary_left = npc.properties["boundary_top"]
-            if "boundary_bottom" in npc.properties:
-                body.boundary_left = npc.properties["boundary_bottom"]
-            """
-
             self.scene.add_sprite(LAYER_CHARACTERS, body)
             
 
@@ -136,6 +125,12 @@ class GameView(arcade.View):
             moment_of_intertia = PymunkPhysicsEngine.MOMENT_INF,
             damping = 0.01,
             collision_type = "npc"
+        )
+
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
+            friction = 0.6,
+            collision_type = "door",
+            body_type = PymunkPhysicsEngine.STATIC
         )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
