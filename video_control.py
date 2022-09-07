@@ -31,7 +31,13 @@ class CameraControl():
             (Exception) if the camera at the used index does not exist/ is not
                 captured.
         """
-        cam = cv2.VideoCapture(index)
+        # Attempt to capture camera as on windows
+        cam = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+        if not cam.isOpened():
+            # Attempt to capture camera with any API
+            cam = cv2.VideoCapture(index)
+
+        # If still no success, throw exception
         if not cam.isOpened():
             raise Exception("Could not open camera")
 
