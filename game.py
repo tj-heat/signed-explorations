@@ -1,4 +1,3 @@
-from pickle import NONE
 import arcade
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import character
@@ -6,6 +5,8 @@ from character import Task
 import math
 from typing import Optional
 from sign_view import SignView
+from video_control import display_video_t, show_image_windowed
+import threading
 
 MOVEMENT_SPEED = 3
 
@@ -30,7 +31,7 @@ WOOD_PATH = "assets/tiles/wood_1.png"
 
 class GameView(arcade.View):
     
-    def __init__(self):
+    def __init__(self, cam_controller = None):
         super().__init__()
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -42,6 +43,9 @@ class GameView(arcade.View):
 
         # Player sprite
         self.player_sprite: Optional[arcade.Sprite] = None
+
+        # Video capture
+        self._cc = cam_controller
 
         self.camera = None
         self.gui_camera = None
@@ -82,6 +86,13 @@ class GameView(arcade.View):
         self.scene.add_sprite("Player", self.player_sprite)
 
         npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
+
+        # Create video capture display thread
+        self._video_t = threading.Thread(
+            target=display_video_t, 
+            args=(self._cc,)
+        )
+        self._video_t.start()
 
         #Create physics engine
 
@@ -154,9 +165,6 @@ class GameView(arcade.View):
         #for x in self.scene.get_sprite_list([LAYER_CHARACTERS]).sprite_list:
             #print(x)
 
-        
-
-
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
         screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
@@ -212,7 +220,6 @@ class GameView(arcade.View):
         self.gui_camera.use()
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
-
 
     def dog_actions(self, action):
         if action == Task.NONE:

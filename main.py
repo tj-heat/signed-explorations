@@ -2,6 +2,8 @@ import arcade
 import arcade.gui
 import game
 
+from video_control import CameraControl
+
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Signed Explorations"
@@ -18,7 +20,9 @@ class StartView(arcade.View):
 
     def setup(self):
         """Set up screen here"""
-        pass
+        # Video capture
+        # NOTE The camera control takes several seconds to get cam control
+        self._cc = CameraControl() # TODO Need appropriate teardown method.
 
     def on_draw(self):
         """Render screen"""
@@ -36,18 +40,21 @@ class StartView(arcade.View):
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
     def on_key_press(self, key, modifiers):
-        menu_view = MenuView()
+        menu_view = MenuView(cam_controller=self._cc)
         menu_view.setup()
         self.window.show_view(menu_view)
 
 class MenuView(arcade.View):
-    def __init__(self):
+    def __init__(self, cam_controller = None):
         super().__init__()
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
+
+        # Video capture
+        self._cc = cam_controller
 
         # Set background color
         arcade.set_background_color(arcade.color.RED_ORANGE)
@@ -82,7 +89,7 @@ class MenuView(arcade.View):
 
 
     def on_click_start(self, event):
-        game_view = game.GameView()
+        game_view = game.GameView(cam_controller=self._cc)
         game_view.setup()
         self.window.show_view(game_view)
 
