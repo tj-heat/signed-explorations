@@ -69,10 +69,8 @@ class MenuView(arcade.View):
         # assign self.on_click_start as callback
         start_button.on_click = self.on_click_start
 
-        #meth2
-        @settings_button.event("on_click")
-        def on_click_settings(event):
-            print("Settings:", event)
+
+        #settings_button.on_click =
 
         # Create a widget to hold the v_box widget, that will center the buttons
         self.manager.add(
@@ -83,14 +81,15 @@ class MenuView(arcade.View):
         )
 
 
-    def on_show_view(self):
-        arcade.set_background_color(arcade.csscolor.GHOST_WHITE)
-        arcade.set_viewport(0, self.window.width, 0, self.window.height)
-
     def on_click_start(self, event):
         game_view = game.GameView()
         game_view.setup()
         self.window.show_view(game_view)
+
+    def on_show_view(self):
+        arcade.set_background_color(arcade.csscolor.GHOST_WHITE)
+        arcade.set_viewport(0, self.window.width, 0, self.window.height)
+
 
     def on_draw(self):
         self.clear()
