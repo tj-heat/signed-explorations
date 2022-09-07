@@ -7,7 +7,6 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Signed Explorations"
 BACKGROUND_PATH = "assets/backgrounds/"
 SPRITE_PATH = "assets/sprites/"
-LOGO_PATH = "assets/logos/TJHeat_L_C_250.png"
 
 class StartView(arcade.View):
 

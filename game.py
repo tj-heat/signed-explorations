@@ -15,8 +15,9 @@ GRID_SIZE = TILE_SCALING * TILE_SIZE
 
 PLAYER_START_X = 124
 PLAYER_START_Y = 124
-
 PLAYER_MOVE_FORCE = 3000
+
+RADIUS = 150.0
 
 LAYER_WALLS = "Walls"
 LAYER_LOW_WALLS = "Lower Walls"
@@ -51,7 +52,6 @@ class GameView(arcade.View):
         self.right_pressed: bool = False
         self.up_pressed: bool = False
         self.down_pressed: bool = False
-
     
     def setup(self):
 
@@ -134,9 +134,6 @@ class GameView(arcade.View):
         )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
-            #if _arbiter.is_first_contact():
-            #player_sprite.touched()
-            #print(f"player : {player_sprite.is_touched()}")
             player_sprite.touched = True
 
 
@@ -146,11 +143,23 @@ class GameView(arcade.View):
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "key", post_handler = item_hit_handler)
-        #for x in self.scene.get_sprite_list([LAYER_CHARACTERS]).sprite_list:
-            #print(x)
 
-        
+    def dog_actions(self, action):
+        if action == Task.NONE:
+            pass
+        elif action == Task.KEY:
+            pass
+            #print(f"player location: {self.player_sprite.center_x},{self.player_sprite.center_y}")
 
+    def check_items_in_radius(self):
+        items = self.scene.get_sprite_list(LAYER_KEY).sprite_list
+        nearby = []
+        for i in items:
+            x = self.player_sprite.center_x - i.center_x
+            y = self.player_sprite.center_y - i.center_y
+            if abs(x) < RADIUS and abs(y) < RADIUS:
+                nearby.append(i)
+        return nearby
 
     def center_camera_to_player(self):
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
@@ -193,11 +202,11 @@ class GameView(arcade.View):
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
         elif key == arcade.key.E:
-            if self.player_sprite.is_touched():
+            items = self.check_items_in_radius()
+            if self.player_sprite.is_touched() and len(items) != 0:
                 sign_view = SignView(self)
                 sign_view.setup()
                 self.window.show_view(sign_view)
-
 
     def on_draw(self):
         """ Draw everything """
@@ -207,13 +216,6 @@ class GameView(arcade.View):
         self.gui_camera.use()
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
-
-
-    def dog_actions(self, action):
-        if action == Task.NONE:
-            pass
-        elif action == Task.FOLLOW:
-            print(f"player location: {self.player_sprite.center_x},{self.player_sprite.center_y}")
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -244,16 +246,8 @@ class GameView(arcade.View):
 
         #self.dog_actions()
 
-        """
-        for npc in self.scene[LAYER_NAME_CHARACTERS]:
-            if (
-                npc.boundary_right 
-                and npc.right > npc.boundary_right
-                and npc.
-            )
-        """
-
         self.physics_engine.step()
 
         # Position the camera
         self.center_camera_to_player()
+
