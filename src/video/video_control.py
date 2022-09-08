@@ -12,7 +12,6 @@ def show_image_windowed(img: np.ndarray, window: str = DEFAULT_WINDOW) -> None:
     cv2.imshow(window, img)
     cv2.waitKey(1)
 
-
 # Classes
 class CameraControl():
 

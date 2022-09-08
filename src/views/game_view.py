@@ -1,12 +1,12 @@
-import arcade
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
-import character
-from character import Task
-import math
 from typing import Optional
-from views.sign_view import SignView
-from video_control import CAPTURING, display_video_t
-import threading
+
+import arcade, math, threading
+from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+
+import src.actors.character as character
+from src.actors.character import Task
+from src.views.sign_view import SignView
+from src.video.video_control import CAPTURING, display_video_t
 
 MOVEMENT_SPEED = 3
 

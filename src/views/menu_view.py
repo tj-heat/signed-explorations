@@ -1,6 +1,7 @@
 import arcade
-import views.game_view as g
-from video_control import CameraControl
+
+import src.views.game_view as g
+from src.video.video_control import CameraControl
 
 class MenuView(arcade.View):
     def __init__(self):
