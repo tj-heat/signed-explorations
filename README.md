@@ -49,6 +49,7 @@ If you have added a new package for development, run `scripts/add_packages.sh` f
 git clone https://github.com/tj-heat/signed-explorations.git
 cd signed-explorations
 scripts/setup.sh
+scripts/apply_patches.sh
 
 # To begin development
 source env/Scripts/activate
