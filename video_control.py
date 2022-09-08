@@ -3,6 +3,7 @@ from typing import Optional
 import numpy as np
 import cv2
 
+CAPTURING = False # Temp const for feature enabling
 DEFAULT_WINDOW = "Camera Capture"
 
 # Functions

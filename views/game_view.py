@@ -5,7 +5,7 @@ from character import Task
 import math
 from typing import Optional
 from views.sign_view import SignView
-from video_control import display_video_t
+from video_control import CAPTURING, display_video_t
 import threading
 
 MOVEMENT_SPEED = 3
@@ -92,7 +92,8 @@ class GameView(arcade.View):
             target=display_video_t, 
             args=(self._cc,)
         )
-        self._video_t.start()
+        if CAPTURING:
+            self._video_t.start()
 
         #Create physics engine
 
