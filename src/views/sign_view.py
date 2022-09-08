@@ -1,5 +1,5 @@
 import arcade
-from character import Dog, Task
+from src.actors.character import Dog, Task
 
 class SignView(arcade.View):
     def __init__(self, game_view, npc : Dog, items):

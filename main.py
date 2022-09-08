@@ -1,6 +1,7 @@
 import arcade
 import arcade.gui
-import views.start_view as StartView
+
+import src.views.start_view as StartView
 
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650

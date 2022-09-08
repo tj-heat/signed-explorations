@@ -1,5 +1,6 @@
 import arcade
-import views.menu_view as m
+
+import src.views.menu_view as m
 
 BACKGROUND_PATH = "assets/backgrounds/"
 
