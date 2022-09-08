@@ -1,10 +1,14 @@
 import arcade
+import character
+
+from character import Task
 
 class SignView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
+        #self.npc = npc
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
@@ -17,6 +21,8 @@ class SignView(arcade.View):
         self.clear()
         self.gui_camera.use()
         arcade.draw_text("This is the sign language interaction, for now press any key to return to the game", 10, 10, arcade.csscolor.WHITE, 18)
+
+    #def assign_task(task : Task):
 
     
     def on_update(self, delta_time):

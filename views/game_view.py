@@ -1,11 +1,11 @@
-from pickle import NONE
 import arcade
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import character
-from character import Task
 import math
-from typing import Optional
 import views.sign_view as SignView
+
+from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+from character import Task
+from typing import Optional
 
 MOVEMENT_SPEED = 3
 
