@@ -1,0 +1,11 @@
+arcade==2.6.15
+attrs==22.1.0
+cffi==1.15.1
+numpy==1.23.2
+opencv-python==4.6.0.66
+Pillow==9.1.1
+pycparser==2.21
+pyglet==2.0.dev18
+pymunk==6.2.1
+pytiled-parser==2.0.1
+typing_extensions==4.3.0
