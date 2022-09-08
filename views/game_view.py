@@ -1,12 +1,15 @@
 import arcade
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import character
-from character import Task
+import items
 import math
+import views.sign_view as SignView
+import threading
+
+from arcade.pymunk_physics_engine import PymunkPhysicsEngine
+from character import Task
 from typing import Optional
 from views.sign_view import SignView
 from video_control import CAPTURING, display_video_t
-import threading
 
 MOVEMENT_SPEED = 3
 
@@ -24,7 +27,7 @@ LAYER_WALLS = "Walls"
 LAYER_LOW_WALLS = "Lower Walls"
 LAYER_FLOOR = "Floor"
 LAYER_DOORS = "Doors"
-LAYER_KEY = "Key"
+LAYER_ITEMS = "Items"
 LAYER_CHARACTERS = "Characters"
 
 STONE_PATH = "assets/tiles/stone_1.png"
@@ -40,6 +43,7 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
         self.player_sprite: Optional[arcade.Sprite] = None
+        self.npc_sprite: Optional[arcade.Sprite] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Player sprite
@@ -69,7 +73,7 @@ class GameView(arcade.View):
             LAYER_WALLS: {
                 "use_spation_hash": True,
             },
-            LAYER_KEY: {
+            LAYER_ITEMS: {
                 "use_spation_hash": True,
             },
             LAYER_DOORS: {
@@ -85,8 +89,6 @@ class GameView(arcade.View):
         self.player_sprite.center_y = PLAYER_START_Y
         self.scene.add_sprite("Player", self.player_sprite)
 
-        npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
-
         # Create video capture display thread
         self._video_t = threading.Thread(
             target=display_video_t, 
@@ -97,17 +99,33 @@ class GameView(arcade.View):
 
         #Create physics engine
 
+        npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
+
         for npc in npc_layer:
             cartesian = self.tile_map.get_cartesian(npc.shape[0], npc.shape[1])
             if npc.name == "Dog":
                 body = character.Dog() 
+                self.npc_sprite = body
             else: 
                 raise Exception(f"Unknown npc type {npc.name}")
             body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
 
             self.scene.add_sprite(LAYER_CHARACTERS, body)
-            
+
+        item_layer = self.tile_map.object_lists[LAYER_ITEMS]
+
+        for item in item_layer:
+            cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
+            if item.name == "Key":
+                body = items.Key()
+            else:
+                raise Exception (f"Unknown item type {item.name}")
+            body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+
+            self.scene.add_sprite(LAYER_ITEMS, body)
+                 
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
         
@@ -125,11 +143,11 @@ class GameView(arcade.View):
             body_type = PymunkPhysicsEngine.STATIC
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_KEY),
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_ITEMS),
             mass = 0.5,
             friction = 0.8,
             damping = 0.4,
-            collision_type = "key"
+            collision_type = "item"
         )
 
         self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_CHARACTERS),
@@ -149,12 +167,15 @@ class GameView(arcade.View):
             player_sprite.touched = True
 
 
-        def item_hit_handler(npc_sprite, key_sprite, _arbiter, _space, _data):
-            pass
+        def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
+            if npc_sprite.task == item_sprite.task:
+                npc_sprite.inventory.append(f"{item_sprite.type}")
+                item_sprite.remove_from_sprite_lists()
+                
 
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
-        self.physics_engine.add_collision_handler("npc", "key", post_handler = item_hit_handler)
+        self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
 
     def dog_actions(self, action):
         if action == Task.NONE:
@@ -164,7 +185,7 @@ class GameView(arcade.View):
             #print(f"player location: {self.player_sprite.center_x},{self.player_sprite.center_y}")
 
     def check_items_in_radius(self):
-        items = self.scene.get_sprite_list(LAYER_KEY).sprite_list
+        items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
         nearby = []
         for i in items:
             x = self.player_sprite.center_x - i.center_x
@@ -216,7 +237,7 @@ class GameView(arcade.View):
         elif key == arcade.key.E:
             items = self.check_items_in_radius()
             if self.player_sprite.is_touched() and len(items) != 0:
-                sign_view = SignView(self)
+                sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
 
