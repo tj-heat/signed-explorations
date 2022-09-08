@@ -2,10 +2,13 @@ import arcade
 import character
 import math
 import views.sign_view as SignView
+import threading
 
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 from character import Task
 from typing import Optional
+from views.sign_view import SignView
+from video_control import CAPTURING, display_video_t
 
 MOVEMENT_SPEED = 3
 
@@ -31,7 +34,7 @@ WOOD_PATH = "assets/tiles/wood_1.png"
 
 class GameView(arcade.View):
     
-    def __init__(self):
+    def __init__(self, cam_controller = None):
         super().__init__()
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
 
@@ -43,6 +46,9 @@ class GameView(arcade.View):
 
         # Player sprite
         self.player_sprite: Optional[arcade.Sprite] = None
+
+        # Video capture
+        self._cc = cam_controller
 
         self.camera = None
         self.gui_camera = None
@@ -82,6 +88,14 @@ class GameView(arcade.View):
         self.scene.add_sprite("Player", self.player_sprite)
 
         npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
+
+        # Create video capture display thread
+        self._video_t = threading.Thread(
+            target=display_video_t, 
+            args=(self._cc,)
+        )
+        if CAPTURING:
+            self._video_t.start()
 
         #Create physics engine
 

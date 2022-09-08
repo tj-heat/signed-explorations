@@ -1,5 +1,6 @@
 import arcade
 import views.game_view as g
+from video_control import CameraControl
 
 class MenuView(arcade.View):
     def __init__(self):
@@ -43,7 +44,7 @@ class MenuView(arcade.View):
 
 
     def on_click_start(self, event):
-        game = g.GameView()
+        game = g.GameView(cam_controller=self._cc)
         game.setup()
         self.window.show_view(game)
 
@@ -57,4 +58,6 @@ class MenuView(arcade.View):
         self.manager.draw()
 
     def setup(self):
-        pass
+        # Video capture
+        # NOTE The camera control may take several seconds to get cam control
+        self._cc = CameraControl() # TODO Need appropriate teardown method.
