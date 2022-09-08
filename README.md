@@ -18,6 +18,8 @@ Steps:
 1. Install [python](https://www.python.org/downloads/).
 2. Run environment setup script `scripts/setup.sh` from the top level directory of the repo. 
    - For Windows Command Prompt, use `scripts/setup.bat` instead.
+3. Apply patches based on installed packages by running `scripts/apply_patches.sh`.
+   - There is no Windows alternative file. 
 
 
 
