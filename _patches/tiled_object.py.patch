@@ -1,0 +1,11 @@
+--- ./env/Lib/site-packages/pytiled_parser/parsers/json/tiled_object.py	2022-09-08 12:42:32.771020500 +1000
++++ ./tiled_object.py	2022-09-08 11:22:03.929742100 +1000
+@@ -88,7 +88,7 @@
+         size=Size(raw_object["width"], raw_object["height"]),
+         rotation=raw_object["rotation"],
+         name=raw_object["name"],
+-        type=raw_object["type"],
++        type=raw_object["class"],
+     )
+ 
+     if raw_object.get("properties") is not None:
