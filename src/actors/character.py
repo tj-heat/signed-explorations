@@ -1,5 +1,6 @@
 import arcade
 from enum import Enum
+from typing import Optional
 
 SPRITE_SCALING = 0.3
 SPRITE_IMAGE_SIZE = 250
@@ -72,24 +73,6 @@ class Animal(arcade.Sprite):
             self.texture = self.front_texture_pair[FRONT_FACING]
         return
 
-"""
-    def pymunk_moved(self, physics_engine, dx, dy, d_angle):
-        if dy < -DEAD_ZONE:
-            self.texture = self.front_texture_pair[FRONT_FACING]
-        if dy > DEAD_ZONE:
-            self.texture = self.front_texture_pair[BACK_FACING]
-        if dx < -DEAD_ZONE:
-            self.texture = self.side_texture_pair[LEFT_FACING]
-        if dx > DEAD_ZONE:
-            self.texture = self.side_texture_pair[RIGHT_FACING]
-
-        #self.x_odometer += dx // only needed for walk cycles
-        #self.y_odometer += dy
-        if abs(dx) <= DEAD_ZONE:
-            self.texture = self.front_texture_pair[FRONT_FACING]
-            return
-"""
-
 
 class Cat(Animal):
     def __init__(self):
@@ -114,7 +97,7 @@ class Dog(Animal):
         super().__init__(DOG_PATH)
 
         self.force = 2000
-        self.task = Task.NONE
+        self.task : Optional[Task]= Task.NONE
         self.inventory = []
 
     def change_task(self, task):

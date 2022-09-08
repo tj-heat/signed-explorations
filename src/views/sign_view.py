@@ -1,10 +1,13 @@
 import arcade
+from src.actors.character import Dog, Task
 
 class SignView(arcade.View):
-    def __init__(self, game_view):
+    def __init__(self, game_view, npc : Dog, items):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
+        self.npc = npc
+        self.items = items
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
@@ -17,10 +20,13 @@ class SignView(arcade.View):
         self.clear()
         self.gui_camera.use()
         arcade.draw_text("This is the sign language interaction, for now press any key to return to the game", 10, 10, arcade.csscolor.WHITE, 18)
-
     
     def on_update(self, delta_time):
-        pass
+        if True:
+            if self.items[0].type == "Key":
+                self.npc.task = Task.KEY
+            else:
+                raise Exception(f"Unknown item type {self.items[0].type}")
 
     def on_key_press(self, symbol: int, modifiers: int):
         self.window.show_view(self.game_view)
