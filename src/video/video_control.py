@@ -72,6 +72,19 @@ class CameraControl():
         """ Returns the camera's width and height as floats in a tuple """
         return (self._width, self._height)
 
+    def get_roi_points(self) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+        """ Returns a tuple containing the top left and bottom right corners of 
+            the ROI.
+        """
+        x_mid, y_mid = [int(dim / 2) for dim in self.get_dimensions()]
+        x_offset = self.ROI_WIDTH // 2
+        y_offset = self.ROI_HEIGHT // 2
+
+        return (
+            (x_mid - x_offset, y_mid - y_offset),
+            (x_mid + x_offset, y_mid + y_offset)
+        )
+
     def release_cam(self) -> None:
         """ Releases control of a camera object. """
         self._cam.release()
@@ -107,13 +120,7 @@ def display_video_t(controller: CameraControl):
     while True:
         img = controller.read_cam()
         
-        # Calculate ROI
-        x_mid, y_mid = [int(dim / 2) for dim in controller.get_dimensions()]
-        x_offset = controller.ROI_WIDTH // 2
-        y_offset = controller.ROI_HEIGHT // 2
-        tl = (x_mid - x_offset, y_mid - y_offset)
-        br = (x_mid + x_offset, y_mid + y_offset)
-        
         # Show annotated image
+        tl, br = controller.get_roi_points()
         add_roi(img, tl, br)
         show_image_windowed(img)
