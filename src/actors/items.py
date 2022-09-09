@@ -1,6 +1,6 @@
 import arcade
 from typing import Optional
-from character import Task
+from src.actors.character import Task
 
 KEY_PATH = "assets/tilemaps/Key.PNG"
 
