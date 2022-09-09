@@ -1,12 +1,33 @@
-from typing import Optional
+from turtle import width
+from typing import Tuple
 
-import numpy as np
 import cv2
+import numpy as np
 
-CAPTURING = False # Temp const for feature enabling
+CAPTURING = True # Temp const for feature enabling
 DEFAULT_WINDOW = "Camera Capture"
 
 # Functions
+def add_roi(
+    img: np.ndarray, 
+    top_left: Tuple[int, int], 
+    bot_right: Tuple[int, int],
+    colour: Tuple[int, int, int] = (255, 0, 255), # Magenta
+    width: int = 2
+) -> None:
+    """ Draws the ROI to a given frame. 
+    
+    Params:
+        img (ndarray): The frame to add the ROI to.
+        top_left (Tuple): A tuple containing the x, y position of the top-left 
+            ROI corner
+        bot_right (Tuple): A tuple containing the x, y position of the bottom-
+            right ROI corner
+        colour (Tuple): The RGB values (0-255) to draw the ROI with
+        width (int): The pixel width of the ROI
+    """
+    cv2.rectangle(img, top_left, bot_right, colour, width)
+
 def show_image_windowed(img: np.ndarray, window: str = DEFAULT_WINDOW) -> None:
     """ Display an image in a window separate to the game window. """
     cv2.imshow(window, img)
@@ -14,9 +35,13 @@ def show_image_windowed(img: np.ndarray, window: str = DEFAULT_WINDOW) -> None:
 
 # Classes
 class CameraControl():
+    ROI_WIDTH = 200
+    ROI_HEIGHT = 200
 
     def __init__(self) -> None:
         self._cam = self.get_cam()
+        self._width = self._cam.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self._height = self._cam.get(cv2.CAP_PROP_FRAME_HEIGHT)
     
     def get_cam(self, index: int = 0) -> cv2.VideoCapture:
         """ (VideoCapture) Returns the first listed video capture object. 
@@ -42,6 +67,10 @@ class CameraControl():
             raise Exception("Could not open camera")
 
         return cam
+
+    def get_dimensions(self) -> Tuple[float, float]:
+        """ Returns the camera's width and height as floats in a tuple """
+        return (self._width, self._height)
 
     def release_cam(self) -> None:
         """ Releases control of a camera object. """
@@ -76,4 +105,15 @@ def display_video_t(controller: CameraControl):
         controller (CameraControl): The camera controller to receive video from.
     """
     while True:
-        show_image_windowed(controller.read_cam())
+        img = controller.read_cam()
+        
+        # Calculate ROI
+        x_mid, y_mid = [int(dim / 2) for dim in controller.get_dimensions()]
+        x_offset = controller.ROI_WIDTH // 2
+        y_offset = controller.ROI_HEIGHT // 2
+        tl = (x_mid - x_offset, y_mid - y_offset)
+        br = (x_mid + x_offset, y_mid + y_offset)
+        
+        # Show annotated image
+        add_roi(img, tl, br)
+        show_image_windowed(img)
