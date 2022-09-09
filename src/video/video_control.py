@@ -103,7 +103,7 @@ class CameraControl():
         if not success:
             raise Exception("Could not capture frame from camera")
 
-        return frame
+        return cv2.flip(frame, 1) # Flip frame horizontally
 
     def close(self) -> None:
         """ Finishes with the camera controller """
