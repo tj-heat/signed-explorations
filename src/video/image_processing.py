@@ -39,7 +39,7 @@ class Recogniser():
         )
 
     def predict(self, img) -> np.ndarray:
-        """ Predict which sign is shown in the provided image. """
+        """ Predict which sign class is shown in the provided image. """
         return self._model(img)
 
     def predict_letter(self, img) -> str:
