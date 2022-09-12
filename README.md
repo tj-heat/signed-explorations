@@ -44,7 +44,7 @@ When working on the project, development should be carried out inside of the vir
 
 If your environment's packages are out of date, simply run `scripts/update_packages.sh` from the top level of the repo. A `.bat` is provided for Command Prompt.
 
-If you have added a new package for development, run `scripts/add_packages.sh` from the top level of the repo; then, commit the changed `requirements.txt` file. A `.bat` is provided for Command Prompt.
+If you have added a new package for development, run `scripts/add_packages.sh` from the top level of the repo; then, commit the changed `requirements.txt` file. A `.bat` is provided for Command Prompt in `scripts/batch/`.
 
 #### Development Example
 
