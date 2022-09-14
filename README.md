@@ -80,7 +80,7 @@ env/Scripts/python.exe main.py
 ## Team Members
 
 - Ethan Roderick, 44792215.
-- Treffery Webb, 44503374.
+- Treffery Webb, 4503374.
 - Hannah Hinckfuss, 45840047
 - Joseph Metcalfe, 44822279
 - Aditya Modi, 45892046
