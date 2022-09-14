@@ -5,10 +5,10 @@ WIN=true
 
 # Set up virtual environment
 echo "Attempting Windows style setup..."
-if ! (py -m venv ./env) ; then
+if ! (py -m venv ./env || py3 -m venv ./env) ; then
 	WIN=false
 	echo "Attempting *Nix style setup..."
-	python -m venv ./env
+	python -m venv ./env || python3 -m venv ./env
 fi
 
 # Install packages
