@@ -2,7 +2,7 @@ import queue
 import time, unittest
 from threading import Thread
 
-from src.util.ring_buffer import RingBuffer
+from src.util.ring_buffer import Closed, NotifyBufferFinish, RingBuffer
 
 EXHAUSTIVE = False
 
@@ -43,6 +43,40 @@ class TestRingBuffer(unittest.TestCase):
 
         # Ensure count went down
         self.assertEqual(self._buf.qsize(), 9) 
+
+    def test_close(self):
+        """ Test _close method """
+        self._buf.put(1)
+        self._buf._close()
+
+        self.assertRaises(Closed, self._buf.put, (1,))
+        self.assertRaises(Closed, self._buf.get)
+
+    def test_notify_finish(self):
+        """ Test notify_finish method """
+        self._buf.notify_finish()
+        self.assertIsInstance(self._buf.get(), NotifyBufferFinish)
+
+    def test_confirm_sentinel(self):
+        """ Test confirm_sentinel method """
+        self._buf.notify_finish()
+        self._buf.put(1)
+
+        # Check that there are still two items
+        sentinel = self._buf.get()
+        self._buf.confirm_sentinel(sentinel)
+        self.assertEqual(self._buf.qsize(), 2)
+
+        # Check sentinel comes back out
+        self._buf.get()
+        sentinel = self._buf.get()
+        self.assertIsInstance(sentinel, NotifyBufferFinish)
+
+        # Check sentinel closes buffer
+        self._buf.confirm_sentinel(sentinel)
+        self.assertRaises(Closed, self._buf.get)
+
+
 
     if EXHAUSTIVE:
         def test_thread_safety(self):
