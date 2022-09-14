@@ -1,14 +1,8 @@
 import arcade
 from typing import Optional
-from character import Task
+from src.actors.character import Task
 
 KEY_PATH = "assets/tilemaps/Key.PNG"
-
-# class Item(arcade.Sprite):
-#     def __init__(self):
-#         super().__init__()
-
-#         self.task : Optional[Task] = None
 
 
 class Key(arcade.Sprite):

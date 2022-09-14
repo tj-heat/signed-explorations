@@ -20,7 +20,7 @@
             "scale": 0.581875,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 961.5467239527391,
+                "x": 963.2653061224489,
                 "y": 640.1718582169708
             }
         },
@@ -47,11 +47,11 @@
     "project": "sign-exp.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "lvl1.json",
         "wood_1.tsx",
         "stone_1.tsx",
         "Key.tsx",
-        "Door.tsx"
+        "Door.tsx",
+        "lvl1.json"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

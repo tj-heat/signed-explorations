@@ -123,7 +123,6 @@ class GameView(arcade.View):
             body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
 
             self.scene.add_sprite(LAYER_ITEMS, body)
-                 
 
         self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
         
@@ -167,14 +166,25 @@ class GameView(arcade.View):
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
             if npc_sprite.task == item_sprite.task:
-                npc_sprite.inventory.append(f"{item_sprite.type}")
-                item_sprite.remove_from_sprite_lists()
-                
+                if npc_sprite.task == Task.KEY:
+                    self.key_task(npc_sprite, item_sprite)
+            else:
+                pass
+        
+        def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
+            if npc_sprite.task == Task.DOOR:
+                self.physics_engine.remove_sprite(door_sprite)
 
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
+        self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
 
+    def key_task(self, npc, key):
+        npc.inventory.append(f"{key.type}")
+        key.remove_from_sprite_lists()
+        npc.task = Task.DOOR
+    
     def dog_actions(self, action):
         if action == Task.NONE:
             pass
