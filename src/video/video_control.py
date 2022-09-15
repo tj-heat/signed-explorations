@@ -1,12 +1,12 @@
 from turtle import width
-from typing import Tuple
+from typing import Optional, Tuple
 
 import cv2
 import numpy as np
 
 from src.video.image_processing import Recogniser
 
-CAPTURING = False # Temp const for feature enabling
+CAPTURING = True # Temp const for feature enabling
 DEFAULT_WINDOW = "Camera Capture"
 
 # Functions
@@ -32,45 +32,104 @@ def get_image_roi(
     img: np.ndarray, 
     roi: Tuple[Tuple[int, int], Tuple[int, int]]
 ) -> np.ndarray:
-    """ Crops an image to the ROI region TODO"""
+    """ Crops an image to the ROI
+    
+    Params:
+        img (np.ndarray): The image to crop.
+        roi ((int, int), (int, int)): Two tuples indicating the TL and BR 
+            corners of the image ROI.
+
+    Returns:
+        (np.ndarray) The cropped image.
+    """
     (left, top), (right, bottom) = roi
     return img[top:bottom, left:right]
 
-def get_image_gray(img: np.ndarray):
-    """ TODO """
+def get_image_gray(img: np.ndarray) -> np.ndarray:
+    """ Convert an image in BGR space to grayscale.
+    
+    Params:
+        img (np.ndarray): The BGR colourspace image to convert.
+    
+    Returns:
+        (np.ndarray) A grayscale image.
+    """
     return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-def get_image_blur(img: np.ndarray):
-    """ TODO """
+def get_image_blur(img: np.ndarray) -> np.ndarray:
+    """ Applies a strong gaussian blur to an image. """
     return cv2.GaussianBlur(img, (9, 9), 0)
 
-def get_image_diff(img: np.ndarray, ref: np.ndarray):
-    """ TODO """
+def get_image_diff(img: np.ndarray, ref: np.ndarray) -> np.ndarray:
+    """ Finds the absolute difference between two images. 
+    
+    Raises:
+        (ValueError) If the two images do not match in shape or size.
+    """
+    if img.shape != ref.shape:
+        raise ValueError("Provided images do not match in shape/size")
+
     return cv2.absdiff(ref.astype("uint8"), img)
 
 def get_image_binary(img: np.ndarray, thresh: int):
-    """ TODO """
+    """ Converts a grayscale image to binary.
+    
+    Params:
+        img (np.ndarray): The grayscale image to convert.
+        thresh (int): The threshold to use when converting to binary.
+    
+    Returns:
+        (np.ndarray) A binary image.
+    """
     _, binary = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
     return binary
 
-def preprocess_image(
-    img: np.ndarray, 
-    roi: Tuple[Tuple[int, int], Tuple[int, int]]
-):
-    """ TODO """
-    crop = get_image_roi(img, roi)
-    gray = get_image_gray(crop)
+def preprocess_image(img: np.ndarray) -> np.ndarray:
+    """ Converts an image into a grayscale and blurred image. """
+    gray = get_image_gray(img)
     blur = get_image_blur(gray)
     return blur
 
+def crop_and_preprocess(
+    img: np.ndarray, 
+    roi: Tuple[Tuple[int, int], Tuple[int, int]]
+) -> np.ndarray:
+    """ Convenience function for cropping and preprocessing. """
+    return preprocess_image(get_image_roi(img, roi))
+
 def process_hand_image(img: np.ndarray, ref: np.ndarray, thresh: int):
-    """ TODO """
+    """ Processes a grayscale, blurred image into binary image of a hand, based 
+    on differences with a reference image. 
+    
+    Precondition:
+        The image is grayscale and has been blurred.
+
+    Params:
+        img (np.ndarray): The grayscale image to convert.
+        ref (np.ndarray): The reference image to difference with.
+        thresh (int): The threshold to use when converting to binary.
+    
+    Returns:
+        (np.ndarray) A binary image containing the difference with ref.
+    """
     diff = get_image_diff(img, ref)
     binary = get_image_binary(diff, thresh)
     return binary
 
 def process_model_image(img: np.ndarray):
-    """ TODO """
+    """ Processes an image to prepare it for the recognition model. The model 
+    expects images to be 64x64, RGB, and with 3 colour channels. The provided 
+    image should be a binary image of a hand shape.
+    
+    Precondition:
+        The provided image is a binarised hand gesture capture.
+
+    Params:
+        img (np.ndarray): The binary image to process for the model.
+
+    Returns:
+        (np.ndarray): An image in the format the recognition model expects.
+    """
     # Make 64x64
     scaled = cv2.resize(img, (64, 64))
     # Convrt grayscale to RGB
@@ -79,10 +138,45 @@ def process_model_image(img: np.ndarray):
     shaped = np.reshape(coloured, (1, coloured.shape[0], coloured.shape[1], 3))
     return shaped
 
-# TODO Turn each step of the model generation into a function.
+def get_hand_segment(
+    background: np.ndarray, 
+    img: np.ndarray,
+    roi: Tuple[Tuple[int, int], Tuple[int, int]],
+    thresh: int = 25
+) -> Optional[Tuple[np.ndarray]]:
+    """ Attempt to get the segmentation information for any detected hands in 
+    an image. 
+    
+    Params:
+        background (np.ndarray): The accumulated average background from a 
+            camera controller.
+        img (np.ndarray): The unedited and uncropped image to look for a hand
+            segment in.
+        thresh (int): The threshold used to binarise the image. Defaults to 25.
+
+    Returns:
+        (Tuple(np.ndarray)) If a hand segment is detected, returns the binary 
+            image containing the hand, as well as the longest contour found in 
+            the image.
+    """
+    crop = get_image_roi(img, roi)
+    processed = preprocess_image(crop)
+    binary = process_hand_image(processed, background, thresh)
+    
+    contours, _ = cv2.findContours(
+        binary, 
+        cv2.RETR_EXTERNAL, 
+        cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    if len(contours):
+        largest_contour = max(contours, key=cv2.contourArea)
+        return (binary, largest_contour)
 
 def show_image_windowed(img: np.ndarray, window: str = DEFAULT_WINDOW) -> None:
-    """ Display an image in a window separate to the game window. """
+    """ Display an image in a window separate to the game window. 
+    Likely a temporary function.
+    """
     cv2.imshow(window, img)
     cv2.waitKey(1)
 
@@ -97,18 +191,24 @@ class CameraControl():
         self._height = self._cam.get(cv2.CAP_PROP_FRAME_HEIGHT)
         self._background = None
 
-    def create_background(self, weight: int = 0.5) -> None:
-        """ Generates an accumulated average background for differencing TODO """
+    def create_background(self, weight: float = 0.5) -> None:
+        """ Generates an accumulated average background for differencing. 
+        Background is stored internally. 
+        
+        Params:
+            weight (float): The weight with which to calculated the accumulaated
+                average.
+        """
         roi = self.get_roi()
 
         # Initial background
-        self._background = preprocess_image(self.read_cam(), roi) \
+        self._background = crop_and_preprocess(self.read_cam(), roi) \
             .astype("float")
 
         # Generate accumulated average
         for _ in range(60):
             # # At 60fps this will take one second
-            frame = preprocess_image(self.read_cam(), roi)
+            frame = crop_and_preprocess(self.read_cam(), roi)
             cv2.accumulateWeighted(frame, self._background, weight)
     
     def get_cam(self, index: int = 0) -> cv2.VideoCapture:
@@ -153,30 +253,9 @@ class CameraControl():
             (x_mid + x_offset, y_mid + y_offset)    # right, bottom
         )
 
-    def _get_background_diff(self, img: np.ndarray, thresh: int):
-        """ TODO """
-        if self._background is None:
-            raise ValueError("No background image for reference")
-
-        if self._background.shape != img.shape:
-            raise ValueError("Provided image is not the correct shape/size")
-
-        return process_hand_image(img, self._background, thresh)
-
-    def get_hand_segment(self, thresh: int = 25):
-        """ TODO """
-        img = preprocess_image(self.read_cam(), self.get_roi())
-        binary = self._get_background_diff(img, thresh)
-        
-        contours, _ = cv2.findContours(
-            binary, 
-            cv2.RETR_EXTERNAL, 
-            cv2.CHAIN_APPROX_SIMPLE
-        )
-    
-        if len(contours):
-            largest_contour = max(contours, key=cv2.contourArea)
-            return (binary, largest_contour)
+    def get_background(self) -> np.ndarray:
+        """ (np.ndarray) Returns the background image for the controller"""
+        return self._background
 
     def read_cam(self) -> np.ndarray:
         """ Retrieve a single frame from a captured camera. 
@@ -210,19 +289,20 @@ def display_video_t(controller: CameraControl):
     Params:
         controller (CameraControl): The camera controller to receive video from.
     """
-    controller.create_background()
     recog = Recogniser()
+    controller.create_background()
 
     while True:
+        bg = controller.get_background()
         img = controller.read_cam()
+        roi = controller.get_roi()
         
         # Show annotated image
-        roi = controller.get_roi()
         add_roi(img, roi)
         show_image_windowed(img)
 
         # Make guess
-        hand = controller.get_hand_segment()
+        hand = get_hand_segment(bg, img, roi)
         if hand:
             frame, contour = hand
             frame = process_model_image(frame)
