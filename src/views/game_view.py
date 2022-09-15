@@ -8,6 +8,7 @@ from src.actors.character import Task
 from src.views.sign_view import SignView
 import src.actors.items as items
 from src.video.video_control import CAPTURING, display_video_t
+from src.util.ring_buffer import RingBuffer
 
 MOVEMENT_SPEED = 3
 
@@ -88,9 +89,10 @@ class GameView(arcade.View):
         self.scene.add_sprite("Player", self.player_sprite)
 
         # Create video capture display thread
+        self._cam_buf = RingBuffer()
         self._video_t = threading.Thread(
             target=display_video_t, 
-            args=(self._cc,)
+            args=(self._cc, self._cam_buf)
         )
         if CAPTURING:
             self._video_t.start()

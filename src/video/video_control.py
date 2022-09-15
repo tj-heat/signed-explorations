@@ -8,6 +8,8 @@ from src.video.image_processing import add_roi, crop_and_preprocess, \
     get_hand_segment, process_model_image
 from src.video.image_recognition import Recogniser
 
+from src.util.ring_buffer import RingBuffer
+
 CAPTURING = True # Temp const for feature enabling
 DEFAULT_WINDOW = "Camera Capture"
 
@@ -122,23 +124,27 @@ class CameraControl():
 
 
 # Threads
-def display_video_t(controller: CameraControl):
+def display_video_t(controller: CameraControl, buffer: RingBuffer):
     """ Thread to display a video feed. 
     
     Params:
         controller (CameraControl): The camera controller to receive video from.
+        buffer (RingBuffer): Shared memory location for image producing.
     """
     recog = Recogniser()
     controller.create_background()
+    bg = controller.get_background()
 
     while True:
-        bg = controller.get_background()
         img = controller.read_cam()
         roi = controller.get_roi()
         
         # Show annotated image
         add_roi(img, roi)
         show_image_windowed(img)
+
+        # Add image to buffer
+        buffer.put(img)
 
         # Make guess
         hand = get_hand_segment(bg, img, roi)
