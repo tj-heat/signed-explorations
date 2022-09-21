@@ -96,9 +96,23 @@ class Dog(Animal):
     def __init__(self):
         super().__init__(DOG_PATH)
 
-        self.force = 2000
+        self.force = 1000
         self.task : Optional[Task]= Task.NONE
         self.inventory = []
+
+        self.follow = False
+        self.goal = (0,0)
+
+    def follow_cat(self):
+        self.follow = True
+
+    def set_goal(self, goal):
+        #goal must be coordinates of tuple (0,0)
+        self.goal = goal
+
+    def stop_follow(self):
+        self.follow = False
+        self.goal = (0,0)
 
     def change_task(self, task):
         self.task = task

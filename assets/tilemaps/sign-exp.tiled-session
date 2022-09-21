@@ -3,11 +3,101 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "lvl1.json",
+    "activeFile": "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
+        "C:/Users/treff/Documents/UQ/DECO3801/design/Door_r.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/Key.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/Mossy_250_250.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/Stone_250_250.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/Water_250_250.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/Wood.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/Door_r.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/Key.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/Mossy_250_250.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/Stone_250_250.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/Water_250_250.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/Wood.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvl1..tmx": {
+            "scale": 0.27549999999999997,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 800.3629764065336,
+                "y": 560.7985480943739
+            }
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Door_r.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Key.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Mossy_250_250.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Stone_250_250.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Water_250_250.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wood.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1..tmx": {
+            "scale": 0.27549999999999997,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1580.7622504537208,
+                "y": 299.45553539019977
+            }
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx": {
+            "scale": 0.6982499999999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 890.0823487289654,
+                "y": 622.2699606158252
+            }
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/wall_water.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/wall_water.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/wall_water.tsx": {
+            "scaleInDock": 1
+        },
         "Door.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -17,18 +107,20 @@
             "scaleInEditor": 1
         },
         "lvl1.json": {
-            "scale": 0.581875,
-            "selectedLayer": 5,
+            "scale": 0.75,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 963.2653061224489,
-                "y": 640.1718582169708
+                "x": 959.3333333333333,
+                "y": 639.3333333333334
             }
         },
         "stone_1.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "wood_1.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
             "scaleInEditor": 1
         }
@@ -42,16 +134,21 @@
         "Door.tsx",
         "Key.tsx",
         "stone_1.tsx",
-        "wood_1.tsx"
+        "wood_1.tsx",
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx",
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1..tmx"
     ],
     "project": "sign-exp.tiled-project",
     "property.type": "float",
     "recentFiles": [
-        "wood_1.tsx",
-        "stone_1.tsx",
-        "Key.tsx",
+        "lvl1.json",
         "Door.tsx",
-        "lvl1.json"
+        "Key.tsx",
+        "stone_1.tsx",
+        "wood_1.tsx",
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1..tmx",
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx",
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvl1..tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

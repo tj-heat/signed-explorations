@@ -42,7 +42,8 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
         self.player_sprite: Optional[arcade.Sprite] = None
-        self.npc_sprite: Optional[arcade.Sprite] = None
+        self.dog_sprite: Optional[arcade.Sprite] = None
+        self.npc_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Player sprite
@@ -110,6 +111,7 @@ class GameView(arcade.View):
                 raise Exception(f"Unknown npc type {npc.name}")
             body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+            self.dog_sprite = body
 
             self.scene.add_sprite(LAYER_CHARACTERS, body)
 
@@ -164,6 +166,7 @@ class GameView(arcade.View):
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = True
+            npc_sprite.stop_follow()
 
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
@@ -176,6 +179,8 @@ class GameView(arcade.View):
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
             if npc_sprite.task == Task.DOOR:
                 self.physics_engine.remove_sprite(door_sprite)
+                door_sprite.remove_from_sprite_lists();
+                npc_sprite.task = Task.NONE
 
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
@@ -186,13 +191,6 @@ class GameView(arcade.View):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
         npc.task = Task.DOOR
-    
-    def dog_actions(self, action):
-        if action == Task.NONE:
-            pass
-        elif action == Task.KEY:
-            pass
-            #print(f"player location: {self.player_sprite.center_x},{self.player_sprite.center_y}")
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
@@ -250,6 +248,8 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+            else:
+                self.dog_sprite.follow = True
 
     def on_draw(self):
         """ Draw everything """
@@ -269,7 +269,7 @@ class GameView(arcade.View):
 
         if self.up_pressed and not self.down_pressed:
             force = (0, PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force)
+            self.physics_engine.apply_force(self.player_sprite, force) #probably can just take this out of loop
         elif self.down_pressed and not self.up_pressed:
             force = (0, -PLAYER_MOVE_FORCE)
             self.physics_engine.apply_force(self.player_sprite, force)
@@ -283,9 +283,34 @@ class GameView(arcade.View):
         else:
             self.physics_engine.set_friction(self.player_sprite, 1.0)
 
+
         self.player_sprite.actual_force = force
-        self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
+        self.scene.update_animation(delta_time, ["Player"])
         self.player_sprite.untouched()
+
+        if self.dog_sprite.follow == True:
+            self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, self.dog_sprite.center_y - self.player_sprite.center_y))
+            x, y = self.dog_sprite.goal
+            if x < 0:
+                force = (self.dog_sprite.force, 0)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            elif x > 0:
+                self.dog_sprite.change_x = -self.dog_sprite.force
+                force = (-self.dog_sprite.force, 0)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            if y > 0:
+                force = (0, -self.dog_sprite.force)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            elif y < 0:
+                force = (0, self.dog_sprite.force)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            
+            self.dog_sprite.actual_force = force
+            self.scene.update_animation(delta_time, [LAYER_CHARACTERS])
+
+
+            
+
 
         #self.dog_actions()
 
