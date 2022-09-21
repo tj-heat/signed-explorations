@@ -16,11 +16,9 @@ TILE_SCALING = 1
 TILE_SIZE = 62
 GRID_SIZE = TILE_SCALING * TILE_SIZE
 
-PLAYER_START_X = 124
-PLAYER_START_Y = 124
 PLAYER_MOVE_FORCE = 3000
 
-RADIUS = 150.0
+RADIUS = 200.0
 
 LAYER_WALLS = "Walls"
 LAYER_LOW_WALLS = "Lower Walls"
@@ -28,9 +26,6 @@ LAYER_FLOOR = "Floor"
 LAYER_DOORS = "Doors"
 LAYER_ITEMS = "Items"
 LAYER_CHARACTERS = "Characters"
-
-STONE_PATH = "assets/tiles/stone_1.png"
-WOOD_PATH = "assets/tiles/wood_1.png"
 
 class GameView(arcade.View):
     
@@ -68,7 +63,7 @@ class GameView(arcade.View):
 
         #set up tilemap
  
-        map_name = "assets/tilemaps/lvl1.json"
+        map_name = "assets/tilemaps/tutorial/lvl1.json"
         layer_options = {
             LAYER_WALLS: {
                 "use_spation_hash": True,
@@ -84,10 +79,6 @@ class GameView(arcade.View):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.player_sprite = character.Cat()
-        self.player_sprite.center_x = PLAYER_START_X
-        self.player_sprite.center_y = PLAYER_START_Y
-        self.scene.add_sprite("Player", self.player_sprite)
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
@@ -107,13 +98,17 @@ class GameView(arcade.View):
             if npc.name == "Dog":
                 body = character.Dog() 
                 self.npc_sprite = body
+                body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+                body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+                self.dog_sprite = body
+                self.scene.add_sprite(LAYER_CHARACTERS, body)
+            elif npc.name == "Cat":
+                self.player_sprite = character.Cat()
+                self.player_sprite.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+                self.player_sprite.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+                self.scene.add_sprite("Player", self.player_sprite)
             else: 
                 raise Exception(f"Unknown npc type {npc.name}")
-            body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
-            self.dog_sprite = body
-
-            self.scene.add_sprite(LAYER_CHARACTERS, body)
 
         item_layer = self.tile_map.object_lists[LAYER_ITEMS]
 
@@ -128,7 +123,7 @@ class GameView(arcade.View):
 
             self.scene.add_sprite(LAYER_ITEMS, body)
 
-        self.physics_engine = PymunkPhysicsEngine(damping=0.7, gravity=(0,0))
+        self.physics_engine = PymunkPhysicsEngine(damping=2, gravity=(0,0))
         
 
         self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Player"),

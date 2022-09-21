@@ -10,7 +10,7 @@ from src.video.image_recognition import Recogniser
 
 from src.util.ring_buffer import RingBuffer
 
-CAPTURING = True # Temp const for feature enabling
+CAPTURING = False # Temp const for feature enabling
 DEFAULT_WINDOW = "Camera Capture"
 
 # Functions
