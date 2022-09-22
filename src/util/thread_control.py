@@ -1,7 +1,12 @@
 import threading
 
 class ThreadCloser():
-    """ Utility class to flag when a thread should/should not run. """
+    """ Utility class to flag when a thread should/should not run. This is
+    handled by two control variables. A thread can be flagged as active/inactive
+    which is analagous to running/paused, or flagged as killed, which should 
+    start the thread closing process. Kill should always supercede 
+    active/inactive.
+    """
     def __init__(self) -> None:
         self._active = True
         self._kill = False
@@ -16,11 +21,8 @@ class ThreadCloser():
 
     def kill(self):
         """ Flag an associated thread to end """
+        self.set_inactive()
         self._kill = True
-
-    def unkill(self):
-        """ Undo a kill flag """
-        self._kill = False
 
     def is_killed(self) -> bool:
         """ (bool) True if a thread should be closing. False otherwise. """
