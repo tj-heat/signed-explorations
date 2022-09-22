@@ -324,7 +324,8 @@ class GameView(arcade.View):
         self.scene.draw()
         self.gui_camera.use()
         lvl_text = f"Level: {self.lvl}"
-        arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
+        arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18, 
+            font_name="Kenney Mini Square" )
         if self.player_sprite.cat_meowing():
             x = self.window.width/2
             y = self.window.height/2
