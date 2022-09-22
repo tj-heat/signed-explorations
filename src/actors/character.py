@@ -79,6 +79,11 @@ class Cat(Animal):
         super().__init__(CAT_PATH)
         self.npc_interaction = None
         self.touched = False
+        self.meow = False
+
+    def meow(self):
+        if self.meow == False:
+            self.meow = True
 
     def set_npc_interaction(self, npc):
         self.npc_interaction = npc

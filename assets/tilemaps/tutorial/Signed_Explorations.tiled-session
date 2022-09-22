@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "lvl1.tmx",
+    "activeFile": "lvl1.json",
     "expandedProjectPaths": [
-        ".",
-        "final"
+        "final",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -45,6 +45,14 @@
                 "y": 800.0512853388038
             }
         },
+        "lvl1.json": {
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 446.5,
+                "y": 1224.5
+            }
+        },
         "lvl1.tmx": {
             "scale": 0.33,
             "selectedLayer": 1,
@@ -74,10 +82,13 @@
     "map.tileWidth": 64,
     "map.width": 25,
     "openFiles": [
-        "lvl1.tmx"
+        "lvl1.json",
+        "Water_250_250.tsx"
     ],
     "project": "Signed_Explorations.tiled-project",
     "recentFiles": [
+        "Water_250_250.tsx",
+        "lvl1.json",
         "lvl1.tmx",
         "Stone_250_250.tsx",
         "Mossy_250_250.tsx",
@@ -85,7 +96,6 @@
         "Door_r.tsx",
         "Wood.tsx",
         "final/lvl1..tmx",
-        "Water_250_250.tsx",
         "tutorial.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",

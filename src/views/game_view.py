@@ -31,7 +31,7 @@ class GameView(arcade.View):
     
     def __init__(self, cam_controller = None):
         super().__init__()
-        arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.color.BLACK)
 
         #Tilemap
         self.tile_map = None
@@ -40,6 +40,8 @@ class GameView(arcade.View):
         self.dog_sprite: Optional[arcade.Sprite] = None
         self.npc_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
+
+        self.kill_list = []
 
         # Player sprite
         self.player_sprite: Optional[arcade.Sprite] = None
@@ -168,15 +170,10 @@ class GameView(arcade.View):
             if npc_sprite.task == item_sprite.task:
                 if npc_sprite.task == Task.KEY:
                     self.key_task(npc_sprite, item_sprite)
-            else:
-                pass
-        
+
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
             if npc_sprite.task == Task.DOOR:
-                self.physics_engine.remove_sprite(door_sprite)
-                door_sprite.remove_from_sprite_lists();
-                npc_sprite.task = Task.NONE
-
+                self.door_task(npc_sprite, door_sprite)
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
@@ -185,7 +182,13 @@ class GameView(arcade.View):
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
+        self.kill_list.append(key)
         npc.task = Task.DOOR
+
+    def door_task(self, npc, door):
+        door.remove_from_sprite_lists()
+        npc.task = Task.NONE
+
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
@@ -202,10 +205,10 @@ class GameView(arcade.View):
         screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
 
         # Don't let camera travel past 0
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        # if screen_center_x < 0:
+        #     screen_center_x = 0
+        # if screen_center_y < 0:
+        #     screen_center_y = 0
         player_centered = screen_center_x, screen_center_y
 
         self.camera.move_to(player_centered)
@@ -280,7 +283,7 @@ class GameView(arcade.View):
 
 
         self.player_sprite.actual_force = force
-        self.scene.update_animation(delta_time, ["Player"])
+        #self.scene.update_animation(delta_time, )
         self.player_sprite.untouched()
 
         if self.dog_sprite.follow == True:
@@ -301,13 +304,9 @@ class GameView(arcade.View):
                 self.physics_engine.apply_force(self.dog_sprite, force)
             
             self.dog_sprite.actual_force = force
-            self.scene.update_animation(delta_time, [LAYER_CHARACTERS])
 
-
-            
-
-
-        #self.dog_actions()
+        
+        self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
 
         self.physics_engine.step()
 
