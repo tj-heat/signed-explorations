@@ -80,3 +80,7 @@ class ThreadController():
     def kill(self) -> None:
         """ Flag the controller's thread for closing """
         self.closer.kill()
+
+    def join(self) -> None:
+        """ Join on the controller's thread """
+        self.t.join()
