@@ -118,6 +118,8 @@ class Dog(Animal):
     def stop_follow(self):
         self.follow = False
         self.goal = (0,0)
+        if self.task == Task.FOLLOW:
+            self.change_task(Task.NONE)
 
     def change_task(self, task):
         self.task = task

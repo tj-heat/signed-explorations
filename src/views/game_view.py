@@ -42,8 +42,6 @@ class GameView(arcade.View):
         self.npc_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
-        self.kill_list = []
-
         # Player sprite
         self.player_sprite: Optional[arcade.Sprite] = None
 
@@ -183,7 +181,6 @@ class GameView(arcade.View):
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
-        self.kill_list.append(key)
         npc.task = Task.DOOR
 
     def door_task(self, npc, door):
@@ -248,7 +245,7 @@ class GameView(arcade.View):
                 sign_view.setup()
                 self.window.show_view(sign_view)
             else:
-                self.dog_sprite.follow = True
+                self.dog_sprite.follow_cat()
         elif key == arcade.key.ESCAPE:
             pause = p.PauseView(self)
             pause.setup()
@@ -292,7 +289,17 @@ class GameView(arcade.View):
         self.player_sprite.untouched()
 
         if self.dog_sprite.follow == True:
-            self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, self.dog_sprite.center_y - self.player_sprite.center_y))
+            self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
+                self.dog_sprite.center_y - self.player_sprite.center_y))
+        elif self.dog_sprite.task == Task.KEY:
+            items = self.check_items_in_radius()
+            if len(items) == 0:
+                self.dog_sprite.set_goal(0,0)
+            else:
+                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
+                self.dog_sprite.center_y - items[0].center_y))
+        
+        if self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY:
             x, y = self.dog_sprite.goal
             if x < 0:
                 force = (self.dog_sprite.force, 0)
