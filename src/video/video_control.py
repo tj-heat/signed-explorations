@@ -9,6 +9,7 @@ from src.video.image_processing import add_roi, crop_and_preprocess, \
 from src.video.image_recognition import Recogniser
 
 from src.util.ring_buffer import RingBuffer
+from src.util.thread_control import ThreadCloser
 
 CAPTURING = True # Temp const for feature enabling
 DEFAULT_WINDOW = "Camera Capture"
@@ -124,7 +125,11 @@ class CameraControl():
 
 
 # Threads
-def display_video_t(controller: CameraControl, buffer: RingBuffer):
+def display_video_t(
+    controller: CameraControl, 
+    buffer: RingBuffer, 
+    closer: ThreadCloser
+) -> None:
     """ Thread to display a video feed. 
     
     Params:
@@ -135,7 +140,10 @@ def display_video_t(controller: CameraControl, buffer: RingBuffer):
     controller.create_background()
     bg = controller.get_background()
 
-    while True:
+    while not closer.is_killed():
+        # Ensure active
+        closer.wait()
+
         img = controller.read_cam()
         roi = controller.get_roi()
         
@@ -153,3 +161,7 @@ def display_video_t(controller: CameraControl, buffer: RingBuffer):
             frame = process_model_image(frame)
 
             print(recog.predict_letter(frame))
+
+    # Thread should die. Begin cleanup
+    #controller.release_cam() 
+    # FIXME If we release here, can't restart game from menu
