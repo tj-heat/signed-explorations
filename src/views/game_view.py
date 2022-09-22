@@ -4,12 +4,13 @@ import arcade, math, threading
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import src.actors.character as character
+import src.actors.items as items
+import src.views.pause_view as p
 from src.actors.character import Task
 from src.views.sign_view import SignView
-import src.actors.items as items
-from src.video.video_control import CAPTURING, display_video_t
 from src.util.ring_buffer import RingBuffer
-import src.views.pause_view as p
+from src.util.thread_control import ThreadCloser, ThreadController
+from src.video.video_control import CAPTURING, display_video_t
 
 MOVEMENT_SPEED = 3
 
@@ -36,7 +37,7 @@ TEXT_PATH = "assets/sprites/text_box.PNG"
 
 class GameView(arcade.View):
     
-    def __init__(self, cam_controller = None):
+    def __init__(self, cam_controller = None) -> None:
         super().__init__()
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -92,10 +93,15 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
-        self._video_t = threading.Thread(
+        video_t_closer = ThreadCloser()
+        video_t = threading.Thread(
             target=display_video_t, 
-            args=(self._cc, self._cam_buf)
+            args=(self._cc, self._cam_buf, video_t_closer)
         )
+
+        # Track the video thread and closer
+        self._video_t = ThreadController(video_t, video_t_closer)
+
         if CAPTURING:
             self._video_t.start()
 
@@ -313,6 +319,7 @@ class GameView(arcade.View):
                 self.dog_sprite.follow_cat()
                 self.player_sprite.start_meow()
         elif key == arcade.key.ESCAPE:
+            self.pause_video()
             pause = p.PauseView(self)
             pause.setup()
             self.window.show_view(pause)
@@ -362,3 +369,20 @@ class GameView(arcade.View):
 
         # Position the camera
         self.center_camera_to_player()
+
+    def resume_video(self):
+        """ Resumes the video thread """
+        self._video_t.closer.set_active()
+
+    def pause_video(self):
+        """ Pauses the video thread """
+        self._video_t.closer.set_inactive()
+
+    def end_video(self):
+        """ Stops the video thread """
+        # Check if the video paused
+        if not self._video_t.closer.is_active():
+            self.resume_video()
+
+        # Wait for thread to finish   
+        self._video_t.finish()
