@@ -1,4 +1,5 @@
 import arcade
+import os
 
 import src.views.game_view as g
 from src.video.video_control import CameraControl
@@ -32,6 +33,7 @@ class MenuView(arcade.View):
         # --- Method 2 for handling click events,
         # assign self.on_click_start as callback
         start_button.on_click = self.on_click_start
+        exit_button.on_click = self.on_click_exit
 
         #settings_button.on_click =
 
@@ -64,6 +66,13 @@ class MenuView(arcade.View):
         game = g.GameView(cam_controller=self._cc)
         game.setup()
         self.window.show_view(game)
+
+    #added brute force os exit, TODO: Close game gracefully and with all threads killed (currently, only the game engine is killed an model keeps running)
+    def on_click_exit(self, event):
+        os._exit(1)
+
+    def on_click_settings(self, event):
+        pass
 
     def on_show_view(self):
         arcade.set_background_color(arcade.csscolor.GHOST_WHITE)
