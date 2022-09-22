@@ -1,7 +1,10 @@
-import arcade
+import imp
+import arcade, threading
 
 import src.views.game_view as g
-from src.video.video_control import CameraControl
+from src.video.video_control import CameraControl, display_video_t
+from src.util.ring_buffer import RingBuffer
+from src.util.thread_control import ThreadCloser, ThreadController
 
 BACKGROUND_PATH = "assets/backgrounds/"
 
@@ -58,9 +61,6 @@ class MenuView(arcade.View):
             tex = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg"))
         )
 
-
-        
-
     def on_click_start(self, event):
         game = g.GameView(cam_controller=self._cc)
         game.setup()
@@ -76,7 +76,6 @@ class MenuView(arcade.View):
     def on_show_view(self):
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
-
     def on_draw(self):
         self.clear()
         self.manager.draw()
@@ -84,4 +83,15 @@ class MenuView(arcade.View):
     def setup(self):
         # Video capture
         # NOTE The camera control may take several seconds to get cam control
-        self._cc = CameraControl() # TODO Need appropriate teardown method.
+        self._cc = CameraControl()
+                
+        # # Create video capture display thread
+        # self._cam_buf = RingBuffer()
+        # video_t_closer = ThreadCloser()
+        # video_t = threading.Thread(
+        #     target=display_video_t, 
+        #     args=(self._cc, self._cam_buf, video_t_closer)
+        # )
+
+        # # Track the video thread and closer
+        # self._video_t = ThreadController(video_t, video_t_closer)

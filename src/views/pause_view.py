@@ -5,7 +5,7 @@ import src.views.menu_view as m
 BACKGROUND_PATH = "assets/backgrounds/"
 
 class PauseView(arcade.View):
-    def __init__(self, game_view : GameView):
+    def __init__(self, game_view : "GameView.GameView"):
         super().__init__()
         self.game_view = game_view
         self.manager = arcade.gui.UIManager()
@@ -57,13 +57,16 @@ class PauseView(arcade.View):
         )
 
     def on_click_restart(self, event):
+        self.game_view.end_video()
         self.game_view.setup()
         self.window.show_view(self.game_view)
 
     def on_click_return(self, event):
+        self.game_view.resume_video()
         self.window.show_view(self.game_view)
 
     def on_click_quit(self, event):
+        self.game_view.end_video()
         menu = m.MenuView()
         menu.setup()
         self.window.show_view(menu)

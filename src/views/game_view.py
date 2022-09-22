@@ -31,7 +31,7 @@ LAYER_CHARACTERS = "Characters"
 
 class GameView(arcade.View):
     
-    def __init__(self, cam_controller = None):
+    def __init__(self, cam_controller = None) -> None:
         super().__init__()
         arcade.set_background_color(arcade.color.BLACK)
 
@@ -89,7 +89,7 @@ class GameView(arcade.View):
             target=display_video_t, 
             args=(self._cc, self._cam_buf, video_t_closer)
         )
-        
+
         # Track the video thread and closer
         self._video_t = ThreadController(video_t, video_t_closer)
 
@@ -310,6 +310,7 @@ class GameView(arcade.View):
             else:
                 self.dog_sprite.follow_cat()
         elif key == arcade.key.ESCAPE:
+            self.pause_video()
             pause = p.PauseView(self)
             pause.setup()
             self.window.show_view(pause)
@@ -336,3 +337,20 @@ class GameView(arcade.View):
 
         # Position the camera
         self.center_camera_to_player()
+
+    def resume_video(self):
+        """ Resumes the video thread """
+        self._video_t.closer.set_active()
+
+    def pause_video(self):
+        """ Pauses the video thread """
+        self._video_t.closer.set_inactive()
+
+    def end_video(self):
+        """ Stops the video thread """
+        # Check if the video paused
+        if not self._video_t.closer.is_active():
+            self.resume_video()
+
+        # Wait for thread to finish   
+        self._video_t.finish()
