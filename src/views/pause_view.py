@@ -4,6 +4,18 @@ import src.views.menu_view as m
 
 BACKGROUND_PATH = "assets/backgrounds/"
 
+uni_style = {
+            "font_name" : "Kenney Mini Square",
+            "font_size" : 15,
+            "font_color" : arcade.color.WHITE,
+            "boarder_width" : 0,
+            "border_color" : None,
+            "bg_color" : arcade.color.BLACK,
+            "bg_color_pressed" : arcade.color.WHITE,
+            "border_color_pressed" : arcade.color.WHITE,
+            "font_color_pressed" : arcade.color.BLACK,
+        }
+
 class PauseView(arcade.View):
     def __init__(self, game_view : "GameView.GameView"):
         super().__init__()
@@ -17,13 +29,13 @@ class PauseView(arcade.View):
 
         # Create the buttons
         # look at UITEXTUREBUTTON
-        restart_button = arcade.gui.UIFlatButton(text="Restart Game", width=200)
+        restart_button = arcade.gui.UIFlatButton(text="Restart Game", width=200, style = uni_style)
         self.v_box.add(restart_button.with_space_around(bottom=20))
 
-        return_button = arcade.gui.UIFlatButton(text="Return to Game", width=200)
+        return_button = arcade.gui.UIFlatButton(text="Return to Game", width=200, style = uni_style)
         self.v_box.add(return_button.with_space_around(bottom=20))
         
-        quit_button = arcade.gui.UIFlatButton(text="Quit to Menu", width=200)
+        quit_button = arcade.gui.UIFlatButton(text="Quit to Menu", width=200, style = uni_style)
         self.v_box.add(quit_button)
 
 
@@ -78,6 +90,8 @@ class PauseView(arcade.View):
     def on_draw(self):
         self.clear()
         self.manager.draw()
+        arcade.draw_text("Paused", self.window.width/2, self.window.height/2 + 200, 
+            arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
     
     def on_update(self, delta_time):
         pass
