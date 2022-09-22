@@ -37,7 +37,7 @@ class GameView(arcade.View):
         #Tilemap
         self.tile_map = None
         self.scene = None
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: Optional[character.Cat] = None
         self.dog_sprite: Optional[arcade.Sprite] = None
         self.npc_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
@@ -302,6 +302,7 @@ class GameView(arcade.View):
                 sign_view.setup()
                 self.window.show_view(sign_view)
             else:
+                self.player_sprite.meow()
                 self.dog_sprite.follow_cat()
         elif key == arcade.key.ESCAPE:
             pause = p.PauseView(self)
