@@ -42,6 +42,7 @@ class MenuView(arcade.View):
                 size_hint = (1,1)
             )
 
+        #TODO fix this for the menu background.
         self.wrapper = arcade.gui.UIWrapper(
             child = self.anchor,
             padding = (self.window.width, self.window.width, self.window.width, self.window.width ),
