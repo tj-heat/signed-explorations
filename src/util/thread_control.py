@@ -79,8 +79,9 @@ class ThreadController():
 
     def start(self) -> None:
         """ Start the controller's thread """
-        self.closer.set_active()
-        self.t.start()
+        if not self.closer.is_active():
+            self.closer.set_active()
+            self.t.start()
 
     def kill(self) -> None:
         """ Flag the controller's thread for closing """
