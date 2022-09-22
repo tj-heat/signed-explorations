@@ -211,6 +211,63 @@ class GameView(arcade.View):
 
         self.camera.move_to(player_centered)
 
+    def move_player(self):
+        self.player_sprite.change_x = 0
+        self.player_sprite.change_y = 0
+
+        force = (0,0)
+        if self.up_pressed and not self.down_pressed:
+            force = (0, PLAYER_MOVE_FORCE)
+            self.physics_engine.apply_force(self.player_sprite, force) #probably can just take this out of loop
+        elif self.down_pressed and not self.up_pressed:
+            force = (0, -PLAYER_MOVE_FORCE)
+            self.physics_engine.apply_force(self.player_sprite, force)
+        if self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -MOVEMENT_SPEED
+            force = (-PLAYER_MOVE_FORCE, 0)
+            self.physics_engine.apply_force(self.player_sprite, force)
+        elif self.right_pressed and not self.left_pressed:
+            force = (PLAYER_MOVE_FORCE, 0)
+            self.physics_engine.apply_force(self.player_sprite, force)
+        else:
+            self.physics_engine.set_friction(self.player_sprite, 1.0)
+
+
+        self.player_sprite.actual_force = force
+        self.player_sprite.untouched()
+
+    def move_dog(self):
+        force = (0,0)
+        if self.dog_sprite.follow == True:
+            self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
+                self.dog_sprite.center_y - self.player_sprite.center_y))
+        elif self.dog_sprite.task == Task.KEY:
+            items = self.check_items_in_radius()
+            if len(items) == 0:
+                self.dog_sprite.set_goal(0,0)
+            else:
+                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
+                self.dog_sprite.center_y - items[0].center_y))
+        
+        if self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY:
+            x, y = self.dog_sprite.goal
+            if x < 0:
+                force = (self.dog_sprite.force, 0)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            elif x > 0:
+                self.dog_sprite.change_x = -self.dog_sprite.force
+                force = (-self.dog_sprite.force, 0)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            if y > 0:
+                force = (0, -self.dog_sprite.force)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            elif y < 0:
+                force = (0, self.dog_sprite.force)
+                self.physics_engine.apply_force(self.dog_sprite, force)
+            
+            self.dog_sprite.actual_force = force
+
+
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -262,64 +319,13 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-        self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
+        self.move_player()
+        self.move_dog()
 
-        force = (0,0)
-
-        if self.up_pressed and not self.down_pressed:
-            force = (0, PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force) #probably can just take this out of loop
-        elif self.down_pressed and not self.up_pressed:
-            force = (0, -PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        if self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-            force = (-PLAYER_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        elif self.right_pressed and not self.left_pressed:
-            force = (PLAYER_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        else:
-            self.physics_engine.set_friction(self.player_sprite, 1.0)
-
-
-        self.player_sprite.actual_force = force
-        #self.scene.update_animation(delta_time, )
-        self.player_sprite.untouched()
-
-        if self.dog_sprite.follow == True:
-            self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
-                self.dog_sprite.center_y - self.player_sprite.center_y))
-        elif self.dog_sprite.task == Task.KEY:
-            items = self.check_items_in_radius()
-            if len(items) == 0:
-                self.dog_sprite.set_goal(0,0)
-            else:
-                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
-                self.dog_sprite.center_y - items[0].center_y))
-        
-        if self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY:
-            x, y = self.dog_sprite.goal
-            if x < 0:
-                force = (self.dog_sprite.force, 0)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            elif x > 0:
-                self.dog_sprite.change_x = -self.dog_sprite.force
-                force = (-self.dog_sprite.force, 0)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            if y > 0:
-                force = (0, -self.dog_sprite.force)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            elif y < 0:
-                force = (0, self.dog_sprite.force)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            
-            self.dog_sprite.actual_force = force
-
-        
+        #Update animation sprites
         self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
 
+        #Update physics engine
         self.physics_engine.step()
 
         # Position the camera
