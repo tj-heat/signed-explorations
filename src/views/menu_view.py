@@ -32,12 +32,9 @@ class MenuView(arcade.View):
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200)
         self.v_box.add(exit_button)
 
-        # --- Method 2 for handling click events,
-        # assign self.on_click_start as callback
         start_button.on_click = self.on_click_start
         exit_button.on_click = self.on_click_exit
 
-        #settings_button.on_click =
 
         self.anchor = arcade.gui.UIAnchorWidget(
                 anchor_x="center_x",

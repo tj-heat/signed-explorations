@@ -15,8 +15,12 @@ from src.video.video_control import CAPTURING, display_video_t
 MOVEMENT_SPEED = 3
 
 TILE_SCALING = 1
-TILE_SIZE = 62
+TILE_SIZE = 64
 GRID_SIZE = TILE_SCALING * TILE_SIZE
+
+SPRITE_SCALING = 0.3
+SPRITE_IMAGE_SIZE = 250
+SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
 PLAYER_MOVE_FORCE = 3000
 
@@ -29,6 +33,8 @@ LAYER_DOORS = "Doors"
 LAYER_ITEMS = "Items"
 LAYER_CHARACTERS = "Characters"
 
+TEXT_PATH = "assets/sprites/text_box.PNG"
+
 class GameView(arcade.View):
     
     def __init__(self, cam_controller = None) -> None:
@@ -38,7 +44,7 @@ class GameView(arcade.View):
         #Tilemap
         self.tile_map = None
         self.scene = None
-        self.player_sprite: Optional[arcade.Sprite] = None
+        self.player_sprite: Optional[character.Cat] = None
         self.dog_sprite: Optional[arcade.Sprite] = None
         self.npc_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
@@ -57,6 +63,9 @@ class GameView(arcade.View):
         self.right_pressed: bool = False
         self.up_pressed: bool = False
         self.down_pressed: bool = False
+
+        #load necessary textures
+        self.text_box = arcade.load_texture(TEXT_PATH)
     
     def setup(self):
 
@@ -274,7 +283,6 @@ class GameView(arcade.View):
             self.dog_sprite.actual_force = force
 
 
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -309,6 +317,7 @@ class GameView(arcade.View):
                 self.window.show_view(sign_view)
             else:
                 self.dog_sprite.follow_cat()
+                self.player_sprite.start_meow()
         elif key == arcade.key.ESCAPE:
             self.pause_video()
             pause = p.PauseView(self)
@@ -322,12 +331,35 @@ class GameView(arcade.View):
         self.scene.draw()
         self.gui_camera.use()
         lvl_text = f"Level: {self.lvl}"
-        arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
+        arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18, 
+            font_name="Kenney Mini Square" )
+        if self.player_sprite.cat_meowing():
+            x = self.window.width/2
+            y = self.window.height/2
+            self.text_box.draw_scaled(
+                center_x = x, 
+                center_y = y,
+                scale = SPRITE_SCALING * 2
+                )
+            arcade.draw_text(
+                text = self.player_sprite.meow_text,
+                font_size = 11,
+                font_name="Kenney Mini Square",
+                color = arcade.csscolor.BLACK,
+                anchor_x = "center",
+                start_x = x,
+                start_y = y + (SPRITE_SIZE) - 30 #magic number generated through much trial and error
+            )
 
     def on_update(self, delta_time):
         """ Movement and game logic """
         self.move_player()
         self.move_dog()
+
+        if self.player_sprite.cat_meowing():
+            self.player_sprite.meow_count -= 1
+        if self.player_sprite.cat_meowing() and self.player_sprite.meow_count == 0:
+            self.player_sprite.end_meow()
 
         #Update animation sprites
         self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
