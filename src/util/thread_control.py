@@ -8,7 +8,7 @@ class ThreadCloser():
     active/inactive.
     """
     def __init__(self) -> None:
-        self._active = True
+        self._active = False
         self._kill = False
 
     def set_active(self):
@@ -75,6 +75,7 @@ class ThreadController():
 
     def start(self) -> None:
         """ Start the controller's thread """
+        self.closer.set_active()
         self.t.start()
 
     def kill(self) -> None:
@@ -83,4 +84,5 @@ class ThreadController():
 
     def join(self) -> None:
         """ Join on the controller's thread """
-        self.t.join()
+        if self.closer.is_active():
+            self.t.join()
