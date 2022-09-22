@@ -90,3 +90,8 @@ class ThreadController():
         """ Join on the controller's thread """
         if self.closer.is_active():
             self.t.join()
+
+    def finish(self) -> None:
+        """ Flags the thread for closing then waits until it finishes """
+        self.kill()
+        self.join()
