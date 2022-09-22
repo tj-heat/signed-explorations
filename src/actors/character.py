@@ -1,6 +1,7 @@
 import arcade
 from enum import Enum
 from typing import Optional
+import random
 
 SPRITE_SCALING = 0.3
 SPRITE_IMAGE_SIZE = 250
@@ -20,6 +21,9 @@ FOLLOW = 0
 KEY = 1
 DOOR = 2
 DOG_TASKS = [FOLLOW, KEY, DOOR]
+
+#Cat Constants
+MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow"]
 
 class Task(Enum):
     NONE = 0
@@ -80,10 +84,20 @@ class Cat(Animal):
         self.npc_interaction = None
         self.touched = False
         self.meow = False
+        self.meow_count = 0
+        self.meow_text = None
 
-    def meow(self):
+    def start_meow(self):
         if self.meow == False:
             self.meow = True
+            self.meow_count = 20
+            self.meow_text = random.choice(MEOW)
+
+    def cat_meowing(self):
+        return self.meow
+
+    def end_meow(self):
+        self.meow = False
 
     def set_npc_interaction(self, npc):
         self.npc_interaction = npc
