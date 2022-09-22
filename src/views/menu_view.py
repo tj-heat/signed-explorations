@@ -1,5 +1,4 @@
 import arcade
-import os
 
 import src.views.game_view as g
 from src.video.video_control import CameraControl
@@ -69,7 +68,7 @@ class MenuView(arcade.View):
 
     #added brute force os exit, TODO: Close game gracefully and with all threads killed (currently, only the game engine is killed an model keeps running)
     def on_click_exit(self, event):
-        os._exit(1)
+        self.window.close()
 
     def on_click_settings(self, event):
         pass
