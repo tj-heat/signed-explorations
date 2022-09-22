@@ -340,7 +340,7 @@ class GameView(arcade.View):
                 color = arcade.csscolor.BLACK,
                 anchor_x = "center",
                 start_x = x,
-                start_y = y + (SPRITE_SIZE) - 30
+                start_y = y + (SPRITE_SIZE) - 30 #magic number generated through much trial and error
             )
 
     def on_update(self, delta_time):
