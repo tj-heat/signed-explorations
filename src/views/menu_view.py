@@ -75,7 +75,6 @@ class MenuView(arcade.View):
         pass
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.csscolor.GHOST_WHITE)
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
 

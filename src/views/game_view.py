@@ -9,6 +9,7 @@ from src.views.sign_view import SignView
 import src.actors.items as items
 from src.video.video_control import CAPTURING, display_video_t
 from src.util.ring_buffer import RingBuffer
+import src.views.pause_view as p
 
 MOVEMENT_SPEED = 3
 
@@ -248,6 +249,10 @@ class GameView(arcade.View):
                 self.window.show_view(sign_view)
             else:
                 self.dog_sprite.follow = True
+        elif key == arcade.key.ESCAPE:
+            pause = p.PauseView(self)
+            pause.setup()
+            self.window.show_view(pause)
 
     def on_draw(self):
         """ Draw everything """
