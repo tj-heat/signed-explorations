@@ -21,10 +21,11 @@ class PauseView(arcade.View):
         self.v_box.add(restart_button.with_space_around(bottom=20))
 
         return_button = arcade.gui.UIFlatButton(text="Return to Game", width=200)
-        self.v_box.add(return_button)
+        self.v_box.add(return_button.with_space_around(bottom=20))
         
         quit_button = arcade.gui.UIFlatButton(text="Quit to Menu", width=200)
         self.v_box.add(quit_button)
+
 
         # --- Method 2 for handling click events,
         # assign self.on_click_start as callback

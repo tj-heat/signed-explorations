@@ -12,7 +12,7 @@ def main():
     start_view = StartView.StartView() #StartView() #game.GameView() 
     start_view.setup()
     window.show_view(start_view)
-    arcade.run()
+    arcade.run() 
 
 if __name__ == "__main__":
     main()
