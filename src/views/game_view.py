@@ -330,4 +330,3 @@ class GameView(arcade.View):
 
         # Position the camera
         self.center_camera_to_player()
-
