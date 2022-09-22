@@ -70,3 +70,11 @@ class ThreadController():
     def get_closer(self) -> ThreadCloser:
         """ (ThreadCloser) Returns the controller's thread closer object. """
         return self.closer
+
+    def start(self) -> None:
+        """ Start the controller's thread """
+        self.t.start()
+
+    def kill(self) -> None:
+        """ Flag the controller's thread for closing """
+        self.closer.kill()
