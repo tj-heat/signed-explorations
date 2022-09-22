@@ -8,29 +8,29 @@ class ThreadCloser():
     active/inactive.
     """
     def __init__(self) -> None:
-        self._active = False
-        self._kill = False
+        self._active = threading.Event()
+        self._kill = threading.Event()
 
     def set_active(self):
         """ Set an associated thread to be active """
-        self._active = True
+        self._active.set()
 
     def set_inactive(self):
         """ Set an associated thread to be inactive """
-        self._active = False
+        self._active.clear()
 
     def kill(self):
         """ Flag an associated thread to end """
         self.set_inactive()
-        self._kill = True
+        self._kill.set()
 
     def is_killed(self) -> bool:
         """ (bool) True if a thread should be closing. False otherwise. """
-        return self._kill
+        return self._kill.is_set()
 
     def is_active(self) -> bool:
         """ (bool) True if a thread should be active. False otherwise. """
-        return self._active
+        return self._active.is_set()
 
 
 class ThreadController():
