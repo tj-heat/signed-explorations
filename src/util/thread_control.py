@@ -19,6 +19,10 @@ class ThreadCloser():
         """ Set an associated thread to be inactive """
         self._active.clear()
 
+    def wait(self):
+        """ Wait unitl the 'active' event is set. """
+        self._active.wait()
+
     def kill(self):
         """ Flag an associated thread to end """
         self.set_inactive()
