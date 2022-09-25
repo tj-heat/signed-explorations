@@ -19,6 +19,7 @@ uni_style = {
 class PauseView(arcade.View):
     def __init__(self, game_view : "GameView.GameView"):
         super().__init__()
+        self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
         self.game_view = game_view
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -45,27 +46,14 @@ class PauseView(arcade.View):
         return_button.on_click = self.on_click_return
         quit_button.on_click = self.on_click_quit
 
-        #settings_button.on_click =
 
-        self.anchor = arcade.gui.UIAnchorWidget(
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(arcade.gui.UIAnchorWidget(
                 anchor_x="center_x",
                 anchor_y="center_y",
                 child=self.v_box,
                 size_hint = (1,1)
             )
-
-        self.wrapper = arcade.gui.UIWrapper(
-            child = self.anchor,
-            padding = (self.window.width, self.window.width, self.window.width, self.window.width ),
-            size_hint_max = self.window.height
-        )
-
-
-        # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(arcade.gui.UITexturePane(
-            child = self.wrapper,
-            size_hint = (1,1),
-            tex = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg"))
         )
 
     def on_click_restart(self, event):
@@ -89,6 +77,7 @@ class PauseView(arcade.View):
 
     def on_draw(self):
         self.clear()
+        arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
         self.manager.draw()
         arcade.draw_text("Paused", self.window.width/2, self.window.height/2 + 200, 
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
