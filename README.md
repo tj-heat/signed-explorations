@@ -16,10 +16,11 @@ Setup has been based around virtual environments, with some provided scripts ass
 Steps:
 
 1. Install [python](https://www.python.org/downloads/).
-2. Run environment setup script `scripts/setup.sh` from the top level directory of the repo. 
-   - For Windows Command Prompt, use `scripts/setup.bat` instead.
-3. Apply patches based on installed packages by running `scripts/apply_patches.sh`.
-   - There is no Windows alternative file. 
+2. Enable execution of scripts with `chmod +x scripts/*`.
+3. Run environment setup script `scripts/setup.sh` from the top level directory of the repo. 
+   - For Windows Command Prompt, use `scripts/batch/setup.bat` instead.
+4. Apply patches based on installed packages by running `scripts/apply_patches.sh`.
+   - There is no Command Prompt alternative file. 
 
 
 
@@ -31,28 +32,33 @@ When working on the project, development should be carried out inside of the vir
 
 - From the terminal:
   1. From the top of the repo, run `source env/Scripts/activate`. Change the activation script used to suit your dev environment (OS/shell).
+     - `source env/bin/activate` for non-Windows.
   2. When finished, run `deactivate` to finish with the virtual environment.
 - From VS-Code:
-  1. Open the Command Palette with `Ctrl+Shift+P` (`Cmd+Shift+P` for Mac users).
-  2. Search for `Python: Select Interpreter`.
-  3. From the provided options, select the Python version listed as `('env': venv)`. It should be the recommended option.
+  1. Open the repository folder (default "signed-explorations") in VS-Code. It is important to open the ENTIRE directory with VS-Code.
+  2. Open the Command Palette with `Ctrl+Shift+P` (`Cmd+Shift+P` for Mac users).
+  3. Search for `Python: Select Interpreter`.
+  4. From the provided options, select the Python version listed as `('env': venv)`. It should be the recommended option.
 
 #### Installing New Packages
 
 If your environment's packages are out of date, simply run `scripts/update_packages.sh` from the top level of the repo. A `.bat` is provided for Command Prompt.
 
-If you have added a new package for development, run `scripts/add_packages.sh` from the top level of the repo; then, commit the changed `requirements.txt` file. A `.bat` is provided for Command Prompt.
+If you have added a new package for development, run `scripts/add_packages.sh` from the top level of the repo; then, commit the changed `requirements.txt` file. A `.bat` is provided for Command Prompt in `scripts/batch/`.
 
 #### Development Example
+
+An example of running the setup process in a \*Nix-style terminal environment.  
 
 ``` shell
 git clone https://github.com/tj-heat/signed-explorations.git
 cd signed-explorations
+chmod +x scripts/*
 scripts/setup.sh
 scripts/apply_patches.sh
 
 # To begin development
-source env/Scripts/activate
+source env/bin/activate
 ...
 # To finish development
 #(env)

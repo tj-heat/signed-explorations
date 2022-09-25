@@ -1,6 +1,7 @@
 import arcade
 from enum import Enum
 from typing import Optional
+import random
 
 SPRITE_SCALING = 0.3
 SPRITE_IMAGE_SIZE = 250
@@ -20,6 +21,9 @@ FOLLOW = 0
 KEY = 1
 DOOR = 2
 DOG_TASKS = [FOLLOW, KEY, DOOR]
+
+#Cat Constants
+MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow"]
 
 class Task(Enum):
     NONE = 0
@@ -79,6 +83,21 @@ class Cat(Animal):
         super().__init__(CAT_PATH)
         self.npc_interaction = None
         self.touched = False
+        self.meow = False
+        self.meow_count = 0
+        self.meow_text = None
+
+    def start_meow(self):
+        if self.meow == False:
+            self.meow = True
+            self.meow_count = 20
+            self.meow_text = random.choice(MEOW)
+
+    def cat_meowing(self):
+        return self.meow
+
+    def end_meow(self):
+        self.meow = False
 
     def set_npc_interaction(self, npc):
         self.npc_interaction = npc
@@ -96,9 +115,25 @@ class Dog(Animal):
     def __init__(self):
         super().__init__(DOG_PATH)
 
-        self.force = 2000
+        self.force = 1000
         self.task : Optional[Task]= Task.NONE
         self.inventory = []
+
+        self.follow = False
+        self.goal = (0,0)
+
+    def follow_cat(self):
+        self.follow = True
+
+    def set_goal(self, goal):
+        #goal must be coordinates of tuple (0,0)
+        self.goal = goal
+
+    def stop_follow(self):
+        self.follow = False
+        self.goal = (0,0)
+        if self.task == Task.FOLLOW:
+            self.change_task(Task.NONE)
 
     def change_task(self, task):
         self.task = task
