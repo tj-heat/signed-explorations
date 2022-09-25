@@ -9,8 +9,24 @@ class SignView(arcade.View):
         self.npc = npc
         self.items = items
 
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        self.v_box = arcade.gui.UIBoxLayout()
+
+        button = arcade.gui.UITextureButton(x=0, y=0, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        self.v_box.add(button)
+
+        self.background = arcade.load_texture("assets\interface\Puzzle_UI.png")
+        
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="right",
+                anchor_y="top",
+                child=self.v_box)
+        )
+
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.color.BLACK)
         #replace with camera feed
 
     def setup(self):
@@ -19,7 +35,9 @@ class SignView(arcade.View):
     def on_draw(self):
         self.clear()
         self.gui_camera.use()
-        arcade.draw_text("This is the sign language interaction, for now press any key to return to the game", 10, 10, arcade.csscolor.WHITE, 18)
+        arcade.start_render()
+        #arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
+        #self.manager.draw()
     
     def on_update(self, delta_time):
         if True:

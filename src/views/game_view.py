@@ -6,6 +6,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import src.actors.character as character
 from src.actors.character import Task
 from src.views.sign_view import SignView
+from src.views.Book_view import BookView
 import src.actors.items as items
 from src.video.video_control import CAPTURING, display_video_t
 
@@ -219,6 +220,8 @@ class GameView(arcade.View):
             self.right_pressed = True
         elif key == arcade.key.E:
             pass
+        elif key == arcade.key.I:
+            pass
 
 
     def on_key_release(self, key, modifiers):
@@ -238,6 +241,10 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+        elif key == arcade.key.I:
+            Book_view = BookView(self, self.npc_sprite)
+            Book_view.setup()
+            self.window.show_view(Book_view)
 
     def on_draw(self):
         """ Draw everything """
@@ -247,6 +254,12 @@ class GameView(arcade.View):
         self.gui_camera.use()
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        self.v_box = arcade.gui.UIBoxLayout()
+
+        exit_button = arcade.gui.UIFlatButton(text="Exit", width=200)
+        self.v_box.add(exit_button)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
