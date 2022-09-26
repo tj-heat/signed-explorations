@@ -22,7 +22,13 @@ Steps:
 4. Apply patches based on installed packages by running `scripts/apply_patches.sh`.
    - There is no Command Prompt alternative file. 
 
+Note for M1 Mac users: Additional steps may be needed to get tensorflow working on your device. The gist of this is that you need to install the appropriate tensorflow packages and have the correct protobuf version.
 
+``` shell
+env/bin/pip3 install tensorflow-macos
+env/bin/pip3 install tensorflow-metal
+env/bin/pip3 install protobuf==3.19.4
+```
 
 ### Development
 
