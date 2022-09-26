@@ -252,6 +252,9 @@ class GameView(arcade.View):
             if not self._dbox:
                 self._dbox = DialogueBox(["Hello", "there"], height=200, width=self.window.viewport[WIDTH_INDEX])
                 self._ui_manager.add(self._dbox)
+        elif key == arcade.key.SPACE:
+            if self._dbox and self._dbox.is_active():
+                self._dbox.progress()
 
     def on_draw(self):
         """ Draw everything """
