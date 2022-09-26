@@ -31,7 +31,7 @@ class _DialogueBoxInt(arcade.gui.UIInteractiveWidget):
         else:
             self._current_text = self._NO_TEXT
 
-    def _handle_interact(self) -> None:
+    def progress(self) -> None:
         """ Handles interacting with the dialogue box. """
         self._next_text()
 
@@ -40,7 +40,7 @@ class _DialogueBoxInt(arcade.gui.UIInteractiveWidget):
 
     def on_click(self, event) -> None:
         """ Manage on click event """
-        self._handle_interact()
+        self.progress()
 
     def is_active(self) -> bool:
         """ Returns true if the dialogue box is active. False otherwise. """
@@ -94,6 +94,10 @@ class DialogueBox(arcade.gui.UIAnchorWidget):
     def is_active(self) -> bool:
         """ Returns true if the dialogue box is active. False otherwise. """
         return self._i_child.is_active()
+
+    def progress(self):
+        """ Move to the next text item in the dialogue box. """
+        self._i_child.progress()
 
     # def do_render(self, surface: arcade.gui.Surface):
     #     """ """
