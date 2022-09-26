@@ -5,12 +5,15 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import src.actors.character as character
 from src.actors.character import Task
-from src.views.sign_view import SignView
 import src.actors.items as items
+from src.dialogue.dialogue_box import DialogueBox
+from src.views.sign_view import SignView
 from src.video.video_control import CAPTURING, display_video_t
 from src.util.ring_buffer import RingBuffer
 
 MOVEMENT_SPEED = 3
+
+WIDTH_INDEX = 2
 
 TILE_SCALING = 1
 TILE_SIZE = 62
@@ -53,6 +56,7 @@ class GameView(arcade.View):
 
         self.camera = None
         self.gui_camera = None
+        self._ui_manager = None
         self.lvl = 1
 
         self.left_pressed: bool = False
@@ -64,9 +68,10 @@ class GameView(arcade.View):
 
         self.camera = arcade.Camera(self.window.width, self.window.height)
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
-
+        self._ui_manager = arcade.gui.UIManager()
+        self._ui_manager.enable()
+        
         #set up tilemap
- 
         map_name = "assets/tilemaps/lvl1.json"
         layer_options = {
             LAYER_WALLS: {
@@ -177,6 +182,9 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
 
+        # Set up for dialogue options
+        self._dbox = None
+
     def dog_actions(self, action):
         if action == Task.NONE:
             pass
@@ -240,6 +248,10 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+        elif key == arcade.key.L:
+            if not self._dbox:
+                self._dbox = DialogueBox(["Hello", "there"], height=200, width=self.window.viewport[WIDTH_INDEX])
+                self._ui_manager.add(self._dbox)
 
     def on_draw(self):
         """ Draw everything """
@@ -249,6 +261,7 @@ class GameView(arcade.View):
         self.gui_camera.use()
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18)
+        self._ui_manager.draw()
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -283,4 +296,9 @@ class GameView(arcade.View):
 
         # Position the camera
         self.center_camera_to_player()
+
+        if self._dbox:
+            if not self._dbox.is_active():
+                self._ui_manager.remove(self._dbox)
+                self._dbox = None
 
