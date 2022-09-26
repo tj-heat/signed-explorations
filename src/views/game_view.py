@@ -185,6 +185,12 @@ class GameView(arcade.View):
         # Set up for dialogue options
         self._dbox = None
 
+    def in_dialogue(self) -> bool:
+        """ (bool) Returns True if the game is currently in dialogue. False
+        otherwise.
+        """
+        return self._dbox and self._dbox.is_active()
+
     def dog_actions(self, action):
         if action == Task.NONE:
             pass
@@ -253,7 +259,7 @@ class GameView(arcade.View):
                 self._dbox = DialogueBox(["Hello", "there"], height=200, width=self.window.viewport[WIDTH_INDEX])
                 self._ui_manager.add(self._dbox)
         elif key == arcade.key.SPACE:
-            if self._dbox and self._dbox.is_active():
+            if self.in_dialogue():
                 self._dbox.progress()
 
     def on_draw(self):
@@ -268,40 +274,43 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-        self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
 
-        force = (0,0)
+        # TODO Change to a state-based system?
+        if not self.in_dialogue():
+            self.player_sprite.change_x = 0
+            self.player_sprite.change_y = 0
 
-        if self.up_pressed and not self.down_pressed:
-            force = (0, PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        elif self.down_pressed and not self.up_pressed:
-            force = (0, -PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        if self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-            force = (-PLAYER_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        elif self.right_pressed and not self.left_pressed:
-            force = (PLAYER_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        else:
-            self.physics_engine.set_friction(self.player_sprite, 1.0)
+            force = (0,0)
 
-        self.player_sprite.actual_force = force
-        self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
-        self.player_sprite.untouched()
+            if self.up_pressed and not self.down_pressed:
+                force = (0, PLAYER_MOVE_FORCE)
+                self.physics_engine.apply_force(self.player_sprite, force)
+            elif self.down_pressed and not self.up_pressed:
+                force = (0, -PLAYER_MOVE_FORCE)
+                self.physics_engine.apply_force(self.player_sprite, force)
+            if self.left_pressed and not self.right_pressed:
+                self.player_sprite.change_x = -MOVEMENT_SPEED
+                force = (-PLAYER_MOVE_FORCE, 0)
+                self.physics_engine.apply_force(self.player_sprite, force)
+            elif self.right_pressed and not self.left_pressed:
+                force = (PLAYER_MOVE_FORCE, 0)
+                self.physics_engine.apply_force(self.player_sprite, force)
+            else:
+                self.physics_engine.set_friction(self.player_sprite, 1.0)
 
-        #self.dog_actions()
+            self.player_sprite.actual_force = force
+            self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
+            self.player_sprite.untouched()
 
-        self.physics_engine.step()
+            #self.dog_actions()
 
-        # Position the camera
-        self.center_camera_to_player()
+            self.physics_engine.step()
 
-        if self._dbox:
-            if not self._dbox.is_active():
+            # Position the camera
+            self.center_camera_to_player()
+
+        # Check for finished dialogue removal
+        if self._dbox and not self._dbox.is_active():
                 self._ui_manager.remove(self._dbox)
                 self._dbox = None
 
