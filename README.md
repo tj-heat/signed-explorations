@@ -78,7 +78,11 @@ deactivate
 Open signed-explorations directory in preferred terminal and run:
 
 ``` shell
+# On Windows:
 env/Scripts/python.exe main.py
+
+# On Mac/linux
+env/bin/python main.py
 ```
 
 
