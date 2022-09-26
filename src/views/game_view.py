@@ -17,8 +17,6 @@ from src.video.video_control import CAPTURING, display_video_t
 
 MOVEMENT_SPEED = 3
 
-WIDTH_INDEX = 2
-
 TILE_SCALING = 1
 TILE_SIZE = 64
 GRID_SIZE = TILE_SCALING * TILE_SIZE
@@ -350,7 +348,11 @@ class GameView(arcade.View):
         
         elif key == arcade.key.L:
             if not self._dbox:
-                self._dbox = DialogueBox(["Hello", "there"], height=200, width=self.window.viewport[WIDTH_INDEX])
+                self._dbox = DialogueBox(
+                    ["Hello", "there"], 
+                    height=150, 
+                    width=self.camera.viewport_width
+                )
                 self._ui_manager.add(self._dbox)
         
         elif key == arcade.key.SPACE:
