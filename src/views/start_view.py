@@ -20,9 +20,9 @@ class StartView(arcade.View):
         arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
         
         arcade.draw_text("Signed Explorations", self.window.width/2, self.window.height/2, 
-            arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center")
+            arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
         arcade.draw_text("Press any key to contiue", self.window.width/2, self.window.height/2 - 75, 
-            arcade.csscolor.GHOST_WHITE, font_size=20, anchor_x="center")
+            arcade.csscolor.GHOST_WHITE, font_size=20, anchor_x="center", font_name="Kenney Mini Square")
 
     def on_show_view(self):
         

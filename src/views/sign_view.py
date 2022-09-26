@@ -10,7 +10,7 @@ class SignView(arcade.View):
         self.items = items
 
     def on_show_view(self):
-        arcade.set_background_color(arcade.color.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.color.BLACK)
         #replace with camera feed
 
     def setup(self):
