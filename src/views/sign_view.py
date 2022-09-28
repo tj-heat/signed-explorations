@@ -13,10 +13,11 @@ class SignView(arcade.View):
         self.manager.enable()
         self.v_box = arcade.gui.UIBoxLayout()
 
-        button = arcade.gui.UITextureButton(x=0, y=0, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
-        self.v_box.add(button)
-
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png")
+
+        button = arcade.gui.UITextureButton(x=0, y=0, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'),
+        texture_hovered=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'), texture_pressed=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        self.v_box.add(button)
         
         self.manager.add(
             arcade.gui.UIAnchorWidget(
@@ -36,8 +37,8 @@ class SignView(arcade.View):
         self.clear()
         self.gui_camera.use()
         arcade.start_render()
-        #arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
-        #self.manager.draw()
+        arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
+        self.manager.draw()
     
     def on_update(self, delta_time):
         if True:

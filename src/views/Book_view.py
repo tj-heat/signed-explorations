@@ -34,9 +34,8 @@ class BookView(arcade.View):
     def on_draw(self):
         self.clear()
         self.gui_camera.use()
-        arcade.draw_lrwh_rectangle_textured(0, 0, 1000, 650, self.background)
+        arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         self.manager.draw()
-        arcade.draw_text("This is the sign language interaction, for now press any key to return to the game", 10, 10, arcade.csscolor.WHITE, 18)
     
     def on_update(self, delta_time):
         pass
