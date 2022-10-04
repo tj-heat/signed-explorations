@@ -5,6 +5,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import src.actors.character as character
 import src.actors.items as items
+from src.actors.event_triggers import EventTrigger
 import src.views.pause_view as p
 from src.actors.character import Task
 import src.actors.items as items
@@ -34,9 +35,11 @@ LAYER_LOW_WALLS = "Lower Walls"
 LAYER_FLOOR = "Floor"
 LAYER_DOORS = "Doors"
 LAYER_ITEMS = "Items"
+LAYER_EVENTS = "Events"
 LAYER_CHARACTERS = "Characters"
 
 TEXT_PATH = "assets/sprites/text_box.PNG"
+TEST_PATH = "assets/tilemaps/tutorial/textures/testing.png"
 
 class GameView(arcade.View):
     
@@ -89,6 +92,9 @@ class GameView(arcade.View):
                 "use_spation_hash": True,
             },
             LAYER_DOORS: {
+                "use_spation_hash": True,
+            },
+            LAYER_EVENTS: {
                 "use_spation_hash": True,
             },
         }
@@ -145,6 +151,8 @@ class GameView(arcade.View):
 
             self.scene.add_sprite(LAYER_ITEMS, body)
 
+        self.create_events(self.tile_map.object_lists[LAYER_EVENTS])
+
         self.physics_engine = PymunkPhysicsEngine(damping=2, gravity=(0,0))
         
 
@@ -181,10 +189,15 @@ class GameView(arcade.View):
             body_type = PymunkPhysicsEngine.STATIC
         )
 
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_EVENTS),
+            friction = 0.6,
+            collision_type = "event",
+            body_type = PymunkPhysicsEngine.STATIC
+        )
+
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = True
             npc_sprite.stop_follow()
-
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
             if npc_sprite.task == item_sprite.task:
@@ -194,6 +207,10 @@ class GameView(arcade.View):
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
             if npc_sprite.task == Task.DOOR:
                 self.door_task(npc_sprite, door_sprite)
+
+        def event_hit_handler(npc_sprite, event_sprite, _arbiter, _space, _data):
+            if npc_sprite.task == Task.DOOR:
+                self.door_task(npc_sprite, event_sprite)
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
@@ -292,7 +309,6 @@ class GameView(arcade.View):
             
             self.dog_sprite.actual_force = force
 
-
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
@@ -306,7 +322,6 @@ class GameView(arcade.View):
             self.right_pressed = True
         elif key == arcade.key.E:
             pass
-
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -424,3 +439,29 @@ class GameView(arcade.View):
 
         # Wait for thread to finish   
         self._video_t.finish()
+
+    def create_events(self, event_layer):
+        for event in event_layer:
+            print(event)
+            tl, tr, br, bl = event.shape
+            mid_x = tl[0] + (br[0] - tl[0]) // 2
+            mid_y = tl[1] - (tl[1] - br[1]) // 2
+            print(mid_x, mid_y)
+            cartesian = self.tile_map.get_cartesian(mid_x, 1536 + mid_y)
+
+            if event.name == "bridge_a":
+                body = EventTrigger(64, 64, None)
+
+            elif event.name == "bridge_b":
+                cartesian = self.tile_map.get_cartesian(event.shape[0], event.shape[1])
+                body = EventTrigger(10, 10, None)
+            
+            else:
+                continue
+                raise Exception (f"Unknown item type {event.name}")
+
+            # Add event to scene
+            body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+
+            self.scene.add_sprite(LAYER_EVENTS, body)
