@@ -1,8 +1,18 @@
 from typing import Tuple
+from enum import Enum
 
 import arcade
 
-TEST_PATH = "assets/tilemaps/tutorial/textures/testing.png"
+class EventType(Enum):
+    NONE    = 0
+    MSG     = 1 
+
+EVENT_DATA = {
+    "door_a": {
+        "type": EventType.MSG, 
+        "msgs": ["The door's locked..."]
+    },
+}
 
 class EventTrigger(arcade.Sprite):   
     def __init__(self, width, height, task, debug=False) -> None:
