@@ -5,15 +5,13 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import src.actors.character as character
 import src.actors.items as items
-from src.actors.event_triggers import EventTrigger, SingleEventTrigger
 import src.views.pause_view as p
+from src.actors.event_triggers import EVENT_DATA, EventTrigger, EventType, SingleEventTrigger
 from src.actors.character import Task
-import src.actors.items as items
 from src.dialogue.dialogue_box import DialogueBox
-from src.views.sign_view import SignView
-from src.video.video_control import CAPTURING, display_video_t
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
+from src.views.sign_view import SignView
 from src.video.video_control import CAPTURING, display_video_t
 
 MOVEMENT_SPEED = 3
@@ -470,8 +468,8 @@ class GameView(arcade.View):
             cartesian = (cartesian[0], (cartesian[1] + map_height) % map_height)
 
             # Look for event
-            event_data = EVENT_DATA.get(event.name, EVENT_NONE)
-            if event_data == EVENT_NONE:
+            event_data = EVENT_DATA.get(event.name, EventType.NONE)
+            if event_data == EventType.NONE:
                 raise Exception (f"Unknown item type {event.name}")
 
             # Create task
