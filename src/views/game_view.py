@@ -476,7 +476,7 @@ class GameView(arcade.View):
 
             # Create task
             task = None
-            if event_data['type'] == EVENT_MSG:
+            if event_data['type'] == EventType.MSG:
                 def task():
                     self.register_dialogue(DialogueBox(
                         event_data['msgs'], 
