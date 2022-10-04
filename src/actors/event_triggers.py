@@ -58,3 +58,9 @@ class EventTrigger(arcade.Sprite):
         x, y, = (width / 2, height / 2)
 
         return ((-x, -y), (x, -y), (x, y), (-x, y))
+
+class SingleEventTrigger(EventTrigger):
+    @property
+    def task(self):
+        self.kill()
+        return self._task
