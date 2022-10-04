@@ -98,8 +98,8 @@ class DialogueBox(arcade.gui.UIAnchorWidget):
     def __init__(
         self, 
         text: List[str],
-        height: int = 200,
-        width: int = 200,
+        height: int = 150,
+        width: int = 150,
         **kwargs
     ) -> None:
         """ """
