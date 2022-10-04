@@ -208,13 +208,18 @@ class GameView(arcade.View):
             if npc_sprite.task == Task.DOOR:
                 self.door_task(npc_sprite, door_sprite)
 
-        def event_hit_handler(npc_sprite, event_sprite, _arbiter, _space, _data):
-            if npc_sprite.task == Task.DOOR:
-                self.door_task(npc_sprite, event_sprite)
+        def event_hit_handler(player_sprite, event_sprite, _arbiter, _space, _data):
+            print(player_sprite, event_sprite)
+            if event_sprite.task:
+                print("Hello", self._dbox)
+                self.register_dialogue(event_sprite.task())
+                print(self._dbox)
+
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
+        self.physics_engine.add_collision_handler("player", "event", post_handler = event_hit_handler)
 
         # Dialogue box object tracker
         self._dbox = None
@@ -230,6 +235,15 @@ class GameView(arcade.View):
 
         # Set up for dialogue options
         self._dbox = None
+
+    def event_task(self, player, event):
+        event.remove_from_sprite_lists()
+
+    def register_dialogue(self, dbox: DialogueBox) -> None:
+        """ Keep track of a given dialogue box and register it with UI manager.
+        """
+        self._dbox = dbox
+        self._ui_manager.add(self._dbox)
 
     def in_dialogue(self) -> bool:
         """ (bool) Returns True if the game is currently in dialogue. False
@@ -358,7 +372,6 @@ class GameView(arcade.View):
             if not self._dbox:
                 self._dbox = DialogueBox(
                     ["Hello", "there"], 
-                    height=150, 
                     width=self.camera.viewport_width
                 )
                 self._ui_manager.add(self._dbox)
@@ -450,21 +463,24 @@ class GameView(arcade.View):
             width, height = (br[0] - tl[0], tl[1] - br[1])
             mid_x, mid_y = (tl[0] + width // 2, tl[1] - height // 2)
             
+            # Find tile indexes
             cartesian = self.tile_map.get_cartesian(mid_x, mid_y)
             cartesian = (cartesian[0], (cartesian[1] + map_height) % map_height)
 
+            # Create task
+            task = None
             if event.name == "bridge_a":
-                body = EventTrigger(width=width, height=height, task=None)
-
-            elif event.name == "bridge_b":
-                body = EventTrigger(10, 10, None)
-            
+                def task():
+                    return DialogueBox(["Whoops."], width=self.camera.viewport_width)
             else:
-                continue
                 raise Exception (f"Unknown item type {event.name}")
+
+            # Create event
+            print(task)
+            body = EventTrigger(width=width, height=height, task=task, debug=True)
 
             # Add event to scene
             body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
-
             self.scene.add_sprite(LAYER_EVENTS, body)
+
