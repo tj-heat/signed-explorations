@@ -441,19 +441,22 @@ class GameView(arcade.View):
         self._video_t.finish()
 
     def create_events(self, event_layer):
+        map_height = self.tile_map.height
+
         for event in event_layer:
-            print(event)
+
+            # Calculate geometries
             tl, tr, br, bl = event.shape
-            mid_x = tl[0] + (br[0] - tl[0]) // 2
-            mid_y = tl[1] - (tl[1] - br[1]) // 2
-            print(mid_x, mid_y)
-            cartesian = self.tile_map.get_cartesian(mid_x, 1536 + mid_y)
+            width, height = (br[0] - tl[0], tl[1] - br[1])
+            mid_x, mid_y = (tl[0] + width // 2, tl[1] - height // 2)
+            
+            cartesian = self.tile_map.get_cartesian(mid_x, mid_y)
+            cartesian = (cartesian[0], (cartesian[1] + map_height) % map_height)
 
             if event.name == "bridge_a":
-                body = EventTrigger(64, 64, None)
+                body = EventTrigger(width=width, height=height, task=None)
 
             elif event.name == "bridge_b":
-                cartesian = self.tile_map.get_cartesian(event.shape[0], event.shape[1])
                 body = EventTrigger(10, 10, None)
             
             else:
@@ -462,6 +465,6 @@ class GameView(arcade.View):
 
             # Add event to scene
             body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+            body.center_y = math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
 
             self.scene.add_sprite(LAYER_EVENTS, body)
