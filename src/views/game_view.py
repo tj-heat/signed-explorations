@@ -90,7 +90,6 @@ class GameView(arcade.View):
         self._ui_manager.enable()
         
         #set up tilemap
- 
         map_name = "assets/tilemaps/tutorial/lvl1.json"
         layer_options = {
             LAYER_WALLS: {
@@ -110,7 +109,6 @@ class GameView(arcade.View):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-
         # Create video capture display thread
         self._cam_buf = RingBuffer()
         video_t_closer = ThreadCloser()
@@ -126,7 +124,6 @@ class GameView(arcade.View):
             self._video_t.start()
 
         #Create physics engine
-
         npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
 
         for npc in npc_layer:
@@ -244,14 +241,12 @@ class GameView(arcade.View):
         # Set up for dialogue options
         self._dbox = None
 
-    def event_task(self, player, event):
-        event.remove_from_sprite_lists()
-
     def register_dialogue(self, dbox: DialogueBox) -> None:
         """ Keep track of a given dialogue box and register it with UI manager.
         """
-        self._dbox = dbox
-        self._ui_manager.add(self._dbox)
+        if not self._dbox:
+            self._dbox = dbox
+            self._ui_manager.add(self._dbox)
 
     def in_dialogue(self) -> bool:
         """ (bool) Returns True if the game is currently in dialogue. False
