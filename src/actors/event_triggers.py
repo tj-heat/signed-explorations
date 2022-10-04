@@ -46,6 +46,10 @@ class EventTrigger(arcade.Sprite):
         self._debug = False
         self.update_texture()
 
+    @property
+    def task(self):
+        return self._task
+
     @staticmethod
     def calc_relative_bbox(width, height) -> Tuple["Point"]:
         """ Calculates the points needed for a relative bounding box, based on 
