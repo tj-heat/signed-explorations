@@ -38,14 +38,11 @@ LAYER_CHARACTERS = "Characters"
 
 TEXT_PATH = "assets/sprites/text_box.PNG"
 
-EVENT_NONE = 0
-EVENT_MSG = 1 
-EVENT_DATA = {
-    "door_a": {
-        "type": EVENT_MSG, 
-        "msgs": ["The door's locked..."]
-    },
-}
+UP_KEYS = (arcade.key.UP, arcade.key.W)
+DOWN_KEYS = (arcade.key.DOWN, arcade.key.S)
+LEFT_KEYS = (arcade.key.LEFT, arcade.key.A)
+RIGHT_KEYS = (arcade.key.RIGHT, arcade.key.D)
+MOVE_KEYS = (*UP_KEYS, *DOWN_KEYS, *LEFT_KEYS, *RIGHT_KEYS)
 
 class GameView(arcade.View):
     
@@ -327,14 +324,13 @@ class GameView(arcade.View):
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
-
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key in UP_KEYS:
             self.up_pressed = True
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in DOWN_KEYS:
             self.down_pressed = True
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in LEFT_KEYS:
             self.left_pressed = True
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in RIGHT_KEYS:
             self.right_pressed = True
         elif key == arcade.key.E:
             pass
@@ -342,16 +338,22 @@ class GameView(arcade.View):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        # Disable events
+        if key in MOVE_KEYS and self._in_event:
+            # FIXME This is better but still needs work
+            ## When moving parallel to event
+            self._in_event = False
+
+        if key in UP_KEYS:
             self.up_pressed = False
         
-        elif key == arcade.key.DOWN or key == arcade.key.S:
+        elif key in DOWN_KEYS:
             self.down_pressed = False
         
-        elif key == arcade.key.LEFT or key == arcade.key.A:
+        elif key in LEFT_KEYS:
             self.left_pressed = False
         
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
+        elif key in RIGHT_KEYS:
             self.right_pressed = False
         
         elif key == arcade.key.E:
