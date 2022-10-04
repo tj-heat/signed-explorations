@@ -214,12 +214,10 @@ class GameView(arcade.View):
                 self.door_task(npc_sprite, door_sprite)
 
         def event_hit_handler(player_sprite, event_sprite, _arbiter, _space, _data):
-            print(player_sprite, event_sprite)
-            if event_sprite.task:
-                print("Hello", self._dbox)
-                self.register_dialogue(event_sprite.task())
-                print(self._dbox)
+            if event_sprite.task and not self._in_event:
+                event_sprite.task()
 
+            self._in_event = True
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
@@ -228,6 +226,9 @@ class GameView(arcade.View):
 
         # Dialogue box object tracker
         self._dbox = None
+
+        # Event tracker
+        self._in_event = False
 
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
@@ -372,12 +373,10 @@ class GameView(arcade.View):
             self.window.show_view(pause)
         
         elif key == arcade.key.L:
-            if not self._dbox:
-                self._dbox = DialogueBox(
-                    ["Hello", "there"], 
-                    width=self.camera.viewport_width
-                )
-                self._ui_manager.add(self._dbox)
+            self.register_dialogue(DialogueBox(
+                ["Hello", "there"], 
+                width=self.camera.viewport_width
+            ))
         
         elif key == arcade.key.SPACE:
             if self.in_dialogue():
@@ -479,11 +478,14 @@ class GameView(arcade.View):
             task = None
             if event_data['type'] == EVENT_MSG:
                 def task():
-                    return DialogueBox(event_data['msgs'], width=self.camera.viewport_width)               
+                    self.register_dialogue(DialogueBox(
+                        event_data['msgs'], 
+                        width=self.camera.viewport_width
+                    ))
 
             # Create event
             print(task)
-            body = SingleEventTrigger(width=width, height=height, task=task)
+            body = EventTrigger(width=width, height=height, task=task)
 
             # Add event to scene
             body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
