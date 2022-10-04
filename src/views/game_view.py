@@ -5,7 +5,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import src.actors.character as character
 import src.actors.items as items
-from src.actors.event_triggers import EventTrigger
+from src.actors.event_triggers import EventTrigger, SingleEventTrigger
 import src.views.pause_view as p
 from src.actors.character import Task
 import src.actors.items as items
@@ -39,7 +39,15 @@ LAYER_EVENTS = "Events"
 LAYER_CHARACTERS = "Characters"
 
 TEXT_PATH = "assets/sprites/text_box.PNG"
-TEST_PATH = "assets/tilemaps/tutorial/textures/testing.png"
+
+EVENT_NONE = 0
+EVENT_MSG = 1 
+EVENT_DATA = {
+    "door_a": {
+        "type": EVENT_MSG, 
+        "msgs": ["The door's locked..."]
+    },
+}
 
 class GameView(arcade.View):
     
@@ -460,27 +468,30 @@ class GameView(arcade.View):
 
             # Calculate geometries
             tl, tr, br, bl = event.shape
-            width, height = (br[0] - tl[0], tl[1] - br[1])
+            width, height = (int(br[0] - tl[0]), int(tl[1] - br[1]))
             mid_x, mid_y = (tl[0] + width // 2, tl[1] - height // 2)
             
             # Find tile indexes
             cartesian = self.tile_map.get_cartesian(mid_x, mid_y)
             cartesian = (cartesian[0], (cartesian[1] + map_height) % map_height)
 
+            # Look for event
+            event_data = EVENT_DATA.get(event.name, EVENT_NONE)
+            if event_data == EVENT_NONE:
+                raise Exception (f"Unknown item type {event.name}")
+
             # Create task
             task = None
-            if event.name == "bridge_a":
+            if event_data['type'] == EVENT_MSG:
                 def task():
-                    return DialogueBox(["Whoops."], width=self.camera.viewport_width)
-            else:
-                raise Exception (f"Unknown item type {event.name}")
+                    return DialogueBox(event_data['msgs'], width=self.camera.viewport_width)               
 
             # Create event
             print(task)
-            body = EventTrigger(width=width, height=height, task=task, debug=True)
+            body = SingleEventTrigger(width=width, height=height, task=task)
 
             # Add event to scene
-            body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-            body.center_y = math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
+            body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
+            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
             self.scene.add_sprite(LAYER_EVENTS, body)
 
