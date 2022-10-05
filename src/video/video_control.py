@@ -146,21 +146,24 @@ def display_video_t(
 
         img = controller.read_cam()
         roi = controller.get_roi()
+        predicted = None
         
         # Show annotated image
         add_roi(img, roi)
         show_image_windowed(img)
 
-        # Add image to buffer
-        buffer.put(img)
-
-        # Make guess
         hand = get_hand_segment(bg, img, roi)
         if hand:
             frame, contour = hand
             frame = process_model_image(frame)
+            predicted = recog.predict_letter(frame)
+            #print(predicted)
 
-            print(recog.predict_letter(frame))
+        # Add image to buffer
+        buffer.put((img, predicted))
+
+        # Make guess
+
 
     # Thread should die. Begin cleanup
     #controller.release_cam() 
