@@ -18,7 +18,7 @@ TILE_SCALING = 1
 TILE_SIZE = 64
 GRID_SIZE = TILE_SCALING * TILE_SIZE
 
-SPRITE_SCALING = 0.3
+SPRITE_SCALING = 0.2
 SPRITE_IMAGE_SIZE = 250
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
@@ -33,7 +33,7 @@ LAYER_DOORS = "Doors"
 LAYER_ITEMS = "Items"
 LAYER_CHARACTERS = "Characters"
 
-TEXT_PATH = "assets/sprites/text_box.PNG"
+TEXT_PATH = "assets/ui/text_box.PNG"
 
 class GameView(arcade.View):
     
@@ -52,7 +52,7 @@ class GameView(arcade.View):
         # Player sprite
         self.player_sprite: Optional[arcade.Sprite] = None
 
-        # Video capture
+        # Video capture 
         self._cc = cam_controller
 
         self.camera = None
@@ -74,7 +74,7 @@ class GameView(arcade.View):
 
         #set up tilemap
  
-        map_name = "assets/tilemaps/tutorial/lvl1.json"
+        map_name = "assets/tilemaps/lvl1.tmx"
         layer_options = {
             LAYER_WALLS: {
                 "use_spation_hash": True,
@@ -89,6 +89,8 @@ class GameView(arcade.View):
 
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
+
+        self.scene.add_sprite_list_after("Player", LAYER_DOORS)
 
 
         # Create video capture display thread
@@ -140,7 +142,6 @@ class GameView(arcade.View):
             self.scene.add_sprite(LAYER_ITEMS, body)
 
         self.physics_engine = PymunkPhysicsEngine(damping=2, gravity=(0,0))
-        
 
         self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Player"),
             friction = 0.6,
@@ -173,7 +174,7 @@ class GameView(arcade.View):
             friction = 0.6,
             collision_type = "door",
             body_type = PymunkPhysicsEngine.STATIC
-        )
+        )    
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = True

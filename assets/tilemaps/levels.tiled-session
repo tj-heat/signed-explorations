@@ -1,0 +1,131 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "lvl1.json": {
+            "scale": 0.6016666666666666,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 801.9390581717453,
+                "y": 961.4958448753464
+            }
+        },
+        "texture_maps/stone_edges_sprite_sheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "tutorial/Door_stone.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_Wood_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_Wood_Light.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_Wood_Medium_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_Wood_Medium_Lightpng.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_stone_1.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_stone_2.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Ground_stone_3.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_back_left.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_back_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_back_right.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_corner_bottom_left.png.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_corner_bottom_right.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_corner_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_corner_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_front_left.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_front_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_front_right.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/Wall_stone_top_up.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/ground_wood.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/interact_key.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/lvl1.json": {
+            "scale": 0.6016666666666666,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 800.2770083102496,
+                "y": 961.4958448753464
+            }
+        },
+        "tutorial/wall_cliff.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/wall_mossy.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/wall_water.tsx": {
+            "scaleInDock": 1
+        },
+        "tutorial/wall_water_top.tsx": {
+            "scaleInDock": 1
+        }
+    },
+    "last.imagePath": "C:/Users/treff/Documents/UQ/DECO3801/signed-explorations/assets/tiles",
+    "map.height": 30,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 64,
+    "map.tileWidth": 64,
+    "map.width": 25,
+    "openFiles": [
+    ],
+    "project": "levels.tiled-project",
+    "recentFiles": [
+        "texture_maps/stone_edges_sprite_sheet.tsx",
+        "lvl1.json",
+        "tutorial/lvl1.json"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 64,
+        "width": 64
+    }
+}
