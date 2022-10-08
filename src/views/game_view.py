@@ -18,7 +18,7 @@ TILE_SCALING = 1
 TILE_SIZE = 64
 GRID_SIZE = TILE_SCALING * TILE_SIZE
 
-SPRITE_SCALING = 0.2
+SPRITE_SCALING = 0.3 #must match what is in character.py
 SPRITE_IMAGE_SIZE = 250
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
@@ -32,6 +32,7 @@ LAYER_FLOOR = "Floor"
 LAYER_DOORS = "Doors"
 LAYER_ITEMS = "Items"
 LAYER_CHARACTERS = "Characters"
+LAYER_EDGES = "Edges"
 
 TEXT_PATH = "assets/ui/text_box.PNG"
 
@@ -90,7 +91,7 @@ class GameView(arcade.View):
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-        self.scene.add_sprite_list_after("Player", LAYER_DOORS)
+        #self.scene.add_sprite_list_after("Player", LAYER_DOORS)
 
 
         # Create video capture display thread
@@ -141,6 +142,21 @@ class GameView(arcade.View):
 
             self.scene.add_sprite(LAYER_ITEMS, body)
 
+        door_layer = self.tile_map.object_lists[LAYER_DOORS]
+
+        # for door in door_layer:
+        #     cartesian = self.tile_map.get_cartesian(npc.s)
+        #     info = door.name.split("_")
+        #     option = info[0]
+        #     key = info[1]
+        #     orientation = info[2]
+        #     body = items.Door(option, key, orientation)
+        #     body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+        #     body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+
+        #     self.scene.add_sprite(LAYER_DOORS, body)
+
+
         self.physics_engine = PymunkPhysicsEngine(damping=2, gravity=(0,0))
 
         self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Player"),
@@ -170,11 +186,17 @@ class GameView(arcade.View):
             collision_type = "npc"
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_EDGES),
             friction = 0.6,
-            collision_type = "door",
+            collision_type = "wall",
             body_type = PymunkPhysicsEngine.STATIC
-        )    
+        )
+
+        # self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
+        #     friction = 0.6,
+        #     collision_type = "door",
+        #     body_type = PymunkPhysicsEngine.STATIC
+        # )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = True
@@ -199,10 +221,19 @@ class GameView(arcade.View):
         key.remove_from_sprite_lists()
         npc.task = Task.DOOR
 
-    def door_task(self, npc, door):
-        door.remove_from_sprite_lists()
-        npc.task = Task.NONE
+    def door_task(self, npc : character.Dog, door : items.Door):
+        if door.key == "unlocked":
+            self.npc_opens_door(door)
+        elif door.key == "Key" and "Key" in npc.inventory:
+            npc.inventory.remove("Key")
+            self.npc_opens_door(door)
+        elif door.key == "lever" and "lever" in npc.inventory:
+            npc.inventory.remove("lever")
+            self.npc_opens_door(door)
 
+    def npc_opens_door(self, door : items.Door):
+        door.open_door()
+        self.physics_engine.remove_sprite(door)
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
