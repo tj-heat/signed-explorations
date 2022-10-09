@@ -299,7 +299,7 @@ class GameView(arcade.View):
         elif self.dog_sprite.task == Task.KEY:
             items = self.check_items_in_radius()
             if len(items) == 0:
-                self.dog_sprite.set_goal(0,0)
+                self.dog_sprite.set_goal((0,0))
             else:
                  self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
