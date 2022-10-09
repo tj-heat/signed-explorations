@@ -484,7 +484,6 @@ class GameView(arcade.View):
                     ))
 
             # Create event
-            print(task)
             body = EventTrigger(width=width, height=height, task=task)
 
             # Add event to scene
