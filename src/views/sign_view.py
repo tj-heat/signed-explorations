@@ -20,23 +20,16 @@ class SignView(arcade.View):
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
-        self.v_box = arcade.gui.UIBoxLayout()
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
 
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png")        
 
-        button = arcade.gui.UITextureButton(x=60, y=10, width=30, height=30, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        button = arcade.gui.UITextureButton(x=34, y=450, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
         self.v_box.add(button)
 
         button.on_click = self.on_click_button
 
-        self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="center",
-                align_x=-400,
-                anchor_y="center",
-                align_y=300,
-                child=self.v_box)
-        )
+        self.manager.add(self.v_box)
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
