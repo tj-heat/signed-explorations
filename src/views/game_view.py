@@ -326,7 +326,7 @@ class GameView(arcade.View):
         elif key == arcade.key.E:
             items = self.check_items_in_radius()
             if self.player_sprite.is_touched() and len(items) != 0:
-                sign_view = SignView(self, self.npc_sprite, items)
+                sign_view = SignView(self, self.npc_sprite, items, goal="VUS")
                 sign_view.setup()
                 self.window.show_view(sign_view)
             else:

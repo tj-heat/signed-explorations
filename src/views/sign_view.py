@@ -1,16 +1,20 @@
-import arcade, threading, PIL
+import arcade, PIL
 from src.actors.character import Dog, Task
 import uuid
 
 from src.video.video_control import *
 
 class SignView(arcade.View):
-    def __init__(self, game_view, npc: Dog, items):
+    def __init__(self, game_view, npc: Dog, items, goal: str = None):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
         self.items = items
+
+        # Spelling requirements
+        self._goal = goal.upper()
+        self._count = 0
 
         self._predicted = None
         self._cam_texture = None
@@ -63,19 +67,12 @@ class SignView(arcade.View):
     
     def on_update(self, delta_time):
         print(self._predicted)
-        if self.state == True:
-            search = "V"
-        elif self.state == False:
-            search = "U"
-        elif self.state == None:
-            search = "S"
-        if self._predicted == search:
+        
+        if self._predicted == self.get_current_target():
             print("Well Done")
-            if search == "V":
-                self.state = False
-            elif search == "U":
-                self.state = None
-            else:
+            self.progress_sign()
+        
+            if self.goal_reached():
                 print("Word has been spelt")
                 self.npc.task = Task.KEY
                 self.game_view.set == True
@@ -86,3 +83,16 @@ class SignView(arcade.View):
 
     def on_click_button(self, event):
         print("hellp")
+
+    def get_current_target(self) -> str:
+        """ Return the current letter that should be signed. """
+        return self._goal[self._count]
+
+    def goal_reached(self) -> bool:
+        """ Return a bool indicating if the complete word has been signed. True 
+        indicates it has. False otherwise. """
+        return self._count == len(self._goal)
+
+    def progress_sign(self) -> None:
+        """ Move to the next letter to sign of the goal word. """
+        self._count += 1
