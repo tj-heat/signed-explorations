@@ -56,6 +56,8 @@ class GameView(arcade.View):
         # Video capture
         self._cc = cam_controller
 
+        self.set = False
+
         self.camera = None
         self.gui_camera = None
         self.lvl = 1

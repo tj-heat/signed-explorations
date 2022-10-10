@@ -73,6 +73,7 @@ class SignView(arcade.View):
                 self.state = None
             else:
                 print("Word has been spelt")
+                self.game_view.set == True
                 self.window.show_view(self.game_view)
 
     def on_key_press(self, symbol: int, modifiers: int):
