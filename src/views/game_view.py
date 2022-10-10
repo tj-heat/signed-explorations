@@ -7,8 +7,11 @@ import src.actors.character as character
 import src.actors.items as items
 import src.views.pause_view as p
 from src.actors.character import Task
+import src.actors.items as items
+from src.dialogue.dialogue_box import DialogueBox
 from src.views.sign_view import SignView
 from src.views.Book_view import BookView
+from src.video.video_control import CAPTURING, display_video_t
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.video.video_control import CAPTURING, display_video_t
@@ -60,6 +63,7 @@ class GameView(arcade.View):
 
         self.camera = None
         self.gui_camera = None
+        self._ui_manager = None
         self.lvl = 1
 
         self.left_pressed: bool = False
@@ -74,7 +78,9 @@ class GameView(arcade.View):
 
         self.camera = arcade.Camera(self.window.width, self.window.height)
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
-
+        self._ui_manager = arcade.gui.UIManager()
+        self._ui_manager.enable()
+        
         #set up tilemap
  
         map_name = "assets/tilemaps/tutorial/lvl1.json"
@@ -193,6 +199,9 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
 
+        # Dialogue box object tracker
+        self._dbox = None
+
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
@@ -202,6 +211,14 @@ class GameView(arcade.View):
         door.remove_from_sprite_lists()
         npc.task = Task.NONE
 
+        # Set up for dialogue options
+        self._dbox = None
+
+    def in_dialogue(self) -> bool:
+        """ (bool) Returns True if the game is currently in dialogue. False
+        otherwise.
+        """
+        return self._dbox and self._dbox.is_active()
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
@@ -296,12 +313,16 @@ class GameView(arcade.View):
 
         if key == arcade.key.UP or key == arcade.key.W:
             self.up_pressed = False
+        
         elif key == arcade.key.DOWN or key == arcade.key.S:
             self.down_pressed = False
+        
         elif key == arcade.key.LEFT or key == arcade.key.A:
             self.left_pressed = False
+        
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.right_pressed = False
+        
         elif key == arcade.key.E:
             items = self.check_items_in_radius()
             if self.player_sprite.is_touched() and len(items) != 0:
@@ -311,15 +332,30 @@ class GameView(arcade.View):
             else:
                 self.dog_sprite.follow_cat()
                 self.player_sprite.start_meow()
+        
         elif key == arcade.key.I:
             book_view = BookView(self, self.npc_sprite, items)
             book_view.setup()
             self.window.show_view(book_view)
+        
         elif key == arcade.key.ESCAPE:
             self.pause_video()
             pause = p.PauseView(self)
             pause.setup()
             self.window.show_view(pause)
+        
+        elif key == arcade.key.L:
+            if not self._dbox:
+                self._dbox = DialogueBox(
+                    ["Hello", "there"], 
+                    height=150, 
+                    width=self.camera.viewport_width
+                )
+                self._ui_manager.add(self._dbox)
+        
+        elif key == arcade.key.SPACE:
+            if self.in_dialogue():
+                self._dbox.progress()
 
     def on_draw(self):
         """ Draw everything """
@@ -330,6 +366,9 @@ class GameView(arcade.View):
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18, 
             font_name="Kenney Mini Square" )
+        
+        self._ui_manager.draw()
+
         if self.player_sprite.cat_meowing():
             x = self.window.width/2
             y = self.window.height/2
@@ -350,22 +389,29 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-        self.move_player()
-        self.move_dog()
+        # TODO Change to a state-based system?
+        if not self.in_dialogue():
+            self.move_player()
+            self.move_dog()
 
-        if self.player_sprite.cat_meowing():
-            self.player_sprite.meow_count -= 1
-        if self.player_sprite.cat_meowing() and self.player_sprite.meow_count == 0:
-            self.player_sprite.end_meow()
+            if self.player_sprite.cat_meowing():
+                self.player_sprite.meow_count -= 1
+            if self.player_sprite.cat_meowing() and self.player_sprite.meow_count == 0:
+                self.player_sprite.end_meow()
 
-        #Update animation sprites
-        self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
+            #Update animation sprites
+            self.scene.update_animation(delta_time, ["Player", LAYER_CHARACTERS])
 
-        #Update physics engine
-        self.physics_engine.step()
+            #Update physics engine
+            self.physics_engine.step()
 
-        # Position the camera
-        self.center_camera_to_player()
+            # Position the camera
+            self.center_camera_to_player()
+
+        # Check for finished dialogue removal
+        if self._dbox and not self._dbox.is_active():
+                self._ui_manager.remove(self._dbox)
+                self._dbox = None
 
     def resume_video(self):
         """ Resumes the video thread """
