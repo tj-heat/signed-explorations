@@ -214,10 +214,13 @@ class GameView(arcade.View):
 
             self._in_event = True
 
+        def event_hit_separate_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
+            self._in_event = False
+
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
-        self.physics_engine.add_collision_handler("player", "event", post_handler = event_hit_handler)
+        self.physics_engine.add_collision_handler("player", "event", post_handler = event_hit_handler, separate_handler=event_hit_separate_handler)
 
         # Dialogue box object tracker
         self._dbox = None
@@ -337,12 +340,6 @@ class GameView(arcade.View):
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
-
-        # Disable events
-        if key in MOVE_KEYS and self._in_event:
-            # FIXME This is better but still needs work
-            ## When moving parallel to event
-            self._in_event = False
 
         if key in UP_KEYS:
             self.up_pressed = False
@@ -488,6 +485,6 @@ class GameView(arcade.View):
 
             # Add event to scene
             body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
-            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+            body.center_y = math.floor((cartesian[1]) * (self.tile_map.tile_height * TILE_SCALING))
             self.scene.add_sprite(LAYER_EVENTS, body)
 
