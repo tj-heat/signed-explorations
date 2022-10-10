@@ -1,24 +1,20 @@
 import arcade, threading, PIL
 from src.actors.character import Dog, Task
-from src.video.image_recognition import Recogniser
-from PIL import Image
 import uuid
 
 from src.video.video_control import *
 
-from src.video.image_processing import add_roi, crop_and_preprocess, \
-    get_hand_segment, process_model_image
-
 class SignView(arcade.View):
-    def __init__(self, game_view, npc : Dog, items):
+    def __init__(self, game_view, npc: Dog, items):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
         self.items = items
 
+        self._predicted = None
+        self._cam_texture = None
         self.state = True
-
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -41,31 +37,39 @@ class SignView(arcade.View):
     def setup(self):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
-
     def on_draw(self):
         self.clear()
         self.gui_camera.use()
-        UI = self.game_view._cam_buf.get()
-        UIFrame = PIL.Image.fromarray(UI[0])
+
+        # Get image to draw
+        img, self._predicted = self.game_view._cam_buf.get()
+        ui_frame = PIL.Image.fromarray(img)
         name = str(uuid.uuid4())
-        cam = arcade.Texture(name, UIFrame)
+
+        if self._cam_texture:
+            # Remove the old texture from the global texture atlas
+            self.window.ctx.default_atlas.remove(self._cam_texture)
+            # Rebuild atlas to make removed space usable again
+            self.window.ctx.default_atlas.rebuild()
+        # Overwrite old texture
+        self._cam_texture = arcade.Texture(name, ui_frame)
+
+        # Draw textures
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         arcade.draw_lrwh_rectangle_textured(244, 154, 64, 64, self.key)
-        arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, cam)
+        arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, self._cam_texture)
         self.manager.draw()
         arcade.cleanup_texture_cache()
     
     def on_update(self, delta_time):
-        UI = self.game_view._cam_buf.get()
-        predicted = UI[1]
-        print(predicted)
+        print(self._predicted)
         if self.state == True:
             search = "V"
         elif self.state == False:
             search = "U"
         elif self.state == None:
             search = "S"
-        if predicted == search:
+        if self._predicted == search:
             print("Well Done")
             if search == "V":
                 self.state = False
@@ -73,6 +77,7 @@ class SignView(arcade.View):
                 self.state = None
             else:
                 print("Word has been spelt")
+                self.npc.task = Task.KEY
                 self.game_view.set == True
                 self.window.show_view(self.game_view)
 
