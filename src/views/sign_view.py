@@ -1,6 +1,5 @@
-import arcade, PIL
+import arcade, PIL, random
 from src.actors.character import Dog, Task
-import uuid
 
 from src.video.video_control import *
 
@@ -47,8 +46,7 @@ class SignView(arcade.View):
 
         # Get image to draw
         img, self._predicted = self.game_view._cam_buf.get()
-        ui_frame = PIL.Image.fromarray(img)
-        name = str(uuid.uuid4())
+        img = PIL.Image.fromarray(img)
 
         if self._cam_texture:
             # Remove the old texture from the global texture atlas
@@ -56,14 +54,13 @@ class SignView(arcade.View):
             # Rebuild atlas to make removed space usable again
             self.window.ctx.default_atlas.rebuild()
         # Overwrite old texture
-        self._cam_texture = arcade.Texture(name, ui_frame)
+        self._cam_texture = arcade.Texture(str(random.randint(0,100000)), img)
 
         # Draw textures
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         arcade.draw_lrwh_rectangle_textured(244, 154, 64, 64, self.key)
         arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, self._cam_texture)
         self.manager.draw()
-        arcade.cleanup_texture_cache()
     
     def on_update(self, delta_time):
         print(self._predicted)
