@@ -60,17 +60,20 @@ class SignView(arcade.View):
         predicted = UI[1]
         print(predicted)
         if self.state == True:
-            search = "K"
+            search = "V"
         elif self.state == False:
-            search = "E"
+            search = "U"
         elif self.state == None:
-            search = "Y"
+            search = "S"
         if predicted == search:
             print("Well Done")
-            if search == "K":
+            if search == "V":
                 self.state = False
-            elif search == "E":
+            elif search == "U":
                 self.state = None
+            else:
+                print("Word has been spelt")
+                self.window.show_view(self.game_view)
 
     def on_key_press(self, symbol: int, modifiers: int):
         self.window.show_view(self.game_view)
