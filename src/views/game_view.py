@@ -213,11 +213,10 @@ class GameView(arcade.View):
         def event_hit_handler(_player_sprite, event_sprite, _arbiter, _space, _data):
             if event_sprite.task and not self._in_event:
                 event_sprite.task()
-
-            self._in_event = True
+            self.start_event()
 
         def event_hit_separate_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
-            self._in_event = False
+            self.end_event()
 
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
@@ -256,6 +255,14 @@ class GameView(arcade.View):
         otherwise.
         """
         return self._dbox and self._dbox.is_active()
+
+    def start_event(self) -> None:
+        """ Flag that the game is in an event """
+        self._in_event = True
+
+    def end_event(self) -> None:
+        """ Flag that the game is no longer in an event """
+        self._in_event = False
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
