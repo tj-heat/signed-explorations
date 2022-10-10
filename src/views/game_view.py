@@ -524,10 +524,9 @@ class GameView(arcade.View):
                     ))
 
             # Create event
-            body = EventTrigger(width=width, height=height, task=task, debug=True)
+            body = SingleEventTrigger(width=width, height=height, task=task)
 
             # Add event to scene
             body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((cartesian[1]) * (self.tile_map.tile_height * TILE_SCALING))
             self.scene.add_sprite(LAYER_EVENTS, body)
-
