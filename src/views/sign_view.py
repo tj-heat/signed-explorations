@@ -24,8 +24,7 @@ class SignView(arcade.View):
 
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png")        
 
-        button = arcade.gui.UITextureButton(x=30, y=30, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'),
-        texture_hovered=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'), texture_pressed=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        button = arcade.gui.UITextureButton(x=60, y=10, width=30, height=30, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
         self.v_box.add(button)
 
         button.on_click = self.on_click_button
@@ -55,7 +54,7 @@ class SignView(arcade.View):
         name = str(uuid.uuid4())
         cam = arcade.Texture(name, UIFrame)
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
-        arcade.draw_lrwh_rectangle_textured(500, 400, 150, 260, cam)
+        arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, cam)
         self.manager.draw()
         arcade.cleanup_texture_cache()
     
