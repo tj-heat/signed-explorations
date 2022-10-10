@@ -160,7 +160,7 @@ def display_video_t(
             #print(predicted)
 
         # Add image to buffer
-        buffer.put((img, predicted))
+        buffer.put((cv2.cvtColor(img, cv2.COLOR_BGR2RGB), predicted))
 
         # Make guess
 
