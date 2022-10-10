@@ -1,8 +1,8 @@
-import imp
 import arcade, threading, PIL
 from src.actors.character import Dog, Task
 from src.video.image_recognition import Recogniser
 from PIL import Image
+import uuid
 
 from src.video.video_control import *
 
@@ -24,19 +24,12 @@ class SignView(arcade.View):
 
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png")        
 
-        UI = self.game_view._cam_buf.get()
-        UIFrame = PIL.Image.fromarray(UI[0])
-        UIFrame.show()
-        scflim = arcade.Texture("scflim", UIFrame)
-
         button = arcade.gui.UITextureButton(x=30, y=30, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'),
         texture_hovered=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'), texture_pressed=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
-        cam = arcade.gui.UITextureButton(x=30, y=30, texture=scflim, texture_hovered=scflim, texture_pressed=scflim)
         self.v_box.add(button)
 
         button.on_click = self.on_click_button
 
-        
         self.manager.add(
             arcade.gui.UIAnchorWidget(
                 anchor_x="center",
@@ -57,27 +50,21 @@ class SignView(arcade.View):
     def on_draw(self):
         self.clear()
         self.gui_camera.use()
-        arcade.start_render()
+        UI = self.game_view._cam_buf.get()
+        UIFrame = PIL.Image.fromarray(UI[0])
+        name = str(uuid.uuid4())
+        cam = arcade.Texture(name, UIFrame)
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
+        arcade.draw_lrwh_rectangle_textured(500, 400, 150, 260, cam)
         self.manager.draw()
+        arcade.cleanup_texture_cache()
     
     def on_update(self, delta_time):
-        while True:
-            if self.items[0].type == "Key":
-                    self.npc.task = Task.KEY
-            else:
-                raise Exception(f"Unknown item type {self.items[0].type}")
-            recog = Recogniser()
-            self.game_view._cc.create_background()
-            bg = self.game_view._cc.get_background() 
-            img = self.game_view._cc.read_cam()
-            roi = self.game_view._cc.get_roi()
-            hand = get_hand_segment(bg, img, roi)
-            if hand:
-                frame, contour = hand
-                frame = process_model_image(frame)
-                predicted = recog.predict_letter(frame)
-                print(predicted)
+        UI = self.game_view._cam_buf.get()
+        predicted = UI[1]
+        print(predicted)
+        if predicted == "K":
+            print("Well Done")
             
 
     def on_key_press(self, symbol: int, modifiers: int):
