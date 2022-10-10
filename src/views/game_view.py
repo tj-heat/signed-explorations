@@ -37,6 +37,7 @@ LAYER_EVENTS = "Events"
 LAYER_CHARACTERS = "Characters"
 
 TEXT_PATH = "assets/sprites/text_box.PNG"
+ICON_PATH = "assets/sprites/interact_icon.PNG"
 
 UP_KEYS = (arcade.key.UP, arcade.key.W)
 DOWN_KEYS = (arcade.key.DOWN, arcade.key.S)
@@ -76,6 +77,7 @@ class GameView(arcade.View):
 
         #load necessary textures
         self.text_box = arcade.load_texture(TEXT_PATH)
+        self.interact_icon = arcade.load_texture(ICON_PATH)
     
     def setup(self):
 
@@ -208,7 +210,7 @@ class GameView(arcade.View):
             if npc_sprite.task == Task.DOOR:
                 self.door_task(npc_sprite, door_sprite)
 
-        def event_hit_handler(player_sprite, event_sprite, _arbiter, _space, _data):
+        def event_hit_handler(_player_sprite, event_sprite, _arbiter, _space, _data):
             if event_sprite.task and not self._in_event:
                 event_sprite.task()
 
@@ -227,6 +229,8 @@ class GameView(arcade.View):
 
         # Event tracker
         self._in_event = False
+
+        self._nearby_item = False
 
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
@@ -341,6 +345,12 @@ class GameView(arcade.View):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
+        # Disable events
+        # if key in MOVE_KEYS and self._in_event:
+        #     # FIXME This is better but still needs work
+        #     ## When moving parallel to event
+        #     self._in_event = False
+
         if key in UP_KEYS:
             self.up_pressed = False
         
@@ -385,6 +395,9 @@ class GameView(arcade.View):
         
         self._ui_manager.draw()
 
+        if self._nearby_item:
+            self.draw_interact_key()
+
         if self.player_sprite.cat_meowing():
             x = self.window.width/2
             y = self.window.height/2
@@ -403,12 +416,36 @@ class GameView(arcade.View):
                 start_y = y + (SPRITE_SIZE) - 30 #magic number generated through much trial and error
             )
 
+    def draw_interact_key(self) -> None:
+        """ Draws a symbol showing the interact key """
+        x, y = self.window.width / 2, self.window.height / 2
+        
+        self.interact_icon.draw_scaled(
+            center_x = x, 
+            center_y = y,
+            scale = SPRITE_SCALING * 2
+        )
+        arcade.draw_text(
+            text = "E",
+            font_size = 18,
+            font_name="Kenney Mini Square",
+            color = arcade.csscolor.BLACK,
+            anchor_x = "center",
+            start_x = x - (SPRITE_SIZE / 2) - 2,
+            start_y = y + (SPRITE_SIZE / 2) - 21 #magic number generated through much trial and error
+        )
+
     def on_update(self, delta_time):
         """ Movement and game logic """
         # TODO Change to a state-based system?
         if not self.in_dialogue():
             self.move_player()
             self.move_dog()
+
+            items = self.check_items_in_radius()
+            self._nearby_item = False
+            if items:
+                self._nearby_item = True
 
             if self.player_sprite.cat_meowing():
                 self.player_sprite.meow_count -= 1
@@ -475,7 +512,7 @@ class GameView(arcade.View):
                     ))
 
             # Create event
-            body = EventTrigger(width=width, height=height, task=task)
+            body = EventTrigger(width=width, height=height, task=task, debug=True)
 
             # Add event to scene
             body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
