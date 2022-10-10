@@ -218,10 +218,17 @@ class GameView(arcade.View):
         def event_hit_separate_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
             self.end_event()
 
+        def player_near_item_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
+            self.start_interact_notify()
+
+        def player_leave_item_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
+            self.end_interact_notify()
+
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
         self.physics_engine.add_collision_handler("player", "event", post_handler = event_hit_handler, separate_handler=event_hit_separate_handler)
+        self.physics_engine.add_collision_handler("player", "item", post_handler=player_near_item_handler, separate_handler=player_leave_item_handler)
 
         # Dialogue box object tracker
         self._dbox = None
@@ -229,7 +236,8 @@ class GameView(arcade.View):
         # Event tracker
         self._in_event = False
 
-        self._nearby_item = False
+        # Key press notifier
+        self._notify_interaction = False
 
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
@@ -263,6 +271,14 @@ class GameView(arcade.View):
     def end_event(self) -> None:
         """ Flag that the game is no longer in an event """
         self._in_event = False
+
+    def start_interact_notify(self):
+        """ Begin informing the player that they can interact with something """
+        self._notify_interaction = True
+
+    def end_interact_notify(self):
+        """ Stop informing the player that they can interact with something """
+        self._notify_interaction = False
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
@@ -396,7 +412,7 @@ class GameView(arcade.View):
         
         self._ui_manager.draw()
 
-        if self._nearby_item:
+        if self._notify_interaction:
             self.draw_interact_key()
 
         if self.player_sprite.cat_meowing():
@@ -442,11 +458,6 @@ class GameView(arcade.View):
         if not self.in_dialogue():
             self.move_player()
             self.move_dog()
-
-            items = self.check_items_in_radius()
-            self._nearby_item = False
-            if items:
-                self._nearby_item = True
 
             if self.player_sprite.cat_meowing():
                 self.player_sprite.meow_count -= 1
