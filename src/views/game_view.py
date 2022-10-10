@@ -59,8 +59,6 @@ class GameView(arcade.View):
         # Video capture
         self._cc = cam_controller
 
-        self.set = False
-
         self.camera = None
         self.gui_camera = None
         self._ui_manager = None
@@ -325,8 +323,15 @@ class GameView(arcade.View):
         
         elif key == arcade.key.E:
             items = self.check_items_in_radius()
+            # FIXME This will need to pass the proper information to the sign
+            # view, rather than hardcoding the target.
             if self.player_sprite.is_touched() and len(items) != 0:
-                sign_view = SignView(self, self.npc_sprite, items, goal="VUS")
+                sign_view = SignView(
+                    self, 
+                    self.npc_sprite, 
+                    goal="VUS", 
+                    task=Task.KEY
+                )
                 sign_view.setup()
                 self.window.show_view(sign_view)
             else:

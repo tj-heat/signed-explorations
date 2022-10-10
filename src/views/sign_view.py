@@ -5,12 +5,12 @@ import uuid
 from src.video.video_control import *
 
 class SignView(arcade.View):
-    def __init__(self, game_view, npc: Dog, items, goal: str = None):
+    def __init__(self, game_view, npc: Dog, goal: str, task: Task):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
-        self.items = items
+        self._complete_task = task
 
         # Spelling requirements
         self._goal = goal.upper()
@@ -67,15 +67,13 @@ class SignView(arcade.View):
     
     def on_update(self, delta_time):
         print(self._predicted)
-        
         if self._predicted == self.get_current_target():
             print("Well Done")
             self.progress_sign()
         
             if self.goal_reached():
                 print("Word has been spelt")
-                self.npc.task = Task.KEY
-                self.game_view.set == True
+                self.npc.task = self._complete_task
                 self.window.show_view(self.game_view)
 
     def on_key_press(self, symbol: int, modifiers: int):
