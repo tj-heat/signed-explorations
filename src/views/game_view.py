@@ -369,12 +369,6 @@ class GameView(arcade.View):
             pause.setup()
             self.window.show_view(pause)
         
-        elif key == arcade.key.L:
-            self.register_dialogue(DialogueBox(
-                ["Hello", "there"], 
-                width=self.camera.viewport_width
-            ))
-        
         elif key == arcade.key.SPACE:
             if self.in_dialogue():
                 self._dbox.progress()
