@@ -17,6 +17,8 @@ class SignView(arcade.View):
         self.npc = npc
         self.items = items
 
+        self.state = True
+
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -57,9 +59,18 @@ class SignView(arcade.View):
         UI = self.game_view._cam_buf.get()
         predicted = UI[1]
         print(predicted)
-        if predicted == "K":
+        if self.state == True:
+            search = "K"
+        elif self.state == False:
+            search = "E"
+        elif self.state == None:
+            search = "Y"
+        if predicted == search:
             print("Well Done")
-            
+            if search == "K":
+                self.state = False
+            elif search == "E":
+                self.state = None
 
     def on_key_press(self, symbol: int, modifiers: int):
         self.window.show_view(self.game_view)
