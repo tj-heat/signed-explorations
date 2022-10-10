@@ -352,12 +352,6 @@ class GameView(arcade.View):
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        # Disable events
-        # if key in MOVE_KEYS and self._in_event:
-        #     # FIXME This is better but still needs work
-        #     ## When moving parallel to event
-        #     self._in_event = False
-
         if key in UP_KEYS:
             self.up_pressed = False
         
