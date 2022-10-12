@@ -1,0 +1,19 @@
+wall_sprite_sheet.png
+size: 128, 64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+wall_cliff
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+wall_mossy
+  rotate: false
+  xy: 64, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
