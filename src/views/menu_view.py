@@ -59,6 +59,7 @@ class MenuView(arcade.View):
         )
 
     def on_click_start(self, event):
+        self.manager.clear()
         game = g.GameView(cam_controller=self._cc)
         game.setup()
         self.window.show_view(game)
