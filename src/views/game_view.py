@@ -364,9 +364,9 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
-            else:
-                self.dog_sprite.follow_cat()
-                self.player_sprite.start_meow()
+        elif key == arcade.key.Q:
+            self.dog_sprite.follow_cat()
+            self.player_sprite.start_meow()
         
         elif key == arcade.key.ESCAPE:
             self.pause_video()

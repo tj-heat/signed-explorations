@@ -39,9 +39,6 @@ class MenuView(arcade.View):
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200, style = uni_style)
         self.v_box.add(start_button.with_space_around(bottom=20))
 
-        settings_button = arcade.gui.UIFlatButton(text="Settings", width=200, style = uni_style)
-        self.v_box.add(settings_button.with_space_around(bottom=20))
-
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
         self.v_box.add(exit_button)
 
