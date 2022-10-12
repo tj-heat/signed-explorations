@@ -3,12 +3,283 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "texture_maps/wall_sprite_sheet.tsx",
+    "activeFile": "",
     "expandedProjectPaths": [
         "texture_maps",
         "."
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "C:/DECO3801/design/assets/lvls/Door_stone.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Door_stone_side.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_Wood_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_Wood_Light.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_Wood_Medium_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_Wood_Medium_Lightpng.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_stone_1.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_stone_2.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Ground_stone_3.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_back_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_back_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_back_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_corner_bottom_left.png.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_corner_bottom_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_corner_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_corner_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_front_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_front_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_front_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/Wall_stone_top_up.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/ground_wood.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/interact_key.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/lvl1.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 1348.4848484848485,
+                "y": 386.3636363636365
+            }
+        },
+        "C:/DECO3801/design/assets/lvls/wall_cliff.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/wall_mossy.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/wall_water.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/DECO3801/design/assets/lvls/wall_water_top.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Door_stone.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_Wood_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_Wood_Light.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_Wood_Medium_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_Wood_Medium_Lightpng.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_stone_1.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_stone_2.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Ground_stone_3.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_back_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_back_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_back_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_corner_bottom_left.png.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_corner_bottom_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_corner_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_corner_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_front_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_front_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_front_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/Wall_stone_top_up.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/ground_wood.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/interact_key.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/lvl1.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 801.5151515151515,
+                "y": 957.5757575757576
+            }
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/wall_cliff.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/wall_mossy.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/wall_water.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/wall_water_top.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Door_stone.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_Wood_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_Wood_Light.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_Wood_Medium_Dark.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_Wood_Medium_Lightpng.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_stone_1.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_stone_2.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Ground_stone_3.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_back_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_back_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_back_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_corner_bottom_left.png.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_corner_bottom_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_corner_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_corner_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_front_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_front_middle.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_front_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_top_left.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_top_right.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/Wall_stone_top_up.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/ground_wood.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/interact_key.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx": {
+            "scale": 0.6016666666666666,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 801.1080332409974,
+                "y": 961.4958448753464
+            }
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/wall_cliff.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/wall_mossy.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/wall_water.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/wall_water_top.tsx": {
+            "scaleInDock": 1
+        },
         "lvl1.json": {
             "scale": 0.6016666666666666,
             "selectedLayer": 0,
@@ -19,10 +290,10 @@
         },
         "lvl1.tmx": {
             "scale": 0.33,
-            "selectedLayer": 4,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 933.3333333333334,
-                "y": 986.3636363636364
+                "x": 778.7878787878788,
+                "y": 940.9090909090908
             }
         },
         "texture_maps/door_sprite_sheet.tsx": {
@@ -154,27 +425,21 @@
     "map.tileWidth": 64,
     "map.width": 25,
     "openFiles": [
-        "lvl1.tmx",
-        "texture_maps/wood_sprite_sheet.tsx",
-        "texture_maps/stone_wall_sprite_sheet.tsx",
-        "texture_maps/wall_sprite_sheet.tsx",
-        "texture_maps/water_sprite_sheet.tsx",
-        "texture_maps/stone_edge_sprite_sheet.tsx",
-        "texture_maps/door_sprite_sheet.tsx"
     ],
     "project": "levels.tiled-project",
     "recentFiles": [
-        "lvl1.tmx",
-        "texture_maps/wood_sprite_sheet.tsx",
-        "texture_maps/stone_wall_sprite_sheet.tsx",
         "texture_maps/door_sprite_sheet.tsx",
         "texture_maps/stone_edge_sprite_sheet.tsx",
         "texture_maps/water_sprite_sheet.tsx",
         "texture_maps/wall_sprite_sheet.tsx",
+        "texture_maps/stone_wall_sprite_sheet.tsx",
+        "texture_maps/wood_sprite_sheet.tsx",
+        "lvl1.tmx",
+        "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx",
+        "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/lvl1.tmx",
+        "C:/DECO3801/design/assets/lvls/lvl1.tmx",
         "texture_maps/stone_sprite_sheet.tsx",
-        "texture_maps/stone_edges_sprite_sheet.tsx",
-        "lvl1.json",
-        "tutorial/lvl1.json"
+        "texture_maps/stone_edges_sprite_sheet.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

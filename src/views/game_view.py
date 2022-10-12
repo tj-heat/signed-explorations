@@ -135,12 +135,14 @@ class GameView(arcade.View):
             cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
             if item.name == "Key":
                 body = items.Key()
+                body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
+                body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+
+                self.scene.add_sprite(LAYER_ITEMS, body)
+            elif item.name == "Lever":
+                pass
             else:
                 raise Exception (f"Unknown item type {item.name}")
-            body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-            body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
-
-            self.scene.add_sprite(LAYER_ITEMS, body)
 
         door_layer = self.tile_map.object_lists[LAYER_DOORS]
 
