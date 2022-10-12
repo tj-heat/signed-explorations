@@ -152,17 +152,19 @@ class GameView(arcade.View):
 
         door_layer = self.tile_map.object_lists[LAYER_DOORS]
 
-        # for door in door_layer:
-        #     cartesian = self.tile_map.get_cartesian(npc.s)
-        #     info = door.name.split("_")
-        #     option = info[0]
-        #     key = info[1]
-        #     orientation = info[2]
-        #     body = items.Door(option, key, orientation)
-        #     body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-        #     body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+        for door in door_layer:
+            x, y = self.get_center_of_door(door.shape)
+            cartesian = self.tile_map.get_cartesian(x, y)
+            y2 = (cartesian[1] + self.tile_map.height) % self.tile_map.height
+            info = door.name.split("_")
+            option = info[0]
+            key = info[1]
+            orientation = info[2]
+            body = items.Door(option, key, orientation)
+            body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
+            body.center_y = math.floor((y2 + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
 
-        #     self.scene.add_sprite(LAYER_DOORS, body)
+            self.scene.add_sprite(LAYER_DOORS, body)
 
 
         self.physics_engine = PymunkPhysicsEngine(damping=2, gravity=(0,0))
@@ -200,11 +202,11 @@ class GameView(arcade.View):
             body_type = PymunkPhysicsEngine.STATIC
         )
 
-        # self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
-        #     friction = 0.6,
-        #     collision_type = "door",
-        #     body_type = PymunkPhysicsEngine.STATIC
-        # )
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
+            friction = 0.6,
+            collision_type = "door",
+            body_type = PymunkPhysicsEngine.STATIC
+        )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = True
@@ -226,6 +228,14 @@ class GameView(arcade.View):
 
         # Dialogue box object tracker
         self._dbox = None
+
+    def get_center_of_door(self, coordinates):
+        #[top left, top right, bottom right, bottom left]
+        #taking bottom left coord and adding 32 
+        x, y = coordinates[3]
+        center_x = x + 32
+        center_y = y + 32
+        return (x, y)
 
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
