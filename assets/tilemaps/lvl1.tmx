@@ -114,9 +114,9 @@
   <object id="2" name="Dog" x="350.667" y="1375"/>
  </objectgroup>
  <objectgroup id="5" name="Doors">
-  <object id="29" name="orthogonal_key_front" x="384" y="704" width="64" height="64"/>
-  <object id="35" name="side_lever_left" x="0" y="320" width="64" height="64"/>
-  <object id="36" name="side_lever_left" x="0" y="384" width="64" height="64"/>
+  <object id="29" name="orthogonal_key_n_n" x="384" y="704" width="64" height="64"/>
+  <object id="35" name="side_lever_left_top" x="0" y="320" width="64" height="64"/>
+  <object id="36" name="side_lever_left_bottom" x="0" y="384" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="Items">
   <object id="10" name="Key" x="1315" y="1183"/>

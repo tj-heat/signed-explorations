@@ -160,7 +160,8 @@ class GameView(arcade.View):
             option = info[0]
             key = info[1]
             orientation = info[2]
-            body = items.Door(option, key, orientation)
+            dual_pos = info[3]
+            body = items.Door(option, key, orientation, dual_pos)
             body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((y2 + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
 
