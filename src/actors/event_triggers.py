@@ -98,5 +98,6 @@ EVENT_DATA = {
         "type": EventType.MSG, 
         "msgs": ["The door's locked..."],
         "persistence": SingleEventTrigger,
+        "interactible": False,
     },
 }

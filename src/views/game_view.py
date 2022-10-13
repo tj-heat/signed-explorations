@@ -494,7 +494,6 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-        # TODO Change to a state-based system?
         if not self.in_dialogue():
             self.move_player()
             self.move_dog()
@@ -570,17 +569,16 @@ class GameView(arcade.View):
                     ))
 
             # Create event
-                body = event_data[EVENT_PERSIST](
+            body = event_data[EVENT_PERSIST](
                 width=width, 
                 height=height, 
                 task=task,
+                interactible=event_data[EVENT_INTERACT],
                 debug=True
             )
 
             # Add event to scene
             body.center_x, body.center_y = self.get_center_from_cartesian(cartesian)
-            # t = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
-            # body.center_y = math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
             self.scene.add_sprite(LAYER_EVENTS, body)
 
     def get_center_from_cartesian(self, cartesian: Tuple[int]) -> Tuple[float]:
