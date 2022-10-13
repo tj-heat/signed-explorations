@@ -115,12 +115,12 @@
  </objectgroup>
  <objectgroup id="5" name="Doors">
   <object id="29" name="orthogonal_Key_n_n_1" x="384" y="704" width="64" height="64"/>
-  <object id="35" name="side_lever_left_top_2" class="2" x="0" y="320" width="64" height="64"/>
-  <object id="36" name="side_lever_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
+  <object id="35" name="side_Key_left_top_2" class="2" x="0" y="320" width="64" height="64"/>
+  <object id="36" name="side_Key_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="Items">
   <object id="10" name="Key" x="415" y="1015"/>
-  <object id="28" name="Key" class="key" x="1230.3" y="321.212"/>
+  <object id="28" name="Key" class="key" x="514.3" y="1195.21"/>
  </objectgroup>
  <objectgroup id="7" name="Events"/>
 </map>

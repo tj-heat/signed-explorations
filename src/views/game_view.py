@@ -246,13 +246,19 @@ class GameView(arcade.View):
         return True
 
     def npc_opens_door(self, door : items.Door):
-        all_doors = self.scene.get_sprite_list(LAYER_DOORS).sprite_list
-        for joints in all_doors:
-            if joints.door_num == door.door_num:
-                print(f"called for {door.door_num}")
-                door.open_door()
-                self.physics_engine.remove_sprite(door)
-                self.dog_sprite.task = Task.NONE
+        if door.dual_pos == "n":
+            self.door_physics_change(door)
+        else:
+            all_doors = self.scene.get_sprite_list(LAYER_DOORS).sprite_list
+            for d in all_doors:
+                if d.door_num == door.door_num and d.dual_pos != door.dual_pos :
+                    self.door_physics_change(d)
+                    self.door_physics_change(door)             
+
+    def door_physics_change(self, door):
+        door.open_door()
+        self.physics_engine.remove_sprite(door)
+        self.dog_sprite.task = Task.NONE
 
     def in_dialogue(self) -> bool:
         """ (bool) Returns True if the game is currently in dialogue. False
@@ -310,7 +316,7 @@ class GameView(arcade.View):
         elif self.dog_sprite.task != Task.NONE:
             items = self.check_items_in_radius()
             if len(items) == 0:
-                self.dog_sprite.set_goal(0,0)
+                self.dog_sprite.set_goal(self.dog_sprite.center_x, self.dog_sprite.center_y)
             else:
                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
