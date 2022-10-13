@@ -3,10 +3,13 @@ from enum import Enum
 
 import arcade
 
+import src.dialogue.speech_items as Speech
+
 class EventType(Enum):
-    NONE    = 0
-    MSG     = 1
-    THOUGHT = 2
+    NONE        = 0
+    MSG         = 1
+    THOUGHT     = 2
+    DIALOGUE    = 3
 
 class EventTrigger(arcade.Sprite):
     _collides = 1 # Trueian value for Pymunk reasons
@@ -77,7 +80,7 @@ class EventTrigger(arcade.Sprite):
 
     @property
     def interactible(self) -> bool:
-        return self.interactible
+        return self._interactible
 
     @staticmethod
     def calc_relative_bbox(width, height) -> Tuple["Point"]:
@@ -112,6 +115,7 @@ class PassingEventTrigger(ContactEventTrigger):
 # Event Information
 EVENT_TYPE = "type"
 EVENT_MSGS = "msgs"
+EVENT_MSG_SPEAKER = "speaker"
 EVENT_PERSIST = "persistence"
 EVENT_INTERACT = "interactible"
 
@@ -127,5 +131,14 @@ EVENT_DATA = {
         "msgs": "L'appel du vide",
         "persistence": ContactEventTrigger,
         "interactible": False,
-    }
+    },
+    "marble_start": {
+        "type": EventType.DIALOGUE,
+        "msgs": Speech.MARBLE_FLOOR.get(Speech.MSGS),
+        "persistence": ContactEventTrigger,
+        "interactible": True,
+        "speaker": Speech.CAT_SPEAKER
+    },
+    "bridge_water_top": {},
+    "bridge_water_bottom": {},
 }

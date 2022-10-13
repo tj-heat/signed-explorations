@@ -242,12 +242,15 @@ class GameView(arcade.View):
                 self.door_task(npc_sprite, door_sprite)
 
         def event_hit_handler(_p, event_sprite, _a, _s, _d):
-            if event_sprite.task and not self._in_event:
+            # NOTE This post handler is not firing for some reason
+            if self.event_possible(event_sprite):
                 event_sprite.task()
             self.start_event()
 
         def event_hit_pre_handler(_p, event_sprite, _a, _s, _d):
-            if isinstance(event_sprite, ContactEventTrigger):
+            # Interactible events should not activate on collide
+            if self.event_possible(event_sprite) \
+                    and not event_sprite.interactible:
                 event_sprite.task()
 
             return event_sprite.collides
@@ -284,6 +287,11 @@ class GameView(arcade.View):
 
         # Key press notifier
         self._notify_interaction = False
+    
+    def event_possible(self, event) -> bool:
+        """ Check if a given event can go ahead """
+        return event.task and not self._in_event
+
     def get_center_of_door(self, coordinates):
         #[top left, top right, bottom right, bottom left]
         #taking bottom left coord and adding 32 
@@ -310,9 +318,13 @@ class GameView(arcade.View):
         npc.task = Task.NONE
         self._dbox = None
 
-    def create_dbox(self, text) -> DialogueBox:
-        """ Create a dialogue box instance"""
-        return DialogueBox(text=text, width=self.camera.viewport_width)
+    def create_dbox(self, text, speaker=None) -> DialogueBox:
+        """ Create a dialogue box instance """
+        return DialogueBox(
+            text=text, 
+            width=self.camera.viewport_width, 
+            speaker=speaker
+        )
 
     def register_dialogue(self, dbox: DialogueBox) -> None:
         """ Keep track of a given dialogue box and register it with UI manager.
@@ -348,13 +360,25 @@ class GameView(arcade.View):
         self._notify_interaction = False
 
     def check_items_in_radius(self):
-        items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
+        return self.check_in_radius(LAYER_ITEMS)
+
+    def check_events_in_radius(self):
+        """ Check for interactible events in a given radius around the player """
+        events = self.check_in_radius(LAYER_EVENTS, radius=96)
+        return list(filter(lambda e: e.interactible, events))
+
+    def check_in_radius(self, layer, radius=RADIUS):
+        """ Check for all sprites on a given layer, within a provided radius """
+        sprites = self.scene.get_sprite_list(layer).sprite_list
         nearby = []
-        for i in items:
-            x = self.player_sprite.center_x - i.center_x
-            y = self.player_sprite.center_y - i.center_y
-            if abs(x) < RADIUS and abs(y) < RADIUS:
-                nearby.append(i)
+
+        for sprite in sprites:
+            dx = self.player_sprite.center_x - sprite.center_x
+            dy = self.player_sprite.center_y - sprite.center_y
+
+            if ((dx ** 2 + dy ** 2) ** 0.5) < radius:
+                nearby.append(sprite)
+
         return nearby
 
     def center_camera_to_player(self):
@@ -453,10 +477,20 @@ class GameView(arcade.View):
         
         elif key == arcade.key.E:
             items = self.check_items_in_radius()
+            events = self.check_events_in_radius()
+
             if self.player_sprite.is_touched() and len(items) != 0:
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+
+            if events:
+                event = events.pop()
+                event.task()
+
+                if isinstance(event, ContactEventTrigger):
+                    event.kill()
+        
         elif key == arcade.key.Q:
             self.dog_sprite.follow_cat()
             self.player_sprite.start_meow()
@@ -529,6 +563,12 @@ class GameView(arcade.View):
             self.move_player()
             self.move_dog()
 
+            # Check for nearby events
+            if self.check_events_in_radius():
+                self._notify_interaction = True
+            else:
+                self._notify_interaction = False
+
             if self.player_sprite.cat_meowing():
                 self.player_sprite.meow_count -= 1
             if self.player_sprite.cat_meowing() and self.player_sprite.meow_count == 0:
@@ -593,20 +633,29 @@ class GameView(arcade.View):
             # Create task
             event_type = event_data[EVENT_TYPE]
             if event_type == EventType.MSG:
-                def task(msg):                         
+                speaker = None
+                def task(msg, speaker=None):
+                    # Return lambda to force evaluation and get around closure                   
                     return lambda: self.register_dialogue(self.create_dbox(msg))
             
             elif event_type == EventType.THOUGHT:
-                def task(msg):
+                speaker = None
+                def task(msg, speaker=None):
                     return lambda: self.player_sprite.start_meow(msg)
+
+            elif event_type == EventType.DIALOGUE:
+                speaker = event_data[EVENT_MSG_SPEAKER]
+                def task(msg, speaker):
+                    return lambda: self.register_dialogue(
+                        self.create_dbox(msg, speaker)
+                    )
 
             # Create event
             body = event_data[EVENT_PERSIST](
                 width=width, 
                 height=height, 
-                task=task(event_data[EVENT_MSGS]),
+                task=task(msg=event_data[EVENT_MSGS], speaker=speaker),
                 interactible=event_data[EVENT_INTERACT],
-                debug=True
             )
 
             # Add event to scene
