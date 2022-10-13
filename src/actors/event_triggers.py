@@ -7,15 +7,21 @@ class EventType(Enum):
     NONE    = 0
     MSG     = 1 
 
-EVENT_DATA = {
-    "door_a": {
-        "type": EventType.MSG, 
-        "msgs": ["The door's locked..."]
-    },
-}
-
 class EventTrigger(arcade.Sprite):   
-    def __init__(self, width, height, task, debug=False) -> None:
+    def __init__(
+        self, 
+        width, 
+        height, 
+        task, 
+        interactible=False, 
+        debug=False
+    ) -> None:
+        """ Constructs an event trigger. Event triggers are invisible blocks of
+        a given width and height that on collision or interaction perform a 
+        task.
+        
+        When in debug mode an event trigger will show as a blue rectangle.
+        """
         super().__init__(
             image_width=width, 
             image_height=height, 
@@ -24,6 +30,8 @@ class EventTrigger(arcade.Sprite):
         
         self.hit_box = EventTrigger.calc_relative_bbox(width, height)
         self._task = task
+        self._interactible = interactible
+
         self._debug = debug
 
         # Conditionally construct
@@ -60,6 +68,10 @@ class EventTrigger(arcade.Sprite):
     def task(self):
         return self._task
 
+    @property
+    def interactible(self) -> bool:
+        return self.interactible
+
     @staticmethod
     def calc_relative_bbox(width, height) -> Tuple["Point"]:
         """ Calculates the points needed for a relative bounding box, based on 
@@ -74,3 +86,17 @@ class SingleEventTrigger(EventTrigger):
     def task(self):
         self.kill()
         return self._task
+
+# Event Information
+EVENT_TYPE = "type"
+EVENT_MSGS = "msgs"
+EVENT_PERSIST = "persistence"
+EVENT_INTERACT = "interactible"
+
+EVENT_DATA = {
+    "door_locked": {
+        "type": EventType.MSG, 
+        "msgs": ["The door's locked..."],
+        "persistence": SingleEventTrigger,
+    },
+}

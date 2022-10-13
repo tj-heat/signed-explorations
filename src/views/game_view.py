@@ -6,9 +6,10 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import src.actors.character as character
 import src.actors.items as items
 import src.views.pause_view as p
-from src.actors.event_triggers import EVENT_DATA, EventTrigger, EventType, SingleEventTrigger
+from src.actors.event_triggers import *
 from src.actors.character import Task
 from src.dialogue.dialogue_box import DialogueBox
+from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.sign_view import SignView
@@ -81,7 +82,7 @@ class GameView(arcade.View):
         self.interact_icon = arcade.load_texture(ICON_PATH)
     
     def setup(self):
-
+        self._done_tutorial = False
         self.camera = arcade.Camera(self.window.width, self.window.height)
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
         self._ui_manager = arcade.gui.UIManager()
@@ -150,8 +151,7 @@ class GameView(arcade.View):
             cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
             if item.name == "Key":
                 body = items.Key()
-                body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-                body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+                body.center_x, body.center_y = self.get_center_from_cartesian(cartesian)
 
                 self.scene.add_sprite(LAYER_ITEMS, body)
             elif item.name == "Lever":
@@ -283,13 +283,17 @@ class GameView(arcade.View):
         npc.task = Task.NONE
         self._dbox = None
 
+    def create_dbox(self, text) -> DialogueBox:
+        """ Create a dialogue box instance"""
+        return DialogueBox(text=text, width=self.camera.viewport_width)
+
     def register_dialogue(self, dbox: DialogueBox) -> None:
         """ Keep track of a given dialogue box and register it with UI manager.
         """
         if not self._dbox:
             self._dbox = dbox
             self._ui_manager.add(self._dbox)
-            
+
     def npc_opens_door(self, door : items.Door):
         door.open_door()
         self.physics_engine.remove_sprite(door)
@@ -514,6 +518,12 @@ class GameView(arcade.View):
                 self._ui_manager.remove(self._dbox)
                 self._dbox = None
 
+    def on_show_view(self):
+        self.center_camera_to_player()
+        self.register_dialogue(self.create_dbox(DIALOGUE_INTRODUCTION))
+        self._done_tutorial = True
+        return super().on_show_view()
+
     def resume_video(self):
         """ Resumes the video thread """
         self._video_t.closer.set_active()
@@ -552,17 +562,29 @@ class GameView(arcade.View):
 
             # Create task
             task = None
-            if event_data['type'] == EventType.MSG:
+            if event_data[EVENT_TYPE] == EventType.MSG:
                 def task():
-                    self.register_dialogue(DialogueBox(
-                        event_data['msgs'], 
-                        width=self.camera.viewport_width
+                    self.register_dialogue(self.create_dbox(
+                        event_data[EVENT_MSGS]
                     ))
 
             # Create event
-            body = SingleEventTrigger(width=width, height=height, task=task)
+            body = event_data[EVENT_PERSIST](
+                width=width, 
+                height=height, 
+                task=task,
+                debug=True
+            )
 
             # Add event to scene
-            body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
-            body.center_y = math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
+            body.center_x, body.center_y = self.get_center_from_cartesian(cartesian)
+            # t = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
+            # body.center_y = math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
             self.scene.add_sprite(LAYER_EVENTS, body)
+
+    def get_center_from_cartesian(self, cartesian: Tuple[int]) -> Tuple[float]:
+        """ Get the center position of a given cartesian"""
+        return (
+            math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width),
+            math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
+        )
