@@ -1,7 +1,24 @@
-from turtle import color
+from turtle import color, width
 from typing import List, Tuple
 
 import arcade
+
+class _TalkingHead(arcade.gui.UIWidget):
+    def __init__(self, *, x=0, y=0, width=100, height=100, 
+    sprite: arcade.Sprite = None, bg_color=(0, 0, 0, 0), **kwargs):
+        super().__init__(x, y, width, height)
+        self._sprite = sprite
+        self._bg = bg_color
+
+    def on_update(self, dt):
+        self._sprite.update()
+        self._sprite.update_animation(dt)
+        self.trigger_render()
+
+    def do_render(self, surface: arcade.gui.surface.Surface):
+        self.prepare_render(surface)
+        surface.clear(color=self._bg)
+        surface.draw_sprite(0, 0, self.width, self.height, self._sprite)
 
 class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
     _BG_COLOUR = arcade.color.WHITE
@@ -55,7 +72,51 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         """ Returns true if the dialogue box is active. False otherwise. """
         return self._active
 
-    def _generate_text(self, text: str, size: int) -> arcade.gui.UIWidget:
+    def _create_dialogue(self, text: str, size: int, speaker: arcade.Sprite):
+        """ Create a layout containing a text widget with specified text and an
+        associated talking head.
+        
+        Params:
+            text (str): The text to put in the widget.
+            size (int): The size of the text.
+            speaker (Sprite): The sprite of the speaker.
+
+        Returns:
+            (UIBoxLayout) the created text widget.
+        """
+        box = arcade.gui.UIBoxLayout(vertical=False, align="bottom")
+
+        # Make talking head take up 80% of box
+        icon_height = icon_width = (self._height / 2)
+
+        sprite = sprite=arcade.Sprite(texture=arcade.load_texture("assets/ui/Cat_Face.png"))
+        box.add(_TalkingHead(
+            width=icon_width, 
+            height=icon_height, 
+            sprite=sprite, 
+            bg_color=arcade.color.WHITE
+        )
+        .with_space_around(
+            top=(icon_height - self._TEXT_OFF_Y) / 2,
+            bottom=(icon_height - self._TEXT_OFF_Y) / 2,
+            bg_color=arcade.color.WHITE
+        ))
+        print(f"icon: {icon_height}")
+        print(f"overall: {self._height}")
+
+        box.add(self._create_text(text, size, width_shift=icon_width))
+
+        return box
+
+    def _create_text(
+        self, 
+        text: str, 
+        size: int,
+        width_shift: float = 0,
+        height_shift: float = 0,
+        width_offset: float = _TEXT_OFF_X,
+        height_offset: float = _TEXT_OFF_Y
+    ) -> arcade.gui.UIWidget:
         """ Create a text widget with the specified text.
         
         Params:
@@ -67,17 +128,16 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         """
         return arcade.gui.UITextArea(
             text = text,
-            width = self._width - self._TEXT_OFF_X,
-            # Divide height by two to account for two widgetss
+            width = self._width - self._TEXT_OFF_X - width_shift,
             height = (self._height - self._TEXT_OFF_Y) / 2,
             font_size = size,
             font_name = self._FONT,
             text_color = self._TEXT_COLOUR
         ).with_space_around( 
-            top = self._TEXT_OFF_Y,
-            right = 0,
-            bottom = 0,
-            left = self._TEXT_OFF_X,
+            top = height_offset, # Offset the top
+            right = self._TEXT_OFF_X - width_offset, # Offset horiz difference
+            bottom = self._TEXT_OFF_Y - height_offset, # Offset vert difference
+            left = width_offset, # Offset left
             bg_color = self._BG_COLOUR
         )
 
@@ -87,10 +147,10 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         self.clear()
 
         # Draw main text
-        self.add(self._generate_text(self._current_text, 24))
+        self.add(self._create_dialogue(self._current_text, 24, None))
 
         # Draw helper text
-        self.add(self._generate_text(self._HELP_MSG, 14))
+        self.add(self._create_text(self._HELP_MSG, 14))
 
 
 class DialogueBox(arcade.gui.UIAnchorWidget):
@@ -119,15 +179,3 @@ class DialogueBox(arcade.gui.UIAnchorWidget):
     def progress(self):
         """ Move to the next text item in the dialogue box. """
         self._i_child.progress()
-
-    # def do_render(self, surface: arcade.gui.Surface):
-    #     """ """
-    #     self.prepare_render(surface)
-    #     surface.clear(self._BG_COLOUR)
-
-    #     if self._i_child.pressed:
-    #         print("hello")
-    #         arcade.draw_xywh_rectangle_outline(0, 0,
-    #                                            self.width, self.height,
-    #                                            color=arcade.color.BATTLESHIP_GREY,
-    #                                            border_width=3)
