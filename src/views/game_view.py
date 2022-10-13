@@ -322,21 +322,25 @@ class GameView(arcade.View):
         
         if self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY:
             x, y = self.dog_sprite.goal
-            if x < 0:
-                force = (self.dog_sprite.force, 0)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            if x > 0:
-                self.dog_sprite.change_x = -self.dog_sprite.force
-                force = (-self.dog_sprite.force, 0)
-                self.physics_engine.apply_force(self.dog_sprite, force)
             if y > 0:
                 force = (0, -self.dog_sprite.force)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            if y < 0:
+            elif y < 0:
                 force = (0, self.dog_sprite.force)
-                self.physics_engine.apply_force(self.dog_sprite, force)
             
-            self.dog_sprite.actual_force = force
+            self.physics_engine.apply_force(self.dog_sprite, force)
+            if abs(y) > abs(x):
+                self.dog_sprite.actual_force = force
+           
+            if x < 0:
+                force = (self.dog_sprite.force, 0)
+            elif x > 0:
+                force = (-self.dog_sprite.force, 0)
+
+            self.physics_engine.apply_force(self.dog_sprite, force)
+            if abs(x) > abs(y):
+                self.dog_sprite.actual_force = force
+        
+            
 
 
     def on_key_press(self, key, modifiers):

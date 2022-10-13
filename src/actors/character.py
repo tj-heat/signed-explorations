@@ -66,15 +66,15 @@ class Animal(arcade.Sprite):
 
     def update_animation(self, delta_time: float = 1 / 60):
         x, y = self.actual_force
-        if y > 0:
-            self.texture = self.front_texture_pair[BACK_FACING]
-        if y < 0:
-            self.texture = self.front_texture_pair[FRONT_FACING]
         if x < 0:
             self.texture = self.side_texture_pair[LEFT_FACING]
-        if x > 0:
+        elif x > 0:
             self.texture = self.side_texture_pair[RIGHT_FACING]
-        if x == 0 and y == 0:
+        elif y > 0:
+            self.texture = self.front_texture_pair[BACK_FACING]
+        elif y < 0:
+            self.texture = self.front_texture_pair[FRONT_FACING]
+        elif x == 0 and y == 0:
             self.texture = self.front_texture_pair[FRONT_FACING]
         return
 
