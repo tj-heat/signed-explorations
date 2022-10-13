@@ -163,17 +163,20 @@ class GameView(arcade.View):
 
         door_layer = self.tile_map.object_lists[LAYER_DOORS]
 
-        # for door in door_layer:
-        #     cartesian = self.tile_map.get_cartesian(npc.s)
-        #     info = door.name.split("_")
-        #     option = info[0]
-        #     key = info[1]
-        #     orientation = info[2]
-        #     body = items.Door(option, key, orientation)
-        #     body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-        #     body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+        for door in door_layer:
+            x, y = self.get_center_of_door(door.shape)
+            cartesian = self.tile_map.get_cartesian(x, y)
+            y2 = (cartesian[1] + self.tile_map.height) % self.tile_map.height
+            info = door.name.split("_")
+            option = info[0]
+            key = info[1]
+            orientation = info[2]
+            dual_pos = info[3]
+            body = items.Door(option, key, orientation, dual_pos)
+            body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
+            body.center_y = math.floor((y2 + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
 
-        #     self.scene.add_sprite(LAYER_DOORS, body)
+            self.scene.add_sprite(LAYER_DOORS, body)
 
 
         self.create_events(self.tile_map.object_lists[LAYER_EVENTS])
@@ -219,11 +222,11 @@ class GameView(arcade.View):
             body_type = PymunkPhysicsEngine.STATIC
         )
         
-        # self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
-        #     friction = 0.6,
-        #     collision_type = "door",
-        #     body_type = PymunkPhysicsEngine.STATIC
-        # )
+        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
+            friction = 0.6,
+            collision_type = "door",
+            body_type = PymunkPhysicsEngine.STATIC
+        )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = True
@@ -281,6 +284,13 @@ class GameView(arcade.View):
 
         # Key press notifier
         self._notify_interaction = False
+    def get_center_of_door(self, coordinates):
+        #[top left, top right, bottom right, bottom left]
+        #taking bottom left coord and adding 32 
+        x, y = coordinates[3]
+        center_x = x + 32
+        center_y = y + 32
+        return (x, y)
 
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
@@ -393,21 +403,25 @@ class GameView(arcade.View):
         
         if self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY:
             x, y = self.dog_sprite.goal
-            if x < 0:
-                force = (self.dog_sprite.force, 0)
-                self.physics_engine.apply_force(self.dog_sprite, force)
-            elif x > 0:
-                self.dog_sprite.change_x = -self.dog_sprite.force
-                force = (-self.dog_sprite.force, 0)
-                self.physics_engine.apply_force(self.dog_sprite, force)
             if y > 0:
                 force = (0, -self.dog_sprite.force)
-                self.physics_engine.apply_force(self.dog_sprite, force)
             elif y < 0:
                 force = (0, self.dog_sprite.force)
-                self.physics_engine.apply_force(self.dog_sprite, force)
             
-            self.dog_sprite.actual_force = force
+            self.physics_engine.apply_force(self.dog_sprite, force)
+            if abs(y) > abs(x):
+                self.dog_sprite.actual_force = force
+           
+            if x < 0:
+                force = (self.dog_sprite.force, 0)
+            elif x > 0:
+                force = (-self.dog_sprite.force, 0)
+
+            self.physics_engine.apply_force(self.dog_sprite, force)
+            if abs(x) > abs(y):
+                self.dog_sprite.actual_force = force
+        
+            
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -443,9 +457,9 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
-            else:
-                self.dog_sprite.follow_cat()
-                self.player_sprite.start_meow()
+        elif key == arcade.key.Q:
+            self.dog_sprite.follow_cat()
+            self.player_sprite.start_meow()
         
         elif key == arcade.key.ESCAPE:
             self.pause_video()

@@ -68,13 +68,13 @@ class Animal(arcade.Sprite):
         x, y = self.actual_force
         if x < 0:
             self.texture = self.side_texture_pair[LEFT_FACING]
-        if x > 0:
+        elif x > 0:
             self.texture = self.side_texture_pair[RIGHT_FACING]
-        if y > 0:
+        elif y > 0:
             self.texture = self.front_texture_pair[BACK_FACING]
-        if y < 0:
+        elif y < 0:
             self.texture = self.front_texture_pair[FRONT_FACING]
-        if x == 0 and y == 0:
+        elif x == 0 and y == 0:
             self.texture = self.front_texture_pair[FRONT_FACING]
         return
 
