@@ -134,14 +134,14 @@ class GameView(arcade.View):
             if npc.name == "Dog":
                 body = character.Dog() 
                 self.npc_sprite = body
-                body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-                body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+                body.center_x, body.center_y = \
+                    self.get_center_from_cartesian(cartesian)
                 self.dog_sprite = body
                 self.scene.add_sprite(LAYER_CHARACTERS, body)
             elif npc.name == "Cat":
                 self.player_sprite = character.Cat()
-                self.player_sprite.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
-                self.player_sprite.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
+                self.player_sprite.center_x, self.player_sprite.center_y = \
+                    self.get_center_from_cartesian(cartesian)
                 self.scene.add_sprite("Player", self.player_sprite)
             else: 
                 raise Exception(f"Unknown npc type {npc.name}")
@@ -152,7 +152,8 @@ class GameView(arcade.View):
             cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
             if item.name == "Key":
                 body = items.Key()
-                body.center_x, body.center_y = self.get_center_from_cartesian(cartesian)
+                body.center_x, body.center_y = \
+                    self.get_center_from_cartesian(cartesian)
 
                 self.scene.add_sprite(LAYER_ITEMS, body)
             elif item.name == "Lever":
@@ -561,19 +562,15 @@ class GameView(arcade.View):
         self._video_t.finish()
 
     def create_events(self, event_layer):
-        map_height = self.tile_map.height
+        map_height = self.tile_map.height * self.tile_map.tile_height
 
         for event in event_layer:
-
             # Calculate geometries
-            tl, tr, br, bl = event.shape
+            tl, tr, br, bl = \
+                [(x, (y + map_height) % map_height) for x, y in event.shape]
             width, height = (int(br[0] - tl[0]), int(tl[1] - br[1]))
             mid_x, mid_y = (tl[0] + width // 2, tl[1] - height // 2)
             
-            # Find tile indexes
-            cartesian = self.tile_map.get_cartesian(mid_x, mid_y)
-            cartesian = (cartesian[0], (cartesian[1] + map_height) % map_height)
-
             # Look for event
             event_data = EVENT_DATA.get(event.name, EventType.NONE)
             if event_data == EventType.NONE:
@@ -598,12 +595,12 @@ class GameView(arcade.View):
             )
 
             # Add event to scene
-            body.center_x, body.center_y = self.get_center_from_cartesian(cartesian)
+            body.center_x, body.center_y = mid_x, mid_y
             self.scene.add_sprite(LAYER_EVENTS, body)
 
     def get_center_from_cartesian(self, cartesian: Tuple[int]) -> Tuple[float]:
         """ Get the center position of a given cartesian"""
-        return (
-            math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width),
-            math.floor((cartesian[1] + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
-        )
+        x = int((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
+        y = int((cartesian[1] + 0.5) * TILE_SCALING * self.tile_map.tile_height)
+        
+        return (x, y)
