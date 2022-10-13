@@ -15,13 +15,14 @@ class Key(arcade.Sprite):
         self.hit_box = self.texture.hit_box_points
 
 class Door(arcade.Sprite):
-    def __init__(self, option, key, orientation, dual_pos):
+    def __init__(self, option, key, orientation, dual_pos, door_num):
         super().__init__()
 
         self.type = "Door"
         self.task = Task.DOOR
         self.key = key
         self.dual_pos = dual_pos
+        self.door_num = door_num
 
         self.open_texture_pair = None
         if option == "side" and orientation == "left" and dual_pos == "top":
