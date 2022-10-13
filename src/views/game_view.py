@@ -520,8 +520,9 @@ class GameView(arcade.View):
 
     def on_show_view(self):
         self.center_camera_to_player()
-        self.register_dialogue(self.create_dbox(DIALOGUE_INTRODUCTION))
-        self._done_tutorial = True
+        if not self._done_tutorial:
+            self.register_dialogue(self.create_dbox(DIALOGUE_INTRODUCTION))
+            self._done_tutorial = True
         return super().on_show_view()
 
     def resume_video(self):
@@ -569,7 +570,7 @@ class GameView(arcade.View):
                     ))
 
             # Create event
-            body = event_data[EVENT_PERSIST](
+                body = event_data[EVENT_PERSIST](
                 width=width, 
                 height=height, 
                 task=task,
