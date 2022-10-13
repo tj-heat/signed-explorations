@@ -88,11 +88,11 @@ class Cat(Animal):
         self.meow_count = 0
         self.meow_text = None
 
-    def start_meow(self):
+    def start_meow(self, text: str = None):
         if self.meow == False:
             self.meow = True
             self.meow_count = 20
-            self.meow_text = random.choice(MEOW)
+            self.meow_text = text if text else random.choice(MEOW) 
 
     def cat_meowing(self):
         return self.meow

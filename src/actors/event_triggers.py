@@ -5,9 +5,12 @@ import arcade
 
 class EventType(Enum):
     NONE    = 0
-    MSG     = 1 
+    MSG     = 1
+    THOUGHT = 2
 
-class EventTrigger(arcade.Sprite):   
+class EventTrigger(arcade.Sprite):
+    _collides = 1 # Trueian value for Pymunk reasons
+
     def __init__(
         self, 
         width, 
@@ -65,6 +68,10 @@ class EventTrigger(arcade.Sprite):
         self.update_texture()
 
     @property
+    def collides(self) -> bool:
+        return self._collides
+
+    @property
     def task(self):
         return self._task
 
@@ -87,6 +94,15 @@ class SingleEventTrigger(EventTrigger):
         self.kill()
         return self._task
 
+class PassingEventTrigger(SingleEventTrigger):
+    """ Works as a single event trigger but without collision"""
+    _collides = 0 # Falsian value for Pymunk reasons
+
+    @property
+    def collides(self):
+        self.kill()
+        return self._collides
+
 # Event Information
 EVENT_TYPE = "type"
 EVENT_MSGS = "msgs"
@@ -100,4 +116,10 @@ EVENT_DATA = {
         "persistence": SingleEventTrigger,
         "interactible": False,
     },
+    "bridge_mid": {
+        "type": EventType.THOUGHT, 
+        "msgs": "L'appel du vide...",
+        "persistence": PassingEventTrigger,
+        "interactible": False,
+    }
 }

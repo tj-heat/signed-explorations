@@ -237,12 +237,18 @@ class GameView(arcade.View):
             if npc_sprite.task == Task.DOOR:
                 self.door_task(npc_sprite, door_sprite)
 
-        def event_hit_handler(_player_sprite, event_sprite, _arbiter, _space, _data):
+        def event_hit_handler(_p, event_sprite, _a, _s, _d):
             if event_sprite.task and not self._in_event:
                 event_sprite.task()
             self.start_event()
 
-        def event_hit_separate_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
+        def event_hit_pre_handler(_p, event_sprite, _a, _s, _d):
+            if isinstance(event_sprite, PassingEventTrigger):
+                event_sprite.task()
+
+            return event_sprite.collides
+
+        def event_hit_separate_handler(_p, _e, _a, _s, _d):
             self.end_event()
 
         def player_near_item_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
@@ -254,8 +260,17 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
-        self.physics_engine.add_collision_handler("player", "event", post_handler = event_hit_handler, separate_handler=event_hit_separate_handler)
-        self.physics_engine.add_collision_handler("player", "item", post_handler=player_near_item_handler, separate_handler=player_leave_item_handler)
+        self.physics_engine.add_collision_handler(
+            "player", "event",
+            pre_handler=event_hit_pre_handler,
+            post_handler=event_hit_handler, 
+            separate_handler=event_hit_separate_handler
+        )
+        self.physics_engine.add_collision_handler(
+            "player", "item", 
+            post_handler=player_near_item_handler, 
+            separate_handler=player_leave_item_handler
+        )
 
         # Dialogue box object tracker
         self._dbox = None
@@ -490,7 +505,7 @@ class GameView(arcade.View):
             color = arcade.csscolor.BLACK,
             anchor_x = "center",
             start_x = x - (SPRITE_SIZE / 2) - 2,
-            start_y = y + (SPRITE_SIZE / 2) - 21 #magic number generated through much trial and error
+            start_y = y + (SPRITE_SIZE / 2) - 21 #magic number
         )
 
     def on_update(self, delta_time):
@@ -565,20 +580,21 @@ class GameView(arcade.View):
                 raise Exception (f"Unknown item type {event.name}")
 
             # Create task
-            task = None
-            if event_data[EVENT_TYPE] == EventType.MSG:
-                def task():
-                    self.register_dialogue(self.create_dbox(
-                        event_data[EVENT_MSGS]
-                    ))
+            event_type = event_data[EVENT_TYPE]
+            if event_type == EventType.MSG:
+                def task(msg):                         
+                    return lambda: self.register_dialogue(self.create_dbox(msg))
+            
+            elif event_type == EventType.THOUGHT:
+                def task(msg):
+                    return lambda: self.player_sprite.start_meow(msg)
 
             # Create event
             body = event_data[EVENT_PERSIST](
                 width=width, 
                 height=height, 
-                task=task,
+                task=task(event_data[EVENT_MSGS]),
                 interactible=event_data[EVENT_INTERACT],
-                debug=True
             )
 
             # Add event to scene
