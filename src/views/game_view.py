@@ -143,25 +143,21 @@ class GameView(arcade.View):
                 body = items.Key()
                 body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
                 body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
-
                 self.scene.add_sprite(LAYER_ITEMS, body)
-            elif item.name == "Lever":
-                pass
             else:
                 raise Exception (f"Unknown item type {item.name}")
 
         door_layer = self.tile_map.object_lists[LAYER_DOORS]
 
         for door in door_layer:
-            x, y = self.get_center_of_door(door.shape)
+            x, y = door.shape[3]
             cartesian = self.tile_map.get_cartesian(x, y)
             y2 = (cartesian[1] + self.tile_map.height) % self.tile_map.height
             info = door.name.split("_")
-            option = info[0]
-            key = info[1]
-            orientation = info[2]
-            dual_pos = info[3]
-            body = items.Door(option, key, orientation, dual_pos)
+            if len(info) != 5:
+                body = items.Door("orthogonal", "Key", "n", "n", "-1")
+            else:
+                body = items.Door(info[0], info[1], info[2], info[3], info[4])
             body.center_x = math.floor((cartesian[0] + 0.5) * TILE_SCALING * self.tile_map.tile_width)
             body.center_y = math.floor((y2 + 0.5) * (self.tile_map.tile_height * TILE_SCALING))
 
@@ -210,9 +206,13 @@ class GameView(arcade.View):
         )
 
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
-            player_sprite.touched = True
             npc_sprite.stop_follow()
+            player_sprite.touched = True
+            return player_sprite.touched
+            #ADD AS PREHANDLER
 
+        def npc_separate_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
+            player_sprite.touched = False
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
             if npc_sprite.task == item_sprite.task:
@@ -221,44 +221,38 @@ class GameView(arcade.View):
 
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
             if npc_sprite.task == Task.DOOR:
-                self.door_task(npc_sprite, door_sprite)
+                return self.door_task(npc_sprite, door_sprite)
 
-        self.physics_engine.add_collision_handler("player", "npc", post_handler = npc_hit_handler)
+        self.physics_engine.add_collision_handler("player", "npc", begin_handler= npc_hit_handler, separate_handler = npc_separate_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
-        self.physics_engine.add_collision_handler("npc", "door", post_handler = door_hit_handler)
+        self.physics_engine.add_collision_handler("npc", "door", begin_handler = door_hit_handler)
 
         # Dialogue box object tracker
         self._dbox = None
 
-    def get_center_of_door(self, coordinates):
-        #[top left, top right, bottom right, bottom left]
-        #taking bottom left coord and adding 32 
-        x, y = coordinates[3]
-        center_x = x + 32
-        center_y = y + 32
-        return (x, y)
-
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
-        npc.task = Task.DOOR
+        npc.task = Task.NONE
 
     def door_task(self, npc : character.Dog, door : items.Door):
-        if door.key == "unlocked":
-            self.npc_opens_door(door)
-        elif door.key == "Key" and "Key" in npc.inventory:
+        if door.key == "Key" and "Key" in npc.inventory:
             npc.inventory.remove("Key")
-            self.npc_opens_door(door)
-        elif door.key == "lever" and "lever" in npc.inventory:
-            npc.inventory.remove("lever")
             self.npc_opens_door(door)
         
         npc.task = Task.NONE
         self._dbox = None
 
+        return True
+
     def npc_opens_door(self, door : items.Door):
-        door.open_door()
-        self.physics_engine.remove_sprite(door)
+        all_doors = self.scene.get_sprite_list(LAYER_DOORS).sprite_list
+        for joints in all_doors:
+            if joints.door_num == door.door_num:
+                print(f"called for {door.door_num}")
+                door.open_door()
+                self.physics_engine.remove_sprite(door)
+                self.dog_sprite.task = Task.NONE
 
     def in_dialogue(self) -> bool:
         """ (bool) Returns True if the game is currently in dialogue. False
@@ -268,8 +262,10 @@ class GameView(arcade.View):
 
     def check_items_in_radius(self):
         items = self.scene.get_sprite_list(LAYER_ITEMS).sprite_list
+        doors = self.scene.get_sprite_list(LAYER_DOORS).sprite_list
+        objects = items + doors
         nearby = []
-        for i in items:
+        for i in objects:
             x = self.player_sprite.center_x - i.center_x
             y = self.player_sprite.center_y - i.center_y
             if abs(x) < RADIUS and abs(y) < RADIUS:
@@ -305,22 +301,21 @@ class GameView(arcade.View):
 
 
         self.player_sprite.actual_force = force
-        self.player_sprite.untouched()
 
     def move_dog(self):
         force = (0,0)
         if self.dog_sprite.follow == True:
             self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
                 self.dog_sprite.center_y - self.player_sprite.center_y))
-        elif self.dog_sprite.task == Task.KEY:
+        elif self.dog_sprite.task != Task.NONE:
             items = self.check_items_in_radius()
             if len(items) == 0:
                 self.dog_sprite.set_goal(0,0)
             else:
-                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
+                self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
         
-        if self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY:
+        if self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE:
             x, y = self.dog_sprite.goal
             if y > 0:
                 force = (0, -self.dog_sprite.force)
@@ -340,8 +335,6 @@ class GameView(arcade.View):
             if abs(x) > abs(y):
                 self.dog_sprite.actual_force = force
         
-            
-
 
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
@@ -379,6 +372,7 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.npc_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+        
         elif key == arcade.key.Q:
             self.dog_sprite.follow_cat()
             self.player_sprite.start_meow()
