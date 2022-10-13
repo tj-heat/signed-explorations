@@ -6,6 +6,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import src.actors.character as character
 import src.actors.items as items
 import src.views.pause_view as p
+import src.dialogue.speech_items as Speech
 from src.actors.event_triggers import *
 from src.actors.character import Task
 from src.dialogue.dialogue_box import DialogueBox
@@ -520,8 +521,11 @@ class GameView(arcade.View):
     def on_show_view(self):
         self.center_camera_to_player()
         if not self._done_tutorial:
-            self.register_dialogue(self.create_dbox(DIALOGUE_INTRODUCTION))
+            self.register_dialogue(
+                self.create_dbox(DIALOGUE_INTRODUCTION[Speech.MSGS])
+            )
             self._done_tutorial = True
+        
         return super().on_show_view()
 
     def resume_video(self):

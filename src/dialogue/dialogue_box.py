@@ -29,7 +29,14 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
     _TEXT_OFF_Y = 50
     _HELP_MSG = "Press <space> or click to continue..."
 
-    def __init__(self, text: Tuple[str], height, width, **kwargs):
+    def __init__(
+        self, 
+        text: Tuple[str], 
+        height: int, 
+        width: int, 
+        speaker: arcade.Sprite = None, 
+        **kwargs
+    ):
         self._container = arcade.gui.UIBoxLayout()
         super().__init__(**kwargs)
 
@@ -43,6 +50,7 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         self._text_count = len(self._text)
         self._text_index = 0
         self._current_text = self._text[self._text_index]
+        self._speaker = speaker
 
         self.update()
 
@@ -86,25 +94,35 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         """
         box = arcade.gui.UIBoxLayout(vertical=False, align="bottom")
 
-        # Make talking head take up 80% of box
+        # Calculate sizing
         icon_height = icon_width = (self._height / 2)
+        left_pad = icon_width - self._TEXT_OFF_X
+        top_pad = icon_height - self._TEXT_OFF_Y
 
-        sprite = sprite=arcade.Sprite(texture=arcade.load_texture("assets/ui/Cat_Face.png"))
+        # Add the talking head image
         box.add(_TalkingHead(
             width=icon_width, 
             height=icon_height, 
-            sprite=sprite, 
+            sprite=speaker, 
             bg_color=arcade.color.WHITE
         )
         .with_space_around(
-            top=(icon_height - self._TEXT_OFF_Y) / 2,
-            bottom=(icon_height - self._TEXT_OFF_Y) / 2,
+            top=top_pad,
+            left=left_pad,
             bg_color=arcade.color.WHITE
         ))
-        print(f"icon: {icon_height}")
-        print(f"overall: {self._height}")
 
-        box.add(self._create_text(text, size, width_shift=icon_width))
+        # Calculate values to shift text
+        width_shift = icon_width + left_pad
+
+        # Create text
+        box.add(self._create_text(
+            text, 
+            size, 
+            width_shift=width_shift, 
+            width_offset=(self._TEXT_OFF_X * 0.50), # 50% of the horiz. padding
+            height_offset=(self._TEXT_OFF_Y * 0.80) # 80% of the vert. padding
+        ))
 
         return box
 
@@ -129,7 +147,7 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         return arcade.gui.UITextArea(
             text = text,
             width = self._width - self._TEXT_OFF_X - width_shift,
-            height = (self._height - self._TEXT_OFF_Y) / 2,
+            height = (self._height - self._TEXT_OFF_Y) / 2 - height_shift,
             font_size = size,
             font_name = self._FONT,
             text_color = self._TEXT_COLOUR
@@ -147,7 +165,15 @@ class _DialogueBoxInt(arcade.gui.UIBoxLayout, arcade.gui.UIInteractiveWidget):
         self.clear()
 
         # Draw main text
-        self.add(self._create_dialogue(self._current_text, 24, None))
+        if self._speaker:
+            main_text = self._create_dialogue(
+                self._current_text, 
+                24, 
+                self._speaker
+            )
+        else:
+            main_text = self._create_text(self._current_text, 24)
+        self.add(main_text)
 
         # Draw helper text
         self.add(self._create_text(self._HELP_MSG, 14))
@@ -160,11 +186,17 @@ class DialogueBox(arcade.gui.UIAnchorWidget):
         text: List[str],
         height: int = 150,
         width: int = 150,
+        speaker: arcade.Sprite = None,
         **kwargs
     ) -> None:
         """ """
         # Create interactive frame
-        self._i_child = _DialogueBoxInt(text, height=height, width=width)
+        self._i_child = _DialogueBoxInt(
+            text, 
+            height=height, 
+            width=width, 
+            speaker=speaker
+        )
         
         super().__init__(
             child=self._i_child,
