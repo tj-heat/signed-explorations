@@ -1,7 +1,7 @@
 import arcade
 from src.actors.character import Task
 
-KEY_PATH = "assets/sprites/items/interact_key.PNG"
+KEY_PATH = "assets/sprites/items/Key.PNG"
 DOOR_PATH = "assets/sprites/door/Door_stone"
 
 

@@ -325,14 +325,14 @@ class GameView(arcade.View):
             if x < 0:
                 force = (self.dog_sprite.force, 0)
                 self.physics_engine.apply_force(self.dog_sprite, force)
-            elif x > 0:
+            if x > 0:
                 self.dog_sprite.change_x = -self.dog_sprite.force
                 force = (-self.dog_sprite.force, 0)
                 self.physics_engine.apply_force(self.dog_sprite, force)
             if y > 0:
                 force = (0, -self.dog_sprite.force)
                 self.physics_engine.apply_force(self.dog_sprite, force)
-            elif y < 0:
+            if y < 0:
                 force = (0, self.dog_sprite.force)
                 self.physics_engine.apply_force(self.dog_sprite, force)
             
