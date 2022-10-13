@@ -1,3 +1,4 @@
+from typing import Dict, List, Tuple
 import arcade
 
 # Asset constants
@@ -51,3 +52,25 @@ MARBLE_FLOOR = {
     ],
     SPEAKER: CAT_SPEAKER,
 }
+
+def get_msgs(topic: Dict) -> List[str]:
+    """ Get the message for a given topic. 
+    
+    Params:
+        topic (str): the name of the topic to get the message for
+
+    Returns:
+        (List) The messages for the given topic
+    """
+    return topic.get(MSGS)
+
+def get_dialogue(topic: Dict) -> Tuple[List[str], arcade.Sprite]:
+    """ Get the message and speaker for a given topic. 
+    
+    Params:
+        topic (str): the name of the topic to get the message for
+
+    Returns:
+        (Typle) The messages for the given topic and the associated speaker
+    """
+    return (get_msgs(topic), topic.get(SPEAKER))

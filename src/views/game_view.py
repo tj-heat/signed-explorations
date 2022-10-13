@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 
-import arcade, math, threading
+import arcade, bisect, math, threading
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 
 import src.actors.character as character
@@ -73,6 +73,9 @@ class GameView(arcade.View):
         self._ui_manager = None
         self.lvl = 1
 
+        # Control variables
+        self._done_tutorial = False
+
         self.left_pressed: bool = False
         self.right_pressed: bool = False
         self.up_pressed: bool = False
@@ -83,7 +86,10 @@ class GameView(arcade.View):
         self.interact_icon = arcade.load_texture(ICON_PATH)
     
     def setup(self):
-        self._done_tutorial = False
+        # Control variables
+        self._seen_key = False
+
+        # Visual system
         self.camera = arcade.Camera(self.window.width, self.window.height)
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
         self._ui_manager = arcade.gui.UIManager()
@@ -359,16 +365,16 @@ class GameView(arcade.View):
         """ Stop informing the player that they can interact with something """
         self._notify_interaction = False
 
-    def check_items_in_radius(self):
-        return self.check_in_radius(LAYER_ITEMS)
+    def check_items_in_radius(self, radius: int = RADIUS):
+        return self.check_in_radius(LAYER_ITEMS, radius)
 
-    def check_events_in_radius(self):
+    def check_events_in_radius(self, radius: int):
         """ Check for interactible events in a given radius around the player """
-        events = self.check_in_radius(LAYER_EVENTS, radius=96)
+        events = self.check_in_radius(LAYER_EVENTS, radius)
         return list(filter(lambda e: e.interactible, events))
 
-    def check_in_radius(self, layer, radius=RADIUS):
-        """ Check for all sprites on a given layer, within a provided radius """
+    def check_in_radius(self, layer: str, radius: int):
+        """ Check for all sprites on a given layer within a provided radius """
         sprites = self.scene.get_sprite_list(layer).sprite_list
         nearby = []
 
@@ -376,9 +382,15 @@ class GameView(arcade.View):
             dx = self.player_sprite.center_x - sprite.center_x
             dy = self.player_sprite.center_y - sprite.center_y
 
-            if ((dx ** 2 + dy ** 2) ** 0.5) < radius:
-                nearby.append(sprite)
+            dist = (dx ** 2 + dy ** 2) ** 0.5
+            if dist < radius:
+                # Insert sorted by distance
+                bisect.insort(nearby, (sprite, dist), key=lambda s: s[1])
 
+        # Return only the sprites (still sorted)
+        if nearby:
+            nearby, _ = zip(*nearby)
+            nearby = list(nearby)
         return nearby
 
     def center_camera_to_player(self):
@@ -465,29 +477,25 @@ class GameView(arcade.View):
 
         if key in UP_KEYS:
             self.up_pressed = False
-        
         elif key in DOWN_KEYS:
             self.down_pressed = False
-        
         elif key in LEFT_KEYS:
             self.left_pressed = False
-        
         elif key in RIGHT_KEYS:
             self.right_pressed = False
         
         elif key == arcade.key.E:
-            items = self.check_items_in_radius()
-            events = self.check_events_in_radius()
+            items = self.check_items_in_radius(96)
+            events = self.check_events_in_radius(96)
 
-            if self.player_sprite.is_touched() and len(items) != 0:
-                sign_view = SignView(self, self.npc_sprite, items)
-                sign_view.setup()
-                self.window.show_view(sign_view)
+            if items:
+                self.do_interact(items)
 
             if events:
-                event = events.pop()
+                event = events.pop(0)
                 event.task()
 
+                # Remove the event once it has been interacted with
                 if isinstance(event, ContactEventTrigger):
                     event.kill()
         
@@ -504,6 +512,25 @@ class GameView(arcade.View):
         elif key == arcade.key.SPACE:
             if self.in_dialogue():
                 self._dbox.progress()
+
+    def do_interact(self, interactibles: List[arcade.Sprite]):
+        """ Handle the interactions of the player character """
+        target = interactibles.pop(0)
+
+        if isinstance(target, items.Key):
+            if self._seen_key:
+                self.register_dialogue(self.create_dbox(
+                    Speech.get_msgs(Speech.PUZZLE_INTERACT)
+                ))
+            else:
+                self._seen_key = True
+                msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
+                self.register_dialogue(self.create_dbox(msgs, speaker))
+
+        if self.player_sprite.is_touched():
+            sign_view = SignView(self, self.npc_sprite, items)
+            sign_view.setup()
+            self.window.show_view(sign_view)
 
     def on_draw(self):
         """ Draw everything """
