@@ -88,20 +88,26 @@ class EventTrigger(arcade.Sprite):
 
         return ((-x, -y), (x, -y), (x, y), (-x, y))
 
+
 class SingleEventTrigger(EventTrigger):
     @property
     def task(self):
         self.kill()
         return self._task
 
-class PassingEventTrigger(SingleEventTrigger):
-    """ Works as a single event trigger but without collision"""
+
+class ContactEventTrigger(EventTrigger):
+    """ Works as an event trigger but without collision"""
     _collides = 0 # Falsian value for Pymunk reasons
+
+
+class PassingEventTrigger(ContactEventTrigger):
+    """ Works as a single event trigger but without collision"""
 
     @property
     def collides(self):
         self.kill()
-        return self._collides
+        return super().collides
 
 # Event Information
 EVENT_TYPE = "type"
@@ -118,8 +124,8 @@ EVENT_DATA = {
     },
     "bridge_mid": {
         "type": EventType.THOUGHT, 
-        "msgs": "L'appel du vide...",
-        "persistence": PassingEventTrigger,
+        "msgs": "L'appel du vide",
+        "persistence": ContactEventTrigger,
         "interactible": False,
     }
 }

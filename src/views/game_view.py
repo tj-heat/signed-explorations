@@ -247,7 +247,7 @@ class GameView(arcade.View):
             self.start_event()
 
         def event_hit_pre_handler(_p, event_sprite, _a, _s, _d):
-            if isinstance(event_sprite, PassingEventTrigger):
+            if isinstance(event_sprite, ContactEventTrigger):
                 event_sprite.task()
 
             return event_sprite.collides
@@ -606,6 +606,7 @@ class GameView(arcade.View):
                 height=height, 
                 task=task(event_data[EVENT_MSGS]),
                 interactible=event_data[EVENT_INTERACT],
+                debug=True
             )
 
             # Add event to scene
