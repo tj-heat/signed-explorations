@@ -377,7 +377,7 @@ class GameView(arcade.View):
     def check_items_in_radius(self, radius: int = RADIUS):
         return self.check_in_radius(LAYER_ITEMS, radius)
 
-    def check_events_in_radius(self, radius: int):
+    def check_events_in_radius(self, radius: int = 96):
         """ Check for interactible events in a given radius around the player """
         events = self.check_in_radius(LAYER_EVENTS, radius)
         return list(filter(lambda e: e.interactible, events))
@@ -492,7 +492,7 @@ class GameView(arcade.View):
         
         elif key == arcade.key.E:
             items = self.check_items_in_radius(96)
-            events = self.check_events_in_radius(96)
+            events = self.check_events_in_radius()
 
             if items:
                 self.do_interact(items)
