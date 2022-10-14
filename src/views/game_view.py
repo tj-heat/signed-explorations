@@ -49,8 +49,7 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
         self.player_sprite: Optional[character.Cat] = None
-        self.dog_sprite: Optional[arcade.Sprite] = None
-        self.npc_sprite: Optional[character.Dog] = None
+        self.dog_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Player sprite
@@ -122,7 +121,6 @@ class GameView(arcade.View):
             cartesian = self.tile_map.get_cartesian(npc.shape[0], npc.shape[1])
             if npc.name == "Dog":
                 body = character.Dog() 
-                self.npc_sprite = body
                 body.center_x = math.floor(cartesian[0] * TILE_SCALING * self.tile_map.tile_width)
                 body.center_y = math.floor((cartesian[1] + 1) * (self.tile_map.tile_height * TILE_SCALING))
                 self.dog_sprite = body
@@ -375,7 +373,7 @@ class GameView(arcade.View):
         elif key == arcade.key.E:
             items = self.check_items_in_radius()
             if self.player_sprite.is_touched() and len(items) != 0:
-                sign_view = SignView(self, self.npc_sprite, items)
+                sign_view = SignView(self, self.dog_sprite, items)
                 sign_view.setup()
                 self.window.show_view(sign_view)
         
