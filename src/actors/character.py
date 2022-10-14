@@ -23,7 +23,7 @@ DOOR = 2
 DOG_TASKS = [FOLLOW, KEY, DOOR]
 
 #Cat Constants
-MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow"]
+MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow", "Nya..."]
 
 class Task(Enum):
     NONE = 0
@@ -56,13 +56,9 @@ class Animal(arcade.Sprite):
                                     arcade.load_texture(f"{path}back.PNG")]
 
         self.texture = self.front_texture_pair[0]
-
         self.hit_box = self.texture.hit_box_points
 
         self.actual_force = (0,0)
-
-        self.x_odometer = 0
-        self.y_odometer = 0
 
     def update_animation(self, delta_time: float = 1 / 60):
         x, y = self.actual_force
@@ -88,10 +84,10 @@ class Cat(Animal):
         self.meow_count = 0
         self.meow_text = None
 
-    def start_meow(self, text: str = None):
+    def start_meow(self, duration: int, text: str = None):
         if self.meow == False:
             self.meow = True
-            self.meow_count = 20
+            self.meow_count = duration
             self.meow_text = text if text else random.choice(MEOW) 
 
     def cat_meowing(self):

@@ -133,10 +133,10 @@ EVENT_DATA = {
         "interactible": False,
     },
     "marble_start": {
-        "type": EventType.DIALOGUE,
-        "msgs": Speech.MARBLE_FLOOR.get(Speech.MSGS),
+        "type": EventType.THOUGHT,
+        "msgs": "Cold feet",
         "persistence": ContactEventTrigger,
-        "interactible": True,
+        "interactible": False,
         "speaker": Speech.CAT_SPEAKER
     },
     "bridge_water_top": {},

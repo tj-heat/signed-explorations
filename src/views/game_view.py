@@ -58,8 +58,7 @@ class GameView(arcade.View):
         self.tile_map = None
         self.scene = None
         self.player_sprite: Optional[character.Cat] = None
-        self.dog_sprite: Optional[arcade.Sprite] = None
-        self.npc_sprite: Optional[character.Dog] = None
+        self.dog_sprite: Optional[character.Dog] = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
         # Player sprite
@@ -272,6 +271,10 @@ class GameView(arcade.View):
         def player_leave_item_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
             self.end_interact_notify()
 
+        def non_handler(_n, _e, _a, _s, _d):
+            """ Collision pre handler that will cause no collisions to occur """
+            return 0 # Falsian value
+
         self.physics_engine.add_collision_handler(
             "player", "event",
             pre_handler=event_hit_pre_handler,
@@ -286,6 +289,7 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("player", "npc", begin_handler= npc_hit_handler, separate_handler = npc_separate_handler)
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", begin_handler = door_hit_handler)
+        self.physics_engine.add_collision_handler("npc", "event", pre_handler=non_handler)
 
         # Dialogue box object tracker
         self._dbox = None
@@ -475,6 +479,7 @@ class GameView(arcade.View):
             self.left_pressed = True
         elif key in RIGHT_KEYS:
             self.right_pressed = True
+
         elif key == arcade.key.E:
             pass
 
@@ -507,7 +512,7 @@ class GameView(arcade.View):
         
         elif key == arcade.key.Q:
             self.dog_sprite.follow_cat()
-            self.player_sprite.start_meow()
+            self.player_sprite.start_meow(25)
         
         elif key == arcade.key.ESCAPE:
             self.pause_video()
@@ -559,16 +564,16 @@ class GameView(arcade.View):
             self.text_box.draw_scaled(
                 center_x = x, 
                 center_y = y,
-                scale = SPRITE_SCALING * 2
+                scale = SPRITE_SCALING * 2.5
                 )
             arcade.draw_text(
                 text = self.player_sprite.meow_text,
-                font_size = 11,
+                font_size = 13,
                 font_name="Kenney Mini Square",
                 color = arcade.csscolor.BLACK,
                 anchor_x = "center",
                 start_x = x,
-                start_y = y + (SPRITE_SIZE) - 30 #magic number generated through much trial and error
+                start_y = y + (SPRITE_SIZE) - 17 #magic number generated through much trial and error
             )
 
     def draw_interact_key(self) -> None:
@@ -598,9 +603,9 @@ class GameView(arcade.View):
 
             # Check for nearby events
             if self.check_events_in_radius():
-                self._notify_interaction = True
+                self.start_interact_notify
             else:
-                self._notify_interaction = False
+                self.end_interact_notify
 
             if self.player_sprite.cat_meowing():
                 self.player_sprite.meow_count -= 1
@@ -674,7 +679,7 @@ class GameView(arcade.View):
             elif event_type == EventType.THOUGHT:
                 speaker = None
                 def task(msg, speaker=None):
-                    return lambda: self.player_sprite.start_meow(msg)
+                    return lambda: self.player_sprite.start_meow(25, msg)
 
             elif event_type == EventType.DIALOGUE:
                 speaker = event_data[EVENT_MSG_SPEAKER]
