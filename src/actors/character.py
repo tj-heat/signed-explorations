@@ -120,7 +120,7 @@ class Dog(Animal):
     def follow_cat(self):
         self.follow = True
 
-    def set_goal(self, goal):
+    def set_goal(self, goal : tuple):
         #goal must be coordinates of tuple (0,0)
         self.goal = goal
 

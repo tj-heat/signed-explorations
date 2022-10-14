@@ -10,6 +10,7 @@ class EventType(Enum):
     MSG         = 1
     THOUGHT     = 2
     DIALOGUE    = 3
+    WIN         = 4
 
 class EventTrigger(arcade.Sprite):
     _collides = 1 # Trueian value for Pymunk reasons
@@ -142,8 +143,8 @@ EVENT_DATA = {
     "bridge_water_top": {},
     "bridge_water_bottom": {},
     "win" : {
-        "type": EventType.MSG, 
-        "msgs": ["you've wone test"],
+        "type": EventType.WIN, 
+        "msgs": ["win"],
         "persistence": SingleEventTrigger,
         "interactible": False,
     },

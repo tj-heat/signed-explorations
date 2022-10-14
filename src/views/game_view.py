@@ -6,6 +6,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import src.actors.character as character
 import src.actors.items as items
 import src.views.pause_view as p
+import src.views.end_view as w
 import src.dialogue.speech_items as Speech
 from src.actors.event_triggers import *
 from src.actors.character import Task
@@ -138,7 +139,6 @@ class GameView(arcade.View):
             cartesian = self.tile_map.get_cartesian(npc.shape[0], npc.shape[1])
             if npc.name == "Dog":
                 body = character.Dog() 
-                self.npc_sprite = body
                 body.center_x, body.center_y = \
                     self.get_center_from_cartesian(cartesian)
                 self.dog_sprite = body
@@ -436,7 +436,7 @@ class GameView(arcade.View):
         elif self.dog_sprite.task != Task.NONE:
             items = self.check_items_in_radius()
             if len(items) == 0:
-                self.dog_sprite.set_goal(self.dog_sprite.center_x, self.dog_sprite.center_y)
+                pass
             else:
                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
@@ -530,8 +530,8 @@ class GameView(arcade.View):
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
 
-        if self.player_sprite.is_touched():
-            sign_view = SignView(self, self.npc_sprite, target)
+        if self.player_sprite.is_touched() and self.dog_sprite.task == Task.NONE:
+            sign_view = SignView(self, self.dog_sprite, target)
             sign_view.setup()
             self.window.show_view(sign_view)
 
@@ -679,6 +679,11 @@ class GameView(arcade.View):
                     return lambda: self.register_dialogue(
                         self.create_dbox(msg, speaker)
                     )
+            
+            elif event_type == EventType.WIN:
+                speaker = None
+                def task(msg, speaker=None):
+                    return lambda: self.endgame()
 
             # Create event
             body = event_data[EVENT_PERSIST](
@@ -691,6 +696,11 @@ class GameView(arcade.View):
             # Add event to scene
             body.center_x, body.center_y = mid_x, mid_y
             self.scene.add_sprite(LAYER_EVENTS, body)
+
+    def endgame(self):
+        win_view = w.EndView(self)
+        win_view.setup()
+        self.window.show_view(win_view)
 
     def get_center_from_cartesian(self, cartesian: Tuple[int]) -> Tuple[float]:
         """ Get the center position of a given cartesian"""
