@@ -22,13 +22,36 @@ DOG_TASKS = [FOLLOW, KEY, DOOR]
 
 #Cat Constants
 MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow", "Nya..."]
+WOOF = [
+    ["He wags his tail... he seems happy that you're here"],
+    ["He sits down and pants; its important to take breaks..."],
+    ["He's as confused as you are."],
+    ["Dog factoid: dogs can't talk."],
+    ["Woof"],
+    ["Woof :3c"],
+    ["The dog seems to be... winking at you.", "You wink back."],
+    ]
+
+KEY_WOOF = [
+    ["The dog tries to give you the key, but it falls to the ground...","the key is now dirty"],
+    ["They dog also seems confused as to why there is a key on the middle of nowhere."],
+    ["The dog is holding the key in his mouth, that must not be comfortable.", "Or sanitary."],
+    ]
+
+DOOR_WOOF = [
+    ["The dog looks with confusion at the lock."],
+    ["The dog pushes with all his might!!!","... but the door will not yeild."],
+    ["The dog bites the door handle.", "Nothing happens."],
+    ["Its locked..."],
+    ["Dog factoid: dogs can't open doors.", "Dogs George who opens 5000 doors a day is a statistical outlier and should not be included."],
+    ]
 
 class Task(Enum):
     NONE = 0
     KEY = 1
     DOOR = 2
     FOLLOW = 3
-    LEVER = 4
+    NO_KEY = 4
 
 def load_texture_pair(filename):
     """
@@ -113,6 +136,7 @@ class Dog(Animal):
         self.force = 1000
         self.task : Optional[Task]= Task.NONE
         self.inventory = []
+        self.talk = False
 
         self.follow = False
         self.goal = (0,0)
@@ -135,3 +159,11 @@ class Dog(Animal):
 
     def get_actions(self):
         return self.task
+
+    def get_dialogue(self):
+        if self.task == Task.NONE and "Key" in self.inventory:
+            return random.choice(KEY_WOOF)
+        if self.task == Task.NONE: 
+            return random.choice(WOOF)
+        if self.task == Task.DOOR and "Key" not in self.inventory or self.task == Task.NO_KEY:
+            return random.choice(DOOR_WOOF)

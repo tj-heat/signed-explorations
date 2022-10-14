@@ -233,11 +233,13 @@ class GameView(arcade.View):
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             npc_sprite.stop_follow()
             player_sprite.touched = True
+            npc_sprite.talk = True
             return player_sprite.touched
             #ADD AS PREHANDLER
 
         def npc_separate_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = False
+            npc_sprite.talk = False
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
             if npc_sprite.task == item_sprite.task:
@@ -245,8 +247,10 @@ class GameView(arcade.View):
                     self.key_task(npc_sprite, item_sprite)
 
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
-            if npc_sprite.task == Task.DOOR:
+            if npc_sprite.task == Task.DOOR and "Key" in self.dog_sprite.inventory:
                 return self.door_task(npc_sprite, door_sprite)
+            else:
+                self.dog_sprite.task = Task.NO_KEY
 
         def event_hit_handler(_p, event_sprite, _a, _s, _d):
             # NOTE This post handler is not firing for some reason
@@ -286,7 +290,12 @@ class GameView(arcade.View):
             post_handler=player_near_item_handler, 
             separate_handler=player_leave_item_handler
         )
-        self.physics_engine.add_collision_handler("player", "npc", begin_handler= npc_hit_handler, separate_handler = npc_separate_handler)
+
+        self.physics_engine.add_collision_handler(
+            "player", "npc", 
+            begin_handler= npc_hit_handler, 
+            separate_handler = npc_separate_handler)
+
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", begin_handler = door_hit_handler)
         self.physics_engine.add_collision_handler("npc", "event", pre_handler=non_handler)
@@ -433,7 +442,7 @@ class GameView(arcade.View):
         if self.dog_sprite.follow == True:
             self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
                 self.dog_sprite.center_y - self.player_sprite.center_y))
-        elif self.dog_sprite.task != Task.NONE:
+        elif (self.dog_sprite.task != Task.NONE) and (self.dog_sprite.task != Task.NO_KEY):
             items = self.check_items_in_radius()
             if len(items) == 0:
                 pass
@@ -441,7 +450,7 @@ class GameView(arcade.View):
                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
         
-        if self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE:
+        if (self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE):
             x, y = self.dog_sprite.goal
             if y > 0:
                 force = (0, -self.dog_sprite.force)
@@ -501,6 +510,9 @@ class GameView(arcade.View):
                 # Remove the event once it has been interacted with
                 if isinstance(event, ContactEventTrigger):
                     event.kill()
+            
+            if self.dog_sprite.talk == True:
+                self.talk_to_dog()
         
         elif key == arcade.key.Q:
             self.dog_sprite.follow_cat()
@@ -516,6 +528,9 @@ class GameView(arcade.View):
             if self.in_dialogue():
                 self._dbox.progress()
 
+    def talk_to_dog(self):
+        self.register_dialogue(self.create_dbox(self.dog_sprite.get_dialogue()))
+    
     def do_interact(self, interactibles: List[arcade.Sprite]):
         """ Handle the interactions of the player character """
         target = interactibles.pop(0)
