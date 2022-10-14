@@ -503,7 +503,7 @@ class GameView(arcade.View):
                 self.do_interact(items)
 
             if events:
-                event = events.pop(0)
+                event = events[0]
                 event.task()
 
                 # Remove the event once it has been interacted with
@@ -526,7 +526,7 @@ class GameView(arcade.View):
 
     def do_interact(self, interactibles: List[arcade.Sprite]):
         """ Handle the interactions of the player character """
-        target = interactibles.pop(0)
+        target = interactibles[0]
 
         if isinstance(target, items.Key):
             if self._seen_key:
@@ -539,7 +539,7 @@ class GameView(arcade.View):
                 self.register_dialogue(self.create_dbox(msgs, speaker))
 
         if self.player_sprite.is_touched():
-            sign_view = SignView(self, self.npc_sprite, items)
+            sign_view = SignView(self, self.npc_sprite, interactibles)
             sign_view.setup()
             self.window.show_view(sign_view)
 
