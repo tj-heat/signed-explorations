@@ -234,12 +234,14 @@ class GameView(arcade.View):
             npc_sprite.stop_follow()
             player_sprite.touched = True
             npc_sprite.talk = True
+            self.start_interact_notify()
             return player_sprite.touched
             #ADD AS PREHANDLER
 
         def npc_separate_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = False
             npc_sprite.talk = False
+            self.end_interact_notify()
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
             if npc_sprite.task == item_sprite.task:

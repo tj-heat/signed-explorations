@@ -18,7 +18,6 @@ LEFT_FACING = 1
 FOLLOW = 0
 KEY = 1
 DOOR = 2
-DOG_TASKS = [FOLLOW, KEY, DOOR]
 
 #Cat Constants
 MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow", "Nya..."]
@@ -145,7 +144,6 @@ class Dog(Animal):
         self.follow = True
 
     def set_goal(self, goal : tuple):
-        #goal must be coordinates of tuple (0,0)
         self.goal = goal
 
     def stop_follow(self):
