@@ -23,9 +23,9 @@ class SignView(arcade.View):
     
     def on_update(self, delta_time):
         if True:
-            if self.items[0].type == "Key":
+            if self.items.type == "Key":
                 self.npc.task = Task.KEY
-            elif self.items[0].type == "Door":
+            elif self.items.type == "Door":
                 self.npc.task = Task.DOOR
             else:
                 raise Exception(f"Unknown item type {self.items[0].type}")

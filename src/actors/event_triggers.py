@@ -141,4 +141,10 @@ EVENT_DATA = {
     },
     "bridge_water_top": {},
     "bridge_water_bottom": {},
+    "win" : {
+        "type": EventType.MSG, 
+        "msgs": ["you've wone test"],
+        "persistence": SingleEventTrigger,
+        "interactible": False,
+    },
 }

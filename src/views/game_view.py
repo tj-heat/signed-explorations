@@ -539,7 +539,7 @@ class GameView(arcade.View):
                 self.register_dialogue(self.create_dbox(msgs, speaker))
 
         if self.player_sprite.is_touched():
-            sign_view = SignView(self, self.npc_sprite, items)
+            sign_view = SignView(self, self.npc_sprite, target)
             sign_view.setup()
             self.window.show_view(sign_view)
 
