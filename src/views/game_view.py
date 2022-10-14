@@ -304,14 +304,6 @@ class GameView(arcade.View):
         """ Check if a given event can go ahead """
         return event.task and not self._in_event
 
-    def get_center_of_door(self, coordinates):
-        #[top left, top right, bottom right, bottom left]
-        #taking bottom left coord and adding 32 
-        x, y = coordinates[3]
-        center_x = x + 32
-        center_y = y + 32
-        return (x, y)
-
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
@@ -379,7 +371,7 @@ class GameView(arcade.View):
         self._notify_interaction = False
 
     def check_items_in_radius(self, radius: int = RADIUS):
-        return self.check_in_radius(LAYER_ITEMS, radius)
+        return self.check_in_radius(LAYER_ITEMS, radius) + self.check_in_radius(LAYER_DOORS, radius)
 
     def check_events_in_radius(self, radius: int = 96):
         """ Check for interactible events in a given radius around the player """
@@ -479,7 +471,7 @@ class GameView(arcade.View):
             self.left_pressed = True
         elif key in RIGHT_KEYS:
             self.right_pressed = True
-
+        
         elif key == arcade.key.E:
             pass
 
