@@ -5,12 +5,20 @@ from src.views.Book_view import *
 from src.video.video_control import *
 
 class SignView(arcade.View):
-    def __init__(self, game_view, npc: Dog, goal: str, task: Task):
+    def __init__(
+        self, 
+        game_view, 
+        npc: Dog, 
+        goal: str, 
+        task: Task, 
+        helper: arcade.Sprite = None
+    ) -> None:
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
         self._complete_task = task
+        self._helper = helper
 
         # Spelling requirements
         self._goal = goal.upper()
@@ -25,7 +33,6 @@ class SignView(arcade.View):
         self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
 
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png") 
-        self.key = arcade.load_texture("assets\sprites\key.png")       
 
         red_button = arcade.gui.UITextureButton(x=34, y=524, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
         blue_button = arcade.gui.UITextureButton(x=34, y=440, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
@@ -46,20 +53,18 @@ class SignView(arcade.View):
 
     def switch(self, count):
         if count == 0:
-            arcade.draw_text("K", 160, 380, arcade.color.BLACK, 40, 80)
-            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80)
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80)
+            arcade.draw_text("K", 160, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
+            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
         elif count == 1:
-            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80)
-            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80)
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80)
+            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
+            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80 ,font_name="Kenney Mini Square")
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
         elif count == 2:
-            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80)
-            arcade.draw_text("E", 240, 380, arcade.color.RED, 40, 80)
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80)
+            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
+            arcade.draw_text("E", 240, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
     
-
-
     def on_draw(self):
         self.clear()
         self.gui_camera.use()
@@ -78,13 +83,25 @@ class SignView(arcade.View):
 
         # Draw textures
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
-        arcade.draw_lrwh_rectangle_textured(244, 154, 64, 64, self.key)
         arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, self._cam_texture)
         self.switch(self._count)
+        self.draw_helper()
         self.manager.draw()
     
+    def draw_helper(self):
+        """ Draws the helper image in the view """
+        if self._helper and self._helper.texture:
+            arcade.draw_lrwh_rectangle_textured(
+                244, 154, 64, 64, 
+                self._helper.texture
+            )
+
     def on_update(self, delta_time):
         print(self._predicted)
+        if self._complete_task == Task.DOOR:
+            self.npc.task = self._complete_task
+            return
+
         if self._predicted == self.get_current_target():
             print("Well Done")
             self.progress_sign()

@@ -12,6 +12,7 @@ from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser
 
 CAPTURING = True # Temp const for feature enabling
+WINDOW_DISPLAY = False
 DEFAULT_WINDOW = "Camera Capture"
 
 # Functions
@@ -150,20 +151,17 @@ def display_video_t(
         
         # Show annotated image
         add_roi(img, roi)
-        show_image_windowed(img)
+        if WINDOW_DISPLAY:
+            show_image_windowed(img)
 
         hand = get_hand_segment(bg, img, roi)
         if hand:
             frame, contour = hand
             frame = process_model_image(frame)
             predicted = recog.predict_letter(frame)
-            #print(predicted)
 
         # Add image to buffer
         buffer.put((cv2.cvtColor(img, cv2.COLOR_BGR2RGB), predicted))
-
-        # Make guess
-
 
     # Thread should die. Begin cleanup
     #controller.release_cam() 
