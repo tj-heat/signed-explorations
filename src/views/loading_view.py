@@ -6,7 +6,7 @@ import arcade
 
 from src.video.image_processing import add_roi
 from src.video.video_control import CameraControl, CameraException
-from src.views.menu_view import MenuView
+import src.views.menu_view as MenuView
 
 FONT_FACE = "Kenney Mini Square"
 BTN_STYLE = {
@@ -381,7 +381,7 @@ class BackgroundGenView(arcade.View):
         self._cc.create_background()
         self._end_ui_state()
 
-        menu = MenuView(self._cc)
+        menu = MenuView.MenuView(self._cc)
         menu.setup()
         self.window.show_view(menu)
 
