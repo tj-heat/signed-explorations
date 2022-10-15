@@ -513,8 +513,9 @@ class GameView(arcade.View):
                     event.kill()
         
         elif key == arcade.key.Q:
-            self.dog_sprite.follow_cat()
-            self.player_sprite.start_meow(25)
+            if not self.in_dialogue():
+                self.dog_sprite.follow_cat()
+                self.player_sprite.start_meow(25)
         
         elif key == arcade.key.I:
             book_view = BookView(self, self.npc_sprite, items)
