@@ -1,4 +1,3 @@
-from ast import Call
 import threading
 from enum import Enum
 from typing import Callable
@@ -21,11 +20,10 @@ class LoadingState(Enum):
     LOADING     = 0
     HAS_CAM     = 1
     NO_CAM      = 2
-    # TODO Generating background should be new view (for settings)
 
 class LoadingView(arcade.View):
-    """ This view will set up any information needed for the fame, before the
-    game starts. The information currently needed includes the webcam."""
+    """ This view will set up any information needed for the game before the
+    game starts. The information currently needed is if a webcam is found."""
     
     # Constants
     _FONT_FACE = "Kenney Mini Square"
