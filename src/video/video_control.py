@@ -104,9 +104,13 @@ class CameraControl():
         """ (np.ndarray) Returns the background image for the controller"""
         return self._background
 
-    def read_cam(self) -> np.ndarray:
+    def read_cam(self, rgb: bool = False) -> np.ndarray:
         """ Retrieve a single frame from a captured camera. 
         
+        Params:
+            rgb (bool): True if the output should be in RGB colorspace. False if
+                in BGR.
+
         Returns:
             (ndarray) The captured frame from the camera.
 
@@ -118,7 +122,8 @@ class CameraControl():
         if not success:
             raise Exception("Could not capture frame from camera")
 
-        return cv2.flip(frame, 1) # Flip frame horizontally
+        frame = cv2.flip(frame, 1) # Flip frame horizontally
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) if rgb else frame # in BGR
 
     def release_cam(self) -> None:
         """ Releases control of a camera object. """
@@ -142,7 +147,7 @@ def display_video_t(
         buffer (RingBuffer): Shared memory location for image producing.
     """
     recog = Recogniser()
-    controller.create_background()
+    #controller.create_background()
     bg = controller.get_background()
 
     while not closer.is_killed():
