@@ -147,7 +147,6 @@ def display_video_t(
         buffer (RingBuffer): Shared memory location for image producing.
     """
     recog = Recogniser()
-    #controller.create_background()
     bg = controller.get_background()
 
     while not closer.is_killed():
