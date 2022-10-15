@@ -1,35 +1,30 @@
-import arcade
+import arcade, PIL, random
 from src.actors.character import Dog, Task
+from src.views.Book_view import *
+from src.video.video_control import *
 
 class BookView(arcade.View):
-    def __init__(self, game_view, npc : Dog, items):
+    def __init__(self, game_view, npc : Dog, task: Task):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
-        self.items = items
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
-        self.v_box = arcade.gui.UIBoxLayout()
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
 
-        self.background = arcade.load_texture("assets\interface\Puzzle_UI.png")
+        self.background = arcade.load_texture("assets\interface\Guide_UI.png") 
 
-        button = arcade.gui.UITextureButton(x=30, y=30, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'),
-        texture_hovered=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'), texture_pressed=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
-        self.v_box.add(button)
+        red_button = arcade.gui.UITextureButton(x=34, y=404, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
+        green_button = arcade.gui.UITextureButton(x=34, y=444, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Green.png'))
+        self.v_box.add(green_button)
+        self.v_box.add(red_button)
 
-        button.on_click = self.on_click_button
+        green_button.on_click = self.on_click_green_button
+        red_button.on_click = self.on_click_red_button
 
-        
-        self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="center",
-                align_x=-400,
-                anchor_y="center",
-                align_y=300,
-                child=self.v_box)
-        )
+        self.manager.add(self.v_box)
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -57,5 +52,9 @@ class BookView(arcade.View):
     def on_key_press(self, symbol: int, modifiers: int):
         self.window.show_view(self.game_view)
 
-    def on_click_button(self, event):
+    def on_click_red_button(self, event):
         print("hellp")
+
+    def on_click_green_button(self, event):
+        print("hellp")
+

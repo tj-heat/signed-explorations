@@ -100,14 +100,18 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
+        print("d")
         self.video_t_closer = ThreadCloser()
+        print("e")
         video_t = threading.Thread(
             target=display_video_t, 
             args=(self._cc, self._cam_buf, self.video_t_closer)
         )
         # Track the video thread and closer
         self._video_t = ThreadController(video_t, self.video_t_closer)
+        print("f")
         if CAPTURING:
+            print("g")
             self._video_t.start()
 
         #Create physics engine
@@ -322,16 +326,19 @@ class GameView(arcade.View):
             self.right_pressed = False
         
         elif key == arcade.key.E:
+            print("a")
             items = self.check_items_in_radius()
             # FIXME This will need to pass the proper information to the sign
             # view, rather than hardcoding the target.
             if self.player_sprite.is_touched() and len(items) != 0:
+                print("b")
                 sign_view = SignView(
                     self, 
                     self.npc_sprite, 
                     goal="VUS", 
                     task=Task.KEY
                 )
+                print("c")
                 sign_view.setup()
                 self.window.show_view(sign_view)
             else:
@@ -339,7 +346,7 @@ class GameView(arcade.View):
                 self.player_sprite.start_meow()
         
         elif key == arcade.key.I:
-            book_view = BookView(self, self.npc_sprite, items)
+            book_view = BookView(self, self.npc_sprite)
             book_view.setup()
             self.window.show_view(book_view)
         

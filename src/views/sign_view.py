@@ -1,5 +1,6 @@
 import arcade, PIL, random
 from src.actors.character import Dog, Task
+from src.views.Book_view import *
 
 from src.video.video_control import *
 
@@ -26,10 +27,13 @@ class SignView(arcade.View):
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png") 
         self.key = arcade.load_texture("assets\sprites\key.png")       
 
-        button = arcade.gui.UITextureButton(x=34, y=444, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
-        self.v_box.add(button)
+        red_button = arcade.gui.UITextureButton(x=34, y=524, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
+        blue_button = arcade.gui.UITextureButton(x=34, y=440, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        self.v_box.add(blue_button)
+        self.v_box.add(red_button)
 
-        button.on_click = self.on_click_button
+        blue_button.on_click = self.on_click_blue_button
+        red_button.on_click = self.on_click_red_button
 
         self.manager.add(self.v_box)
 
@@ -39,6 +43,22 @@ class SignView(arcade.View):
 
     def setup(self):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
+
+    def switch(self, count):
+        if count == 0:
+            arcade.draw_text("K", 160, 380, arcade.color.BLACK, 40, 80)
+            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80)
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80)
+        elif count == 1:
+            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80)
+            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80)
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80)
+        elif count == 2:
+            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80)
+            arcade.draw_text("E", 240, 380, arcade.color.RED, 40, 80)
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80)
+    
+
 
     def on_draw(self):
         self.clear()
@@ -60,6 +80,7 @@ class SignView(arcade.View):
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         arcade.draw_lrwh_rectangle_textured(244, 154, 64, 64, self.key)
         arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, self._cam_texture)
+        self.switch(self._count)
         self.manager.draw()
     
     def on_update(self, delta_time):
@@ -76,7 +97,13 @@ class SignView(arcade.View):
     def on_key_press(self, symbol: int, modifiers: int):
         self.window.show_view(self.game_view)
 
-    def on_click_button(self, event):
+    def on_click_blue_button(self, event):
+        book_view = BookView(self, self.npc, self._complete_task)
+        book_view.setup()
+        self.window.show_view(book_view)
+        print("hellp")
+
+    def on_click_red_button(self, event):
         print("hellp")
 
     def get_current_target(self) -> str:
