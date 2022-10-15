@@ -23,6 +23,10 @@ def show_image_windowed(img: np.ndarray, window: str = DEFAULT_WINDOW) -> None:
     cv2.imshow(window, img)
     cv2.waitKey(1)
 
+# Exceptions
+class CameraException(Exception):
+    """ An exception that indicates a camera is not available. """
+
 # Classes
 class CameraControl():
     ROI_WIDTH = 200
@@ -64,8 +68,8 @@ class CameraControl():
             (VideoCapture) The retreived video caputure object.
 
         Raises:
-            (Exception) if the camera at the used index does not exist/ is not
-                captured.
+            (CameraException) if the camera at the used index does not exist/ is
+             not captured.
         """
         # Attempt to capture camera as on windows
         cam = cv2.VideoCapture(index, cv2.CAP_DSHOW)
@@ -75,7 +79,7 @@ class CameraControl():
 
         # If still no success, throw exception
         if not cam.isOpened():
-            raise Exception("Could not open camera")
+            raise CameraException("Could not open camera")
 
         return cam
 

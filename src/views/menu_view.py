@@ -1,5 +1,4 @@
-import imp
-import arcade, threading
+import arcade
 
 import src.views.game_view as g
 from src.video.video_control import CameraControl, display_video_t
@@ -22,7 +21,7 @@ uni_style = {
         }
 
 class MenuView(arcade.View):
-    def __init__(self):
+    def __init__(self, cam_controller: CameraControl):
         super().__init__()
 
         # --- Required for all code that uses UI element,
@@ -30,6 +29,9 @@ class MenuView(arcade.View):
         self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
+
+        # Store camera controller
+        self._cc = cam_controller
 
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.UIBoxLayout()
@@ -79,6 +81,4 @@ class MenuView(arcade.View):
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
 
     def setup(self):
-        # Video capture
-        # NOTE The camera control may take several seconds to get cam control
-        self._cc = CameraControl()
+        pass
