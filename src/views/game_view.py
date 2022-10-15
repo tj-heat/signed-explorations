@@ -495,11 +495,11 @@ class GameView(arcade.View):
         
         elif key == arcade.key.E:
             items = self.check_items_in_radius(96)
-            events = self.check_events_in_radius()
-
             if items:
-                self.do_interact(items)
+                if self.do_interact(items):
+                    return # Stop additional processing from occurring
 
+            events = self.check_events_in_radius()
             if events:
                 event = events[0]
                 event.task()
@@ -531,16 +531,7 @@ class GameView(arcade.View):
         """ Handle the interactions of the player character """
         target = interactibles[0]
 
-        if isinstance(target, items.Key):
-            if self._seen_key:
-                self.register_dialogue(self.create_dbox(
-                    Speech.get_msgs(Speech.PUZZLE_INTERACT)
-                ))
-            else:
-                self._seen_key = True
-                msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
-                self.register_dialogue(self.create_dbox(msgs, speaker))
-
+        # Check for signing action first
         if self.player_sprite.is_touched():
             if target.type == "Key":
                 goal = "KEY"
@@ -552,6 +543,17 @@ class GameView(arcade.View):
             sign_view = SignView(self, self.npc_sprite, "VUS", task, target)
             sign_view.setup()
             self.window.show_view(sign_view)
+
+        # If not signing then process as normal
+        elif isinstance(target, items.Key):
+            if self._seen_key:
+                self.register_dialogue(self.create_dbox(
+                    Speech.get_msgs(Speech.PUZZLE_INTERACT)
+                ))
+            else:
+                self._seen_key = True
+                msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
+                self.register_dialogue(self.create_dbox(msgs, speaker))
 
     def on_draw(self):
         """ Draw everything """
