@@ -23,6 +23,7 @@ class SignView(arcade.View):
         # Spelling requirements
         self._goal = goal.upper()
         self._count = 0
+        self._length = len(goal)
 
         self._predicted = None
         self._cam_texture = None
@@ -51,8 +52,13 @@ class SignView(arcade.View):
     def setup(self):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
-    def switch(self, count):
-        if count == 0:
+    def switch(self, count, length):
+        for i in range(length):
+            if i > count:
+                arcade.draw_text(self._goal[i], 160+(80 * i), 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
+            else:
+                arcade.draw_text(self._goal[i], 160+(80 * i), 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
+        """if count == 0:
             arcade.draw_text("K", 160, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
             arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
             arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
@@ -63,7 +69,7 @@ class SignView(arcade.View):
         elif count == 2:
             arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
             arcade.draw_text("E", 240, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
+            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")"""
     
     def on_draw(self):
         self.clear()
@@ -84,7 +90,7 @@ class SignView(arcade.View):
         # Draw textures
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, self._cam_texture)
-        self.switch(self._count)
+        self.switch(self._count, self._length)
         self.draw_helper()
         self.manager.draw()
     
