@@ -151,7 +151,8 @@ def display_video_t(
         
         # Show annotated image
         add_roi(img, roi)
-        show_image_windowed(img)
+        if WINDOW_DISPLAY:
+            show_image_windowed(img)
 
         hand = get_hand_segment(bg, img, roi)
         if hand:

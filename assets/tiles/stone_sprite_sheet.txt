@@ -1,0 +1,26 @@
+stone_sprite_sheet.png
+size: 192, 64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Ground_stone
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+Ground_stone
+  rotate: false
+  xy: 64, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+Ground_stone
+  rotate: false
+  xy: 128, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3

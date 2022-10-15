@@ -39,9 +39,6 @@ class MenuView(arcade.View):
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200, style = uni_style)
         self.v_box.add(start_button.with_space_around(bottom=20))
 
-        settings_button = arcade.gui.UIFlatButton(text="Settings", width=200, style = uni_style)
-        self.v_box.add(settings_button.with_space_around(bottom=20))
-
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
         self.v_box.add(exit_button)
 
@@ -85,14 +82,3 @@ class MenuView(arcade.View):
         # Video capture
         # NOTE The camera control may take several seconds to get cam control
         self._cc = CameraControl()
-                
-        # # Create video capture display thread
-        # self._cam_buf = RingBuffer()
-        # video_t_closer = ThreadCloser()
-        # video_t = threading.Thread(
-        #     target=display_video_t, 
-        #     args=(self._cc, self._cam_buf, video_t_closer)
-        # )
-
-        # # Track the video thread and closer
-        # self._video_t = ThreadController(video_t, video_t_closer)

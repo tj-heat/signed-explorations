@@ -4,12 +4,20 @@ from src.actors.character import Dog, Task
 from src.video.video_control import *
 
 class SignView(arcade.View):
-    def __init__(self, game_view, npc: Dog, goal: str, task: Task):
+    def __init__(
+        self, 
+        game_view, 
+        npc: Dog, 
+        goal: str, 
+        task: Task, 
+        helper: arcade.Sprite = None
+    ) -> None:
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
         self._complete_task = task
+        self._helper = helper
 
         # Spelling requirements
         self._goal = goal.upper()
@@ -24,7 +32,6 @@ class SignView(arcade.View):
         self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
 
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png") 
-        self.key = arcade.load_texture("assets\sprites\key.png")       
 
         button = arcade.gui.UITextureButton(x=34, y=444, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
         self.v_box.add(button)
@@ -58,12 +65,24 @@ class SignView(arcade.View):
 
         # Draw textures
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
-        arcade.draw_lrwh_rectangle_textured(244, 154, 64, 64, self.key)
         arcade.draw_lrwh_rectangle_textured(560, 280, 340, 240, self._cam_texture)
+        self.draw_helper()
         self.manager.draw()
     
+    def draw_helper(self):
+        """ Draws the helper image in the view """
+        if self._helper and self._helper.texture:
+            arcade.draw_lrwh_rectangle_textured(
+                244, 154, 64, 64, 
+                self._helper.texture
+            )
+
     def on_update(self, delta_time):
         print(self._predicted)
+        if self._complete_task == Task.DOOR:
+            self.npc.task = self._complete_task
+            return
+
         if self._predicted == self.get_current_target():
             print("Well Done")
             self.progress_sign()
