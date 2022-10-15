@@ -1,11 +1,21 @@
+from ast import Call
 import threading
 from enum import Enum
-from typing import Callable, List
+from typing import Callable
 
 import arcade
 
 from src.video.video_control import CameraControl, CameraException
 from src.views.menu_view import MenuView
+
+BTN_STYLE = {
+            "font_name" : "Kenney Mini Square",
+            "font_size" : 15,
+            "font_color" : arcade.color.WHITE,
+            "bg_color_pressed" : arcade.color.WHITE,
+            "border_color_pressed" : arcade.color.WHITE,
+            "font_color_pressed" : arcade.color.BLACK,
+}
 
 class LoadingState(Enum):
     LOADING     = 0
@@ -36,9 +46,8 @@ class LoadingView(arcade.View):
         super().__init__()
         
         # Positions
-        l, r, b, t = arcade.get_viewport()
-        self._x_mid = (l + r) / 2
-        self._y_mid = (b + t) / 2
+        self._x_mid = self.window.width / 2
+        self._y_mid = self.window.height / 2
 
         # Control
         self._do_draw = None
@@ -54,6 +63,7 @@ class LoadingView(arcade.View):
         self._STATE_SETUP = {
             LoadingState.LOADING: self._init_loading,
             LoadingState.HAS_CAM: self._init_has_cam,
+            LoadingState.NO_CAM: self._init_no_cam
         }
 
     def set_state(self, state) -> None:
@@ -135,15 +145,34 @@ class LoadingView(arcade.View):
         self._state = LoadingState.HAS_CAM
         self._do_draw = self._draw_has_cam
         self._do_teardown = None
-
-        # Fix
     
     def _init_no_cam(self):
         """ Set up the loading screen for the no cam state """
         # Setup state control
         self._state = LoadingState.NO_CAM
         self._do_draw = self._draw_no_cam
-        self._do_teardown = None
+        self._do_teardown = self._end_no_cam
+
+        # Setup view
+        self._ui_manager = arcade.gui.UIManager()
+        self._ui_manager.enable()
+
+        # Components
+        box = arcade.gui.UIBoxLayout(vertical=False)
+
+        check_btn = new_button(text="Check Again")
+        check_btn.on_click = lambda _: self.set_state(LoadingState.LOADING)
+        box.add(check_btn.with_space_around(right=25))
+
+        exit_btn = new_button(text="Exit")
+        exit_btn.on_click = lambda _: self.window.close()
+        box.add(exit_btn.with_space_around(left=25))
+
+        self._ui_manager.add(arcade.gui.UIAnchorWidget(
+            anchor_x="center_x",
+            anchor_y="center_y",
+            child=box.with_space_around(top=150)
+        ))
 
     ##
     # State teardown functions
@@ -151,10 +180,16 @@ class LoadingView(arcade.View):
     def _end_loading(self):
         """ Tear down the loading state """
         arcade.unschedule(self._progress_dots)
+    
+    def _end_no_cam(self):
+        """ Tear down the no cam state """
+        self._ui_manager.clear()
+        self._ui_manager.disable()
+        self._ui_manager = None
 
     ##
     # Draw functions
-    ## 
+    ##
     def _draw_loading(self):
         """ Draw the view for the loading state """
         text_msg = f"{self._LOADING_MSG}{self._DOT * self._num_dots}"
@@ -168,7 +203,7 @@ class LoadingView(arcade.View):
 
     def _draw_has_cam(self):
         """ Draw the view for the has camera state """
-        text_msg = f"I have a camera"
+        text_msg = f"Loading complete. Press any button to continue."
         arcade.Text(
             text_msg, 
             self._x_mid, self._y_mid, 
@@ -187,6 +222,8 @@ class LoadingView(arcade.View):
             font_name=self._FONT_FACE
         ).draw()
 
+        self._ui_manager.draw()
+
 def get_client_camera_t(
     set_cam_controller: Callable,
     set_state: Callable
@@ -199,4 +236,8 @@ def get_client_camera_t(
     
     except CameraException as e:
         print(e)
-        set_state(LoadingState.HAS_CAM)
+        set_state(LoadingState.NO_CAM)
+
+def new_button(text: str, width: int = 200) -> arcade.gui.UIFlatButton:
+    """ Create a new, styled button for the loading screen """
+    return arcade.gui.UIFlatButton(text=text, width=width, style=BTN_STYLE)
