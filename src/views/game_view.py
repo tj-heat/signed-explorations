@@ -15,7 +15,7 @@ from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.sign_view import SignView
 from src.views.Book_view import BookView
-from src.video.video_control import CAPTURING, display_video_t
+from src.video.video_control import CAPTURING, CameraControl, display_video_t
 
 MOVEMENT_SPEED = 3
 
@@ -85,6 +85,10 @@ class GameView(arcade.View):
         self.text_box = arcade.load_texture(TEXT_PATH)
         self.interact_icon = arcade.load_texture(ICON_PATH)
     
+    @property
+    def cam_controller(self) -> CameraControl:
+        return self._cc
+
     def setup(self):
         # Control variables
         self._seen_key = False
