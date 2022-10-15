@@ -11,7 +11,8 @@ from src.video.image_recognition import Recogniser
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser
 
-CAPTURING = False # Temp const for feature enabling
+CAPTURING = True # Temp const for feature enabling
+WINDOW_DISPLAY = False
 DEFAULT_WINDOW = "Camera Capture"
 
 # Functions
@@ -157,13 +158,9 @@ def display_video_t(
             frame, contour = hand
             frame = process_model_image(frame)
             predicted = recog.predict_letter(frame)
-            #print(predicted)
 
         # Add image to buffer
         buffer.put((cv2.cvtColor(img, cv2.COLOR_BGR2RGB), predicted))
-
-        # Make guess
-
 
     # Thread should die. Begin cleanup
     #controller.release_cam() 
