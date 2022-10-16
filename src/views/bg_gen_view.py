@@ -23,7 +23,7 @@ class BackgroundGenView(StatefulView):
         "This background will be used to better detect hand signs made while playing.",
         "The background should be a uniformly coloured, unchanging area.",
         "The background should be behind where your hands will be when signing.",
-        "The ideal distance for the background is roughly 1m from the camera.",
+        "The ideal distance for the background is roughly 0.5m from the camera.",
         "Try not to move or record any body parts when generating the background.",
         "The generation should take five seconds at most.",
         "Click to proceed when you are ready to generate a background.",
