@@ -25,6 +25,8 @@ class SignView(arcade.View):
         if True:
             if self.items[0].type == "Key":
                 self.npc.task = Task.KEY
+            elif self.items[0].type == "Door":
+                self.npc.task = Task.DOOR
             else:
                 raise Exception(f"Unknown item type {self.items[0].type}")
 
