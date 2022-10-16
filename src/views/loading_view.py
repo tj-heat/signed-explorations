@@ -1,4 +1,4 @@
-import PIL, threading
+import threading
 from enum import Enum
 from typing import Callable
 
