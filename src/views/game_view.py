@@ -14,7 +14,7 @@ from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.sign_view import SignView
-from src.views.Book_view import BookView
+from src.views.book_view import BookView
 from src.video.video_control import CAPTURING, display_video_t
 
 MOVEMENT_SPEED = 3

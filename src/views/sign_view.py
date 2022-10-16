@@ -1,6 +1,6 @@
 import arcade, PIL, random
 from src.actors.character import Dog, Task
-from src.views.Book_view import *
+from src.views.book_view import *
 
 from src.video.video_control import *
 
@@ -55,7 +55,7 @@ class SignView(arcade.View):
     def switch(self, count, length):
         width = int((float(314) / (length + 1)))
         for i in range(length):
-            if i > count:
+            if i >= count:
                 arcade.draw_text(self._goal[i], 105 + (width * (i + 1)), 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
             else:
                 arcade.draw_text(self._goal[i], 105 + (width * (i + 1)), 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
@@ -68,7 +68,7 @@ class SignView(arcade.View):
         img, self._predicted = self.game_view._cam_buf.get()
         img = PIL.Image.fromarray(img)
 
-        if self._cam_texture:
+        if self._cam_texture: 
             # Remove the old texture from the global texture atlas
             self.window.ctx.default_atlas.remove(self._cam_texture)
             # Rebuild atlas to make removed space usable again
@@ -110,7 +110,7 @@ class SignView(arcade.View):
         self.window.show_view(self.game_view)
 
     def on_click_blue_button(self, event):
-        book_view = BookView(self, self.npc, self._complete_task)
+        book_view = BookView(self, self.npc)
         book_view.setup()
         self.window.show_view(book_view)
         print("hellp")
