@@ -46,17 +46,20 @@ class SignView(arcade.View):
 
         self.manager.add(self.v_box)
 
+        self._did_something = False
+
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
         #replace with camera feed
 
     def setup(self):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
+        arcade.schedule(self.progress_t, 2 + random.uniform(0, 1))
 
     def switch(self, count, length):
         width = int((float(314) / (length + 1)))
         for i in range(length):
-            if i > count:
+            if i >= count:
                 arcade.draw_text(self._goal[i], 105 + (width * (i + 1)), 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
             else:
                 arcade.draw_text(self._goal[i], 105 + (width * (i + 1)), 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
@@ -98,22 +101,25 @@ class SignView(arcade.View):
         if self._complete_task == Task.DOOR:
             self.npc.task = self._complete_task
             return
+    
+        if self.goal_reached():
+            print("Word has been spelt")
+            self.npc.task = self._complete_task
+            self.window.show_view(self.game_view)
+            return
 
         if self._predicted == self.get_current_target():
             print("Well Done")
             self.progress_sign()
-        
-            if self.goal_reached():
-                print("Word has been spelt")
-                self.npc.task = self._complete_task
-                self.window.show_view(self.game_view)
 
     def on_key_press(self, symbol: int, modifiers: int):
+        arcade.unschedule(self.progress_t)
         self.window.show_view(self.game_view)
 
     def on_click_blue_button(self, event):
         book_view = BookView(self, self.npc, self._complete_task)
         book_view.setup()
+        arcade.unschedule(self.progress_t)
         self.window.show_view(book_view)
         print("hellp")
 
@@ -132,3 +138,7 @@ class SignView(arcade.View):
     def progress_sign(self) -> None:
         """ Move to the next letter to sign of the goal word. """
         self._count += 1
+
+    def progress_t(self, delta: float) -> None:
+        """Scheduled progress sign"""
+        self.progress_sign()

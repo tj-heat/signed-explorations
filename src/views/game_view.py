@@ -552,7 +552,7 @@ class GameView(arcade.View):
                 goal = ""
                 task = Task.DOOR
             
-            sign_view = SignView(self, self.npc_sprite, "VUS", task, target)
+            sign_view = SignView(self, self.npc_sprite, "KEY", task, target)
             sign_view.setup()
             self.window.show_view(sign_view)
 
