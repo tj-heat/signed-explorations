@@ -25,7 +25,7 @@ class MenuView(arcade.View):
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "splash.png")
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
@@ -84,7 +84,7 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         self.clear()
-        arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
+        arcade.draw_texture_rectangle(self.window.width/2, self.window.height/2, 1024, 640, self.background)
         self.manager.draw()
         arcade.draw_text("Signed Explorations", self.window.width/2, self.window.height/2 + 200, 
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")

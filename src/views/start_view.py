@@ -8,7 +8,7 @@ class StartView(arcade.View):
     def __init__(self):
         super().__init__()
         self.window.set_mouse_visible(True)
-        self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "splash.png")
 
     def setup(self):
         """Set up screen here"""
@@ -17,7 +17,7 @@ class StartView(arcade.View):
     def on_draw(self):
         """Render screen"""
         self.clear()
-        arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
+        arcade.draw_texture_rectangle(self.window.width/2, self.window.height/2, 1024, 640, self.background)
         
         arcade.draw_text("Signed Explorations", self.window.width/2, self.window.height/2, 
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
