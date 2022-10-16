@@ -10,8 +10,9 @@ SCREEN_TITLE = "Signed Explorations"
 LOGO_PATH = "assets/logos/TJHeat_L_C_250.png"
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable  = True) #fullscreen = True resizable = True
-    start_view = StartView.StartView() #StartView() #game.GameView() 
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True) #fullscreen = True resizable = True
+
+    start_view = StartView() 
     start_view.setup()
     window.show_view(start_view)
 

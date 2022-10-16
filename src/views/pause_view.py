@@ -56,7 +56,7 @@ class PauseView(arcade.View):
 
     def on_click_quit(self, event):
         self.game_view.end_video()
-        menu = m.MenuView()
+        menu = m.MenuView(self.game_view.cam_controller)
         menu.setup()
         self.window.show_view(menu)
 
