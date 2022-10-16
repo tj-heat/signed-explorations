@@ -53,23 +53,12 @@ class SignView(arcade.View):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
     def switch(self, count, length):
+        width = int((float(314) / (length + 1)))
         for i in range(length):
             if i > count:
-                arcade.draw_text(self._goal[i], 160+(80 * i), 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
+                arcade.draw_text(self._goal[i], 105 + (width * (i + 1)), 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
             else:
-                arcade.draw_text(self._goal[i], 160+(80 * i), 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
-        """if count == 0:
-            arcade.draw_text("K", 160, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
-            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
-        elif count == 1:
-            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
-            arcade.draw_text("E", 240, 380, arcade.color.BLACK, 40, 80 ,font_name="Kenney Mini Square")
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")
-        elif count == 2:
-            arcade.draw_text("K", 160, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
-            arcade.draw_text("E", 240, 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
-            arcade.draw_text("Y", 320, 380, arcade.color.BLACK, 40, 80, font_name="Kenney Mini Square")"""
+                arcade.draw_text(self._goal[i], 105 + (width * (i + 1)), 380, arcade.color.RED, 40, 80, font_name="Kenney Mini Square")
     
     def on_draw(self):
         self.clear()
