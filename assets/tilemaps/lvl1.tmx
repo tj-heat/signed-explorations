@@ -120,11 +120,10 @@
   <object id="36" name="side_Key_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="Items">
-  <object id="10" name="Key" x="415" y="1015"/>
-  <object id="28" name="Key" class="key" x="514.3" y="1195.21"/>
+  <object id="10" name="Key" x="417" y="871"/>
+  <object id="28" name="Key" class="key" x="1372.3" y="1345.21"/>
  </objectgroup>
  <objectgroup id="7" name="Events">
-  <object id="36" name="door_locked" x="332.667" y="770.667" width="162" height="16"/>
   <object id="38" name="bridge_mid" x="824.833" y="1290" width="13.0371" height="109.333"/>
   <object id="39" name="marble_start" x="1104.33" y="1249" width="95.3333" height="185.667"/>
  </objectgroup>

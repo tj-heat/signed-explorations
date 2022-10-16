@@ -11,6 +11,9 @@ from src.actors.event_triggers import *
 from src.actors.character import Task
 from src.dialogue.dialogue_box import DialogueBox
 from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
+from src.views.sign_view import SignView
+from src.views.Book_view import BookView
+from src.video.video_control import CAPTURING, display_video_t
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.sign_view import SignView
@@ -119,15 +122,13 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
-        video_t_closer = ThreadCloser()
+        self.video_t_closer = ThreadCloser()
         video_t = threading.Thread(
             target=display_video_t, 
-            args=(self._cc, self._cam_buf, video_t_closer)
+            args=(self._cc, self._cam_buf, self.video_t_closer)
         )
-
         # Track the video thread and closer
-        self._video_t = ThreadController(video_t, video_t_closer)
-
+        self._video_t = ThreadController(video_t, self.video_t_closer)
         if CAPTURING:
             self._video_t.start()
 
@@ -152,7 +153,6 @@ class GameView(arcade.View):
                 raise Exception(f"Unknown npc type {npc.name}")
 
         item_layer = self.tile_map.object_lists[LAYER_ITEMS]
-
         for item in item_layer:
             cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
             if item.name == "Key":
@@ -514,6 +514,11 @@ class GameView(arcade.View):
             self.dog_sprite.follow_cat()
             self.player_sprite.start_meow(25)
         
+        elif key == arcade.key.I:
+            book_view = BookView(self, self.npc_sprite, items)
+            book_view.setup()
+            self.window.show_view(book_view)
+        
         elif key == arcade.key.ESCAPE:
             self.pause_video()
             pause = p.PauseView(self)
@@ -539,7 +544,7 @@ class GameView(arcade.View):
                 self.register_dialogue(self.create_dbox(msgs, speaker))
 
         if self.player_sprite.is_touched():
-            sign_view = SignView(self, self.npc_sprite, interactibles)
+            sign_view = SignView(self, self.npc_sprite, "KEY", Task.KEY)
             sign_view.setup()
             self.window.show_view(sign_view)
 
