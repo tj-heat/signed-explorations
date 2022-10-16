@@ -542,7 +542,7 @@ class GameView(arcade.View):
                 goal = "KEY"
                 task = Task.KEY
             elif target.type == "Door":
-                goal == ""
+                goal = ""
                 task = Task.DOOR
             
             sign_view = SignView(self, self.npc_sprite, "VUS", task, target)
