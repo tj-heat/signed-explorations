@@ -127,14 +127,18 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
+        print("d")
         self.video_t_closer = ThreadCloser()
+        print("e")
         video_t = threading.Thread(
             target=display_video_t, 
             args=(self._cc, self._cam_buf, self.video_t_closer)
         )
         # Track the video thread and closer
         self._video_t = ThreadController(video_t, self.video_t_closer)
+        print("f")
         if CAPTURING:
+            print("g")
             self._video_t.start()
 
         #Create physics engine
@@ -521,7 +525,7 @@ class GameView(arcade.View):
                 self.player_sprite.start_meow(25)
         
         elif key == arcade.key.I:
-            book_view = BookView(self, self.npc_sprite, items)
+            book_view = BookView(self, self.npc_sprite)
             book_view.setup()
             self.window.show_view(book_view)
         
