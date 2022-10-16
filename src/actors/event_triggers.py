@@ -121,12 +121,6 @@ EVENT_PERSIST = "persistence"
 EVENT_INTERACT = "interactible"
 
 EVENT_DATA = {
-    "door_locked": {
-        "type": EventType.MSG, 
-        "msgs": ["The door's locked..."],
-        "persistence": SingleEventTrigger,
-        "interactible": False,
-    },
     "bridge_mid": {
         "type": EventType.THOUGHT, 
         "msgs": "L'appel du vide",

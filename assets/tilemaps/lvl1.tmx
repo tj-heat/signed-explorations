@@ -123,7 +123,6 @@
   <object id="28" name="Key" class="key" x="1375.63" y="1315.21"/>
  </objectgroup>
  <objectgroup id="7" name="Events">
-  <object id="36" name="door_locked" x="332.667" y="770.667" width="162" height="16"/>
   <object id="38" name="bridge_mid" x="824.833" y="1290" width="13.0371" height="109.333"/>
   <object id="39" name="marble_start" x="1104.33" y="1249" width="95.3333" height="185.667"/>
   <object id="40" name="win" x="8" y="321.333" width="12.6667" height="126"/>

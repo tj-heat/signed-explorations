@@ -531,7 +531,7 @@ class GameView(arcade.View):
                 self._dbox.progress()
 
     def talk_to_dog(self):
-        self.register_dialogue(self.create_dbox(self.dog_sprite.get_dialogue()))
+        self.register_dialogue(self.create_dbox(self.dog_sprite.get_dialogue(), Speech.DOG_SPEAKER))
     
     def do_interact(self, interactibles: List[arcade.Sprite]):
         """ Handle the interactions of the player character """
