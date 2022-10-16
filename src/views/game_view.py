@@ -14,7 +14,8 @@ from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.sign_view import SignView
-from src.video.video_control import CAPTURING, display_video_t
+from src.views.Book_view import BookView
+from src.video.video_control import CAPTURING, CameraControl, display_video_t
 
 MOVEMENT_SPEED = 3
 
@@ -84,6 +85,10 @@ class GameView(arcade.View):
         self.text_box = arcade.load_texture(TEXT_PATH)
         self.interact_icon = arcade.load_texture(ICON_PATH)
     
+    @property
+    def cam_controller(self) -> CameraControl:
+        return self._cc
+
     def setup(self):
         # Control variables
         self._seen_key = False
@@ -119,15 +124,13 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
-        video_t_closer = ThreadCloser()
+        self.video_t_closer = ThreadCloser()
         video_t = threading.Thread(
             target=display_video_t, 
-            args=(self._cc, self._cam_buf, video_t_closer)
+            args=(self._cc, self._cam_buf, self.video_t_closer)
         )
-
         # Track the video thread and closer
-        self._video_t = ThreadController(video_t, video_t_closer)
-
+        self._video_t = ThreadController(video_t, self.video_t_closer)
         if CAPTURING:
             self._video_t.start()
 
@@ -152,7 +155,6 @@ class GameView(arcade.View):
                 raise Exception(f"Unknown npc type {npc.name}")
 
         item_layer = self.tile_map.object_lists[LAYER_ITEMS]
-
         for item in item_layer:
             cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
             if item.name == "Key":
@@ -497,11 +499,11 @@ class GameView(arcade.View):
         
         elif key == arcade.key.E:
             items = self.check_items_in_radius(96)
-            events = self.check_events_in_radius()
-
             if items:
-                self.do_interact(items)
+                if self.do_interact(items):
+                    return # Stop additional processing from occurring
 
+            events = self.check_events_in_radius()
             if events:
                 event = events[0]
                 event.task()
@@ -511,8 +513,14 @@ class GameView(arcade.View):
                     event.kill()
         
         elif key == arcade.key.Q:
-            self.dog_sprite.follow_cat()
-            self.player_sprite.start_meow(25)
+            if not self.in_dialogue():
+                self.dog_sprite.follow_cat()
+                self.player_sprite.start_meow(25)
+        
+        elif key == arcade.key.I:
+            book_view = BookView(self, self.npc_sprite, items)
+            book_view.setup()
+            self.window.show_view(book_view)
         
         elif key == arcade.key.ESCAPE:
             self.pause_video()
@@ -528,7 +536,21 @@ class GameView(arcade.View):
         """ Handle the interactions of the player character """
         target = interactibles[0]
 
-        if isinstance(target, items.Key):
+        # Check for signing action first
+        if self.player_sprite.is_touched():
+            if target.type == "Key":
+                goal = "KEY"
+                task = Task.KEY
+            elif target.type == "Door":
+                goal == ""
+                task = Task.DOOR
+            
+            sign_view = SignView(self, self.npc_sprite, "VUS", task, target)
+            sign_view.setup()
+            self.window.show_view(sign_view)
+
+        # If not signing then process as normal
+        elif isinstance(target, items.Key):
             if self._seen_key:
                 self.register_dialogue(self.create_dbox(
                     Speech.get_msgs(Speech.PUZZLE_INTERACT)
@@ -537,11 +559,6 @@ class GameView(arcade.View):
                 self._seen_key = True
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
-
-        if self.player_sprite.is_touched():
-            sign_view = SignView(self, self.npc_sprite, interactibles)
-            sign_view.setup()
-            self.window.show_view(sign_view)
 
     def on_draw(self):
         """ Draw everything """
