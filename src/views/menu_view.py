@@ -84,7 +84,7 @@ class MenuView(arcade.View):
         # Video capture
         # NOTE The camera control may take several seconds to get cam control
         self._cc = CameraControl()
-                
+
         # # Create video capture display thread
         # self._cam_buf = RingBuffer()
         # video_t_closer = ThreadCloser()
