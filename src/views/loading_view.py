@@ -29,27 +29,14 @@ class GenerationState(Enum):
     GENERATE    = 1
 
 
-class LoadingView(arcade.View):
-    """ This view will set up any information needed for the game before the
-    game starts. The information currently needed is if a webcam is found."""
-    
+class StatefulView(arcade.View):
+    """ Abstract class to set up views with a state. """
     # Constants
     _FONT_SIZE = 24
     _FONT_COLOUR = arcade.color.WHITE
-
-    # Text
-    _LOADING_MSG = "The game is loading, please wait"
-    _NO_CAM_MSG = "This game requires video camera input to operate."
-    _DOT = '.'
-
-    # Control
-    _MIN_DOT = 0
-    _MAX_DOT = 5
-    _DOT_INC_TIME = 0.5
-
     def __init__(self):
         super().__init__()
-        
+     
         # Positions
         self._x_mid = self.window.width / 2
         self._y_mid = self.window.height / 2
@@ -60,24 +47,9 @@ class LoadingView(arcade.View):
         self._state = None
         self._next_state = None
 
-        self._num_dots = self._MIN_DOT
-
-        self._cc = None
-
-        # State setups
-        self._STATE_SETUP = {
-            LoadingState.LOADING: self._init_loading,
-            LoadingState.HAS_CAM: self._init_has_cam,
-            LoadingState.NO_CAM: self._init_no_cam
-        }
-
     def set_state(self, state) -> None:
         """ Set the next state of the view """
         self._next_state = state
-
-    def set_cam_controller(self, cam_controller) -> None:
-        """ Set the camera controller for the view """
-        self._cc = cam_controller
 
     def in_state(self, state) -> bool:
         return self._state == state
@@ -95,11 +67,11 @@ class LoadingView(arcade.View):
         do_setup()
 
     def setup(self):
-        """Set up the loading screen """
-        self._init_loading()
+        """ Sets up the view for showing. Raises NotImplementedError """
+        raise NotImplementedError()
 
     def on_draw(self):
-        """Render screen"""
+        """Render view"""
         if self.has_new_state():
             if self._do_teardown:
                 self._do_teardown()
@@ -107,6 +79,42 @@ class LoadingView(arcade.View):
 
         self.clear()
         self._do_draw()
+
+
+class LoadingView(StatefulView):
+    """ This view will set up any information needed for the game before the
+    game starts. The information currently needed is if a webcam is found."""
+    # Text
+    _LOADING_MSG = "The game is loading, please wait"
+    _NO_CAM_MSG = "This game requires video camera input to operate."
+    _DOT = '.'
+
+    # Control
+    _MIN_DOT = 0
+    _MAX_DOT = 5
+    _DOT_INC_TIME = 0.5
+
+    def __init__(self):
+        super().__init__()
+
+        self._num_dots = self._MIN_DOT
+
+        self._cc = None
+
+        # State setups
+        self._STATE_SETUP = {
+            LoadingState.LOADING: self._init_loading,
+            LoadingState.HAS_CAM: self._init_has_cam,
+            LoadingState.NO_CAM: self._init_no_cam
+        }
+
+    def set_cam_controller(self, cam_controller) -> None:
+        """ Set the camera controller for the view """
+        self._cc = cam_controller
+
+    def setup(self):
+        """Set up the loading screen """
+        self._init_loading()
 
     def on_key_press(self, key, modifiers):
         if self.in_state(LoadingState.HAS_CAM):
@@ -231,14 +239,10 @@ class LoadingView(arcade.View):
 
 
 # TODO Abstract to StatefulView
-class BackgroundGenView(arcade.View):
-    """ This view will set up any information needed for the fame, before the
-    game starts. The information currently needed includes the webcam."""
-    
-    # Constants
-    _FONT_SIZE = 24
-    _FONT_COLOUR = arcade.color.WHITE
-
+class BackgroundGenView(StatefulView):
+    """ This view will show a camera feed and generate the background for image
+    processing.
+    """
     # Text
     _INFORM = [
         "Before playing the game a camera background is needed.",
@@ -255,17 +259,6 @@ class BackgroundGenView(arcade.View):
 
     def __init__(self, cc):
         super().__init__()
-        
-        # Positions
-        self._x_mid = self.window.width / 2
-        self._y_mid = self.window.height / 2
-
-        # Control
-        self._do_draw = None
-        self._do_teardown = None
-        self._state = None
-        self._next_state = None
-
         self._cc = cc
 
         # State setups
@@ -274,38 +267,9 @@ class BackgroundGenView(arcade.View):
             GenerationState.GENERATE: self._init_generate,
         }
 
-    def set_state(self, state) -> None:
-        """ Set the next state of the view """
-        self._next_state = state
-
-    def in_state(self, state) -> bool:
-        return self._state == state
-
-    def has_new_state(self) -> bool:
-        """ Returns a bool indicating if there is a new state to trainsition to.
-        There is a new state if the next state to move to is different to the
-        current state.
-        """
-        return self._next_state and not self.in_state(self._next_state)
-
-    def setup_next_state(self):
-        """ Set the laoding screen up to move to the next state """
-        do_setup = self._STATE_SETUP.get(self._next_state)
-        do_setup()
-
     def setup(self):
         """Set up the loading screen """
         self._init_inform()
-
-    def on_draw(self):
-        """Render screen"""
-        if self.has_new_state():
-            if self._do_teardown:
-                self._do_teardown()
-            self.setup_next_state()
-
-        self.clear()
-        self._do_draw()
 
     ##
     # State setup functions
