@@ -1,3 +1,4 @@
+from copyreg import constructor
 from typing import List, Optional
 
 import arcade, bisect, math, threading
@@ -9,6 +10,7 @@ import src.views.pause_view as p
 import src.dialogue.speech_items as Speech
 from src.actors.event_triggers import *
 from src.actors.character import Task
+from src.actors.interactibles import INTERACTIBLES
 from src.dialogue.dialogue_box import DialogueBox
 from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
@@ -36,6 +38,7 @@ LAYER_FLOOR = "Floor"
 LAYER_DOORS = "Doors"
 LAYER_ITEMS = "Items"
 LAYER_EVENTS = "Events"
+LAYER_INTERACTS = "Interactibles"
 LAYER_CHARACTERS = "Characters"
 LAYER_EDGES = "Edges"
 
@@ -180,6 +183,7 @@ class GameView(arcade.View):
 
             self.scene.add_sprite(LAYER_DOORS, body)
 
+        self._load_interactibles()
 
         self.create_events(self.tile_map.object_lists[LAYER_EVENTS])
 
@@ -300,6 +304,24 @@ class GameView(arcade.View):
         # Key press notifier
         self._notify_interaction = False
     
+    def _load_interactibles(self):
+        """ Load all of the interactibles into the game """
+        interactibles = self.tile_map.object_lists[LAYER_INTERACTS]
+
+        for interactible in interactibles:           
+            x, y = interactible.shape
+            cartesian = self.tile_map.get_cartesian(x, y)
+            cartesian = cartesian[0], \
+                (cartesian[1] + self.tile_map.height) % self.tile_map.height
+            
+            # Create instance of interactible
+            obj_constructor = INTERACTIBLES.get(interactible.name)
+            body = obj_constructor(self.tile_map.tile_width)
+
+            body.set_center(*self.get_center_from_cartesian(cartesian))
+
+            self.scene.add_sprite(LAYER_INTERACTS, body)
+
     def event_possible(self, event) -> bool:
         """ Check if a given event can go ahead """
         return event.task and not self._in_event
