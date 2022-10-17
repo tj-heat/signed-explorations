@@ -13,7 +13,7 @@ class BookView(arcade.View):
         self.front_image = None
         self.back_image = None
 
-        self.manager = arcade.gui.UIManage()
+        self.manager = arcade.gui.UIManager()
         self.manager.enable()
         self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
 
