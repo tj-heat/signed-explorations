@@ -3,6 +3,8 @@ from typing import Optional, Tuple
 import numpy as np
 import cv2
 
+WHITE = (255, 255, 255)
+
 # Functions
 def add_roi(
     img: np.ndarray, 
@@ -92,15 +94,18 @@ def get_largest_contour_segment(img: np.ndarray) -> np.ndarray:
     # Find largest contour
     contours, heirarchy = cv2.findContours(
         img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    biggest_contour = max(contours, key=lambda item: cv2.contourArea(item))
+
+    if contours:
+        biggest_contour = max(contours, key=lambda item: cv2.contourArea(item))
     
-    # Create mask of contour
-    mask = np.zeros_like(img)
-    cv2.drawContours(mask, [biggest_contour], -1, (255, 255, 255), cv2.FILLED)
+        # Create mask of contour
+        mask = np.zeros_like(img)
+        cv2.drawContours(mask, [biggest_contour], -1, WHITE, cv2.FILLED)
     
-    # Remove other bits
-    res = cv2.bitwise_and(img, img, mask=mask)
-    return res
+        # Remove other bits
+        img = cv2.bitwise_and(img, img, mask=mask)
+
+    return img
 
 def preprocess_image(img: np.ndarray) -> np.ndarray:
     """ Converts an image into a grayscale and blurred image. """
