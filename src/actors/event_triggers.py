@@ -140,4 +140,11 @@ EVENT_DATA = {
         EVENT_PERSIST: SingleEventTrigger,
         EVENT_INTERACT: False,
     },
+    "bounds": {
+        EVENT_TYPE: EventType.DIALOGUE,
+        EVENT_MSGS: ["I can't turn back. I'm not alive yet!"],
+        EVENT_PERSIST: EventTrigger,
+        EVENT_INTERACT: False,
+        EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
+    },
 }
