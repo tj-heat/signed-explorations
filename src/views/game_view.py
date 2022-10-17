@@ -142,9 +142,9 @@ class GameView(arcade.View):
             print("g")
             self._video_t.start()
 
-        #Create physics engine
+        ### Create physics engine
+        # Create Sprites
         npc_layer = self.tile_map.object_lists[LAYER_CHARACTERS]
-
         for npc in npc_layer:
             cartesian = self.tile_map.get_cartesian(npc.shape[0], npc.shape[1])
             if npc.name == "Dog":
@@ -174,7 +174,6 @@ class GameView(arcade.View):
                 raise Exception (f"Unknown item type {item.name}")
 
         door_layer = self.tile_map.object_lists[LAYER_DOORS]
-
         for door in door_layer:
             x, y = door.shape[3]
             cartesian = self.tile_map.get_cartesian(x, y)
@@ -189,57 +188,105 @@ class GameView(arcade.View):
 
             self.scene.add_sprite(LAYER_DOORS, body)
 
-        self._load_interactibles()
+        self._create_interactibles()
+        self._create_events(self.tile_map.object_lists[LAYER_EVENTS])
 
-        self.create_events(self.tile_map.object_lists[LAYER_EVENTS])
-
+        # Create the physics engine and register collisions
         self.physics_engine = PymunkPhysicsEngine(damping=2, gravity=(0,0))
+        self._add_physics_to_sprites()
+        self._register_colliders()
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list("Player"),
+        # Dialogue box object tracker
+        self._dbox = None
+
+        # Event tracker
+        self._in_event = False
+
+        # Key press notifier
+        self._notify_interaction = False
+
+    def _create_interactibles(self):
+        """ Load all of the interactibles into the game """
+        interactibles = self.tile_map.object_lists[LAYER_INTERACTS]
+
+        for interactible in interactibles:           
+            x, y = interactible.shape
+            cartesian = self.tile_map.get_cartesian(x, y)
+            cartesian = cartesian[0], \
+                (cartesian[1] + self.tile_map.height) % self.tile_map.height
+            
+            # Create instance of interactible
+            obj_constructor = INTERACTIBLES.get(interactible.name)
+            body = obj_constructor(self.tile_map.tile_width)
+
+            body.set_center(*self.get_center_from_cartesian(cartesian))
+
+            self.scene.add_sprite(LAYER_INTERACTS, body)
+
+    def _add_physics_to_sprites(self):
+        """ Add all of the sprites to the physics engine. """
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list("Player"),
             friction = 0.6,
             moment_of_intertia=PymunkPhysicsEngine.MOMENT_INF,
             damping = 0.01,
             collision_type = "player"
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_WALLS),
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_WALLS),
             friction = 0.6,
             collision_type = "wall",
             body_type = PymunkPhysicsEngine.STATIC
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_ITEMS),
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_ITEMS),
             mass = 0.5,
             friction = 0.8,
             damping = 0.4,
             collision_type = "item"
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_CHARACTERS),
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_CHARACTERS),
             friction = 0.6,
             moment_of_intertia = PymunkPhysicsEngine.MOMENT_INF,
             damping = 0.01,
             collision_type = "npc"
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_EDGES),
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_EDGES),
             friction = 0.6,
             collision_type = "wall",
             body_type = PymunkPhysicsEngine.STATIC
         )
 
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_EVENTS),
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_EVENTS),
             friction = 0.6,
             collision_type = "event",
             body_type = PymunkPhysicsEngine.STATIC
         )
         
-        self.physics_engine.add_sprite_list(self.scene.get_sprite_list(LAYER_DOORS),
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_DOORS),
             friction = 0.6,
             collision_type = "door",
             body_type = PymunkPhysicsEngine.STATIC
         )
+        
+        self.physics_engine.add_sprite_list(
+            self.scene.get_sprite_list(LAYER_INTERACTS),
+            friction = 0.6,
+            collision_type = "interact",
+            body_type = PymunkPhysicsEngine.STATIC
+        )
 
+    def _register_colliders(self):
+        """ Register all of the collisions in the game, with the physics engine.
+        """
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             npc_sprite.stop_follow()
             player_sprite.touched = True
@@ -294,6 +341,7 @@ class GameView(arcade.View):
             post_handler=event_hit_handler, 
             separate_handler=event_hit_separate_handler
         )
+        
         self.physics_engine.add_collision_handler(
             "player", "item", 
             post_handler=player_near_item_handler, 
@@ -308,33 +356,6 @@ class GameView(arcade.View):
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", begin_handler = door_hit_handler)
         self.physics_engine.add_collision_handler("npc", "event", pre_handler=non_handler)
-
-        # Dialogue box object tracker
-        self._dbox = None
-
-        # Event tracker
-        self._in_event = False
-
-        # Key press notifier
-        self._notify_interaction = False
-    
-    def _load_interactibles(self):
-        """ Load all of the interactibles into the game """
-        interactibles = self.tile_map.object_lists[LAYER_INTERACTS]
-
-        for interactible in interactibles:           
-            x, y = interactible.shape
-            cartesian = self.tile_map.get_cartesian(x, y)
-            cartesian = cartesian[0], \
-                (cartesian[1] + self.tile_map.height) % self.tile_map.height
-            
-            # Create instance of interactible
-            obj_constructor = INTERACTIBLES.get(interactible.name)
-            body = obj_constructor(self.tile_map.tile_width)
-
-            body.set_center(*self.get_center_from_cartesian(cartesian))
-
-            self.scene.add_sprite(LAYER_INTERACTS, body)
 
     def event_possible(self, event) -> bool:
         """ Check if a given event can go ahead """
@@ -592,6 +613,25 @@ class GameView(arcade.View):
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
 
+    def draw_interact_key(self) -> None:
+        """ Draws a symbol showing the interact key """
+        x, y = self.window.width / 2, self.window.height / 2
+        
+        self.interact_icon.draw_scaled(
+            center_x = x, 
+            center_y = y,
+            scale = SPRITE_SCALING * 2
+        )
+        arcade.draw_text(
+            text = "E",
+            font_size = 18,
+            font_name="Kenney Mini Square",
+            color = arcade.csscolor.BLACK,
+            anchor_x = "center",
+            start_x = x - (SPRITE_SIZE / 2) - 2,
+            start_y = y + (SPRITE_SIZE / 2) - 21 #magic number
+        )
+
     def on_draw(self):
         """ Draw everything """
         self.clear()
@@ -624,25 +664,6 @@ class GameView(arcade.View):
                 start_x = x,
                 start_y = y + (SPRITE_SIZE) - 17 #magic number generated through much trial and error
             )
-
-    def draw_interact_key(self) -> None:
-        """ Draws a symbol showing the interact key """
-        x, y = self.window.width / 2, self.window.height / 2
-        
-        self.interact_icon.draw_scaled(
-            center_x = x, 
-            center_y = y,
-            scale = SPRITE_SCALING * 2
-        )
-        arcade.draw_text(
-            text = "E",
-            font_size = 18,
-            font_name="Kenney Mini Square",
-            color = arcade.csscolor.BLACK,
-            anchor_x = "center",
-            start_x = x - (SPRITE_SIZE / 2) - 2,
-            start_y = y + (SPRITE_SIZE / 2) - 21 #magic number
-        )
 
     def on_update(self, delta_time):
         """ Movement and game logic """
@@ -702,7 +723,7 @@ class GameView(arcade.View):
         # Wait for thread to finish   
         self._video_t.finish()
 
-    def create_events(self, event_layer):
+    def _create_events(self, event_layer):
         map_height = self.tile_map.height * self.tile_map.tile_height
 
         for event in event_layer:
