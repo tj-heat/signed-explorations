@@ -545,9 +545,6 @@ class GameView(arcade.View):
             if target.type == "Key":
                 goal = "KEY"
                 task = Task.KEY
-            elif target.type == "Door":
-                goal = ""
-                task = Task.DOOR
             
             sign_view = SignView(self, self.npc_sprite, goal, task, target)
             sign_view.setup()
