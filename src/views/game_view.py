@@ -251,10 +251,7 @@ class GameView(arcade.View):
                     self.key_task(npc_sprite, item_sprite)
 
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
-            if npc_sprite.task == Task.DOOR and "Key" in self.dog_sprite.inventory:
-                return self.door_task(npc_sprite, door_sprite)
-            else:
-                self.dog_sprite.task = Task.NO_KEY
+            return self.door_task(npc_sprite, door_sprite)
 
         def event_hit_handler(_p, event_sprite, _a, _s, _d):
             # NOTE This post handler is not firing for some reason
@@ -320,15 +317,17 @@ class GameView(arcade.View):
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
-        npc.task = Task.NONE
+        npc.task = Task.DOOR
 
     def door_task(self, npc : character.Dog, door : items.Door):
         if door.key == "Key" and "Key" in npc.inventory:
             npc.inventory.remove("Key")
             self.npc_opens_door(door)
         
-        npc.task = Task.NONE
-        self._dbox = None
+        if "Key" not in npc.inventory:
+            npc.task = Task.NONE
+        
+        #self._dbox = None
         return True
 
     def create_dbox(self, text, speaker=None) -> DialogueBox:
@@ -384,7 +383,7 @@ class GameView(arcade.View):
         self._notify_interaction = False
 
     def check_items_in_radius(self, radius: int = RADIUS):
-        return self.check_in_radius(LAYER_ITEMS, radius) + self.check_in_radius(LAYER_DOORS, radius)
+        return self.check_in_radius(LAYER_ITEMS, radius) #+ self.check_in_radius(LAYER_DOORS, radius) -- for door interaction
 
     def check_events_in_radius(self, radius: int = 96):
         """ Check for interactible events in a given radius around the player """
@@ -446,7 +445,7 @@ class GameView(arcade.View):
         if self.dog_sprite.follow == True:
             self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
                 self.dog_sprite.center_y - self.player_sprite.center_y))
-        elif (self.dog_sprite.task != Task.NONE) and (self.dog_sprite.task != Task.NO_KEY):
+        elif self.dog_sprite.task == Task.KEY:
             items = self.check_items_in_radius()
             if len(items) == 0:
                 pass
@@ -514,7 +513,7 @@ class GameView(arcade.View):
                 # Remove the event once it has been interacted with
                 if isinstance(event, ContactEventTrigger):
                     event.kill()
-            
+
             if self.dog_sprite.talk == True:
                 self.talk_to_dog()
         
@@ -546,7 +545,7 @@ class GameView(arcade.View):
         target = interactibles[0]
 
         # Check for signing action first
-        if self.player_sprite.is_touched() and self.dog_sprite.task == Task.NONE:
+        if self.player_sprite.is_touched():
             if target.type == "Key":
                 goal = "KEY"
                 task = Task.KEY

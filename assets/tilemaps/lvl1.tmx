@@ -119,8 +119,8 @@
   <object id="36" name="side_Key_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="Items">
-  <object id="10" name="Key" x="1117.67" y="413.667"/>
-  <object id="28" name="Key" class="key" x="1375.63" y="1315.21"/>
+  <object id="10" name="Key" x="541.67" y="1141.67"/>
+  <object id="28" name="Key" class="key" x="481.63" y="964.21"/>
  </objectgroup>
  <objectgroup id="7" name="Events">
   <object id="38" name="bridge_mid" x="824.833" y="1290" width="13.0371" height="109.333"/>

@@ -51,23 +51,12 @@ class EndView(arcade.View):
         arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
         
         self.manager.draw()
-
-        arcade.draw_text("You've made it through the first stage of your journey...", self.window.width/2, self.window.height/2 + 200, 
-            arcade.csscolor.GHOST_WHITE, font_size=25, anchor_x="center", font_name="Kenney Pixel Square")
-        arcade.draw_text("Who knows what awaits you next?", self.window.width/2, self.window.height/2 + 150, 
-            arcade.csscolor.GHOST_WHITE, font_size=25, anchor_x="center", font_name="Kenney Pixel Square")
+        
         arcade.draw_text("Thank you for playing our demo!", self.window.width/2, self.window.height/2 + 100, 
             arcade.csscolor.GHOST_WHITE, font_size=25, anchor_x="center", font_name="Kenney Mini Square")
 
     def on_show_view(self):
-        
-        #arcade.set_background_color(arcade.csscolor.GHOST_WHITE)
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
-
-    def on_key_press(self, key, modifiers):
-        menu = m.MenuView()
-        menu.setup()
-        self.window.show_view(menu)
 
     def on_click_restart(self, event):
         self.game_view.end_video()
@@ -76,6 +65,6 @@ class EndView(arcade.View):
 
     def on_click_return(self, event):
         self.game_view.end_video()
-        menu = m.MenuView()
+        menu = m.MenuView(self.game_view.cam_controller)
         menu.setup()
         self.window.show_view(menu)

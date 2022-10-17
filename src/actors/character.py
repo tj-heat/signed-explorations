@@ -23,7 +23,7 @@ DOOR = 2
 MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow", "Nya..."]
 WOOF = [
     ["He wags his tail... he seems happy that you're here"],
-    ["He sits down and pants; its important to take breaks..."],
+    ["He sits down and pants; its important to rest..."],
     ["He's as confused as you are."],
     ["Dog factoid: dogs can't talk."],
     ["Woof"],
@@ -34,8 +34,10 @@ WOOF = [
 
 KEY_WOOF = [
     ["The dog tries to give you the key", "But it falls to the ground...","The key is now dirty"],
-    ["They dog also seems confused as to why there is a key on the middle of nowhere."],
+    ["Why there is a key on the middle of nowhere?", "The dog also seems confused"],
     ["The dog is holding the key in his mouth.", "That must not be comfortable."],
+    ["Dog factoid: you love the dog"],
+    ["Do dogs dream of sheep?"],
     ]
 
 DOOR_WOOF = [
@@ -159,9 +161,7 @@ class Dog(Animal):
         return self.task
 
     def get_dialogue(self):
-        if self.task == Task.NONE and "Key" in self.inventory:
+        if self.task == Task.KEY or self.task == Task.DOOR:
             return random.choice(KEY_WOOF)
-        if self.task == Task.NONE: 
+        else: 
             return random.choice(WOOF)
-        if self.task == Task.DOOR and "Key" not in self.inventory or self.task == Task.NO_KEY:
-            return random.choice(DOOR_WOOF)
