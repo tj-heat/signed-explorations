@@ -5,6 +5,8 @@ from src.views.book_view import *
 from src.video.video_control import *
 
 class SignView(arcade.View):
+    _TARGET_DURATION = 7
+
     def __init__(
         self, 
         game_view, 
@@ -24,6 +26,7 @@ class SignView(arcade.View):
         self._goal = goal.upper()
         self._count = 0
         self._length = len(goal)
+        self._duration = 0
 
         self._predicted = None
         self._cam_texture = None
@@ -98,21 +101,24 @@ class SignView(arcade.View):
             return
 
         if self._predicted == self.get_current_target():
-            print("Well Done")
+            self.increase_duration()
+        else:
+            self.reset_duration()
+
+        if self.at_duration():
             self.progress_sign()
         
             if self.goal_reached():
-                print("Word has been spelt")
                 self.npc.task = self._complete_task
-                self.window.show_view(self.game_view)
+                self.show_new_view(self.game_view)
 
     def on_key_press(self, symbol: int, modifiers: int):
-        self.window.show_view(self.game_view)
+        self.show_new_view(self.game_view)
 
     def on_click_blue_button(self, event):
         book_view = BookView(self, self.npc)
         book_view.setup()
-        self.window.show_view(book_view)
+        self.show_new_view(book_view)
         print("hellp")
 
     def on_click_red_button(self, event):
@@ -129,4 +135,26 @@ class SignView(arcade.View):
 
     def progress_sign(self) -> None:
         """ Move to the next letter to sign of the goal word. """
+        self.reset_duration()
         self._count += 1
+
+    def increase_duration(self) -> None:
+        """ Increment the duration counter by one """
+        self._duration += 1
+
+    def reset_duration(self) -> None:
+        """ Reset the duration counter to 0 """
+        self._duration = 0
+
+    def at_duration(self) -> bool:
+        """ Return true if at or greater than the maximum duration. False 
+        otherwise.
+        """
+        return self._duration >= self._TARGET_DURATION
+
+    def show_new_view(self, view):
+        """ Transition to a new view with teardown """
+        self.clear()
+        self.manager.clear()
+        self.manager.disable()
+        self.show_new_view(view)
