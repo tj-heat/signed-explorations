@@ -33,6 +33,8 @@ MODEL_DIR = os.path.join("data", "models")
 MODEL_NAME = "2022-10-16_231009_e75_%91.h5"
 
 class Recogniser():
+    _MIN_RECOG = 0.2
+
     def __init__(self) -> None:
         self._model = keras.models.load_model(
             os.path.join(MODEL_DIR, MODEL_NAME)
@@ -44,4 +46,7 @@ class Recogniser():
 
     def predict_letter(self, img) -> str:
         """ Predict which letter is being signed in the provided image. """
-        return LETTERS[np.argmax(self.predict(img))]
+        predictions = self.predict(img)
+        letter = np.argmax(predictions)
+        max_val =  np.max(predictions)
+        return LETTERS[letter] if max_val > self._MIN_RECOG else None
