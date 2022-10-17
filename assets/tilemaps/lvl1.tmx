@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="25" height="30" tilewidth="64" tileheight="64" infinite="0" nextlayerid="10" nextobjectid="37">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="30" tilewidth="64" tileheight="64" infinite="0" nextlayerid="10" nextobjectid="40">
  <tileset firstgid="1" source="texture_maps/wood_sprite_sheet.tsx"/>
  <tileset firstgid="6" source="texture_maps/stone_sprite_sheet.tsx"/>
  <tileset firstgid="9" source="texture_maps/stone_wall_sprite_sheet.tsx"/>
@@ -112,16 +112,20 @@
  </layer>
  <objectgroup id="4" name="Characters">
   <object id="1" name="Cat" x="351.667" y="1825.67"/>
-  <object id="2" name="Dog" x="350.667" y="1375"/>
+  <object id="2" name="Dog" x="352.667" y="1569"/>
  </objectgroup>
  <objectgroup id="5" name="Doors">
-  <object id="29" name="orthogonal_key_front" x="384" y="704" width="64" height="64"/>
-  <object id="35" name="side_lever_left" x="0" y="320" width="64" height="64"/>
-  <object id="36" name="side_lever_left" x="0" y="384" width="64" height="64"/>
+  <object id="29" name="orthogonal_Key_n_n_1" x="384" y="704" width="64" height="64"/>
+  <object id="35" name="side_Key_left_top_2" class="2" x="0" y="320" width="64" height="64"/>
+  <object id="36" name="side_Key_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
  </objectgroup>
  <objectgroup id="6" name="Items">
-  <object id="10" name="Key" x="1315" y="1183"/>
-  <object id="28" name="Lever" class="Lever" x="1230.3" y="321.212"/>
+  <object id="10" name="Key" x="415" y="1015"/>
+  <object id="28" name="Key" class="key" x="514.3" y="1195.21"/>
  </objectgroup>
- <objectgroup id="7" name="Events"/>
+ <objectgroup id="7" name="Events">
+  <object id="36" name="door_locked" x="332.667" y="770.667" width="162" height="16"/>
+  <object id="38" name="bridge_mid" x="824.833" y="1290" width="13.0371" height="109.333"/>
+  <object id="39" name="marble_start" x="1104.33" y="1249" width="95.3333" height="185.667"/>
+ </objectgroup>
 </map>

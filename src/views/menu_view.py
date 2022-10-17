@@ -1,11 +1,9 @@
-import imp
-import arcade, threading
+import arcade
 
 import src.views.game_view as g
-from src.video.video_control import CameraControl, display_video_t
-from src.util.ring_buffer import RingBuffer
-from src.util.thread_control import ThreadCloser, ThreadController
-import arcade.experimental.uistyle as uistyle
+import src.views.loading_view as LoadViews 
+from src.video.video_control import CameraControl
+
 
 BACKGROUND_PATH = "assets/backgrounds/"
 
@@ -22,7 +20,7 @@ uni_style = {
         }
 
 class MenuView(arcade.View):
-    def __init__(self):
+    def __init__(self, cam_controller: CameraControl):
         super().__init__()
 
         # --- Required for all code that uses UI element,
@@ -31,6 +29,9 @@ class MenuView(arcade.View):
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
+        # Store camera controller
+        self._cc = cam_controller
+
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.UIBoxLayout()
 
@@ -38,11 +39,15 @@ class MenuView(arcade.View):
         # look at UITEXTUREBUTTON
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200, style = uni_style)
         self.v_box.add(start_button.with_space_around(bottom=20))
+        
+        background_button = arcade.gui.UIFlatButton(text="Background", width=200, style = uni_style)
+        self.v_box.add(background_button.with_space_around(bottom=20))
 
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
         self.v_box.add(exit_button)
 
         start_button.on_click = self.on_click_start
+        background_button.on_click = self.on_click_background
         exit_button.on_click = self.on_click_exit
 
         # Create a widget to hold the v_box widget, that will center the buttons
@@ -65,6 +70,12 @@ class MenuView(arcade.View):
     def on_click_exit(self, event):
         self.window.close()
 
+    def on_click_background(self, event):
+        self.manager.clear()
+        bg_gen = LoadViews.BackgroundGenView(self._cc)
+        bg_gen.setup()
+        self.window.show_view(bg_gen)
+
     def on_click_settings(self, event):
         pass
 
@@ -79,17 +90,4 @@ class MenuView(arcade.View):
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
 
     def setup(self):
-        # Video capture
-        # NOTE The camera control may take several seconds to get cam control
-        self._cc = CameraControl()
-                
-        # # Create video capture display thread
-        # self._cam_buf = RingBuffer()
-        # video_t_closer = ThreadCloser()
-        # video_t = threading.Thread(
-        #     target=display_video_t, 
-        #     args=(self._cc, self._cam_buf, video_t_closer)
-        # )
-
-        # # Track the video thread and closer
-        # self._video_t = ThreadController(video_t, video_t_closer)
+        pass
