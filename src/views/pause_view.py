@@ -1,20 +1,9 @@
 import arcade
 import src.views.game_view as GameView
 import src.views.menu_view as m
+from src.util.style import uni_style
 
 BACKGROUND_PATH = "assets/backgrounds/"
-
-uni_style = {
-            "font_name" : "Kenney Mini Square",
-            "font_size" : 15,
-            "font_color" : arcade.color.WHITE,
-            "boarder_width" : 0,
-            "border_color" : None,
-            "bg_color" : arcade.color.BLACK,
-            "bg_color_pressed" : arcade.color.WHITE,
-            "border_color_pressed" : arcade.color.WHITE,
-            "font_color_pressed" : arcade.color.BLACK,
-        }
 
 class PauseView(arcade.View):
     def __init__(self, game_view : "GameView.GameView"):
