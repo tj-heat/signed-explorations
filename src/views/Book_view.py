@@ -178,8 +178,10 @@ class BookView(arcade.View):
         arcade.start_render()
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         if self.front_image is not None:
+            arcade.draw_text("Your View", 610, 575, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
             arcade.draw_texture_rectangle(730, 475, 340, 240, self.front_image)
         if self.back_image is not None:
+            arcade.draw_text("Camera View", 570, 335, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
             arcade.draw_texture_rectangle(730, 225, 340, 240, self.back_image)
         self.manager.draw()
     
@@ -190,14 +192,13 @@ class BookView(arcade.View):
         self.window.show_view(self.game_view)
 
     def on_click_red_button(self, event):
-        print("hellp")
+        pass
 
     def on_click_green_button(self, event):
-        print("hellp")
+        pass
 
     def on_click_letter_button(self, letter):
         image_front = "assets\interface\\" + letter + "-FRONT-VIEW.PNG"
-        print(image_front)
         self.front_image = arcade.load_texture(image_front) 
         if letter == "K" or letter == "E" or letter == "Y":
             image_back = "assets\interface\\" + letter + "-BACK-VIEW.PNG"
