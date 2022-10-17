@@ -29,12 +29,13 @@ WOOF = [
     ["Woof"],
     ["Woof :3c"],
     ["The dog seems to be... winking at you.", "You wink back."],
+    ["Dog factoid: dogs can't open doors.", "Dogs George who opens 5000 doors a day", "is a statistical outlier", "and should not be included."],
     ]
 
 KEY_WOOF = [
-    ["The dog tries to give you the key, but it falls to the ground...","the key is now dirty"],
+    ["The dog tries to give you the key", "But it falls to the ground...","The key is now dirty"],
     ["They dog also seems confused as to why there is a key on the middle of nowhere."],
-    ["The dog is holding the key in his mouth, that must not be comfortable.", "Or sanitary."],
+    ["The dog is holding the key in his mouth.", "That must not be comfortable."],
     ]
 
 DOOR_WOOF = [
@@ -42,7 +43,6 @@ DOOR_WOOF = [
     ["The dog pushes with all his might!!!","... but the door will not yeild."],
     ["The dog bites the door handle.", "Nothing happens."],
     ["Its locked..."],
-    ["Dog factoid: dogs can't open doors.", "Dogs George who opens 5000 doors a day is a statistical outlier and should not be included."],
     ]
 
 class Task(Enum):
