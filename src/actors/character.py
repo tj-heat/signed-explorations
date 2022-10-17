@@ -14,23 +14,45 @@ BACK_FACING = 1
 RIGHT_FACING = 0
 LEFT_FACING = 1
 
-DEAD_ZONE = 0.1
-
 #Dog tasks
 FOLLOW = 0
 KEY = 1
 DOOR = 2
-DOG_TASKS = [FOLLOW, KEY, DOOR]
 
 #Cat Constants
 MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow", "Nya..."]
+WOOF = [
+    ["He wags his tail... he seems happy that you're here"],
+    ["He sits down and pants; its important to rest..."],
+    ["He's as confused as you are."],
+    ["Dog factoid: dogs can't talk."],
+    ["Woof"],
+    ["Woof :3c"],
+    ["The dog seems to be... winking at you.", "You wink back."],
+    ["Dog factoid: dogs can't open doors.", "Dogs George who opens 5000 doors a day", "is a statistical outlier", "and should not be included."],
+    ]
+
+KEY_WOOF = [
+    ["The dog tries to give you the key", "But it falls to the ground...","The key is now dirty"],
+    ["Why there is a key on the middle of nowhere?", "The dog also seems confused"],
+    ["The dog is holding the key in his mouth.", "That must not be comfortable."],
+    ["Dog factoid: you love the dog"],
+    ["Do dogs dream of sheep?"],
+    ]
+
+DOOR_WOOF = [
+    ["The dog looks with confusion at the lock."],
+    ["The dog pushes with all his might!!!","... but the door will not yeild."],
+    ["The dog bites the door handle.", "Nothing happens."],
+    ["Its locked..."],
+    ]
 
 class Task(Enum):
     NONE = 0
     KEY = 1
     DOOR = 2
     FOLLOW = 3
-    LEVER = 4
+    NO_KEY = 4
 
 def load_texture_pair(filename):
     """
@@ -115,6 +137,7 @@ class Dog(Animal):
         self.force = 1000
         self.task : Optional[Task]= Task.NONE
         self.inventory = []
+        self.talk = False
 
         self.follow = False
         self.goal = (0,0)
@@ -122,8 +145,7 @@ class Dog(Animal):
     def follow_cat(self):
         self.follow = True
 
-    def set_goal(self, goal):
-        #goal must be coordinates of tuple (0,0)
+    def set_goal(self, goal : tuple):
         self.goal = goal
 
     def stop_follow(self):
@@ -137,3 +159,9 @@ class Dog(Animal):
 
     def get_actions(self):
         return self.task
+
+    def get_dialogue(self):
+        if self.task == Task.KEY or self.task == Task.DOOR:
+            return random.choice(KEY_WOOF)
+        else: 
+            return random.choice(WOOF)
