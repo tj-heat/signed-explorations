@@ -59,17 +59,17 @@ class PauseView(arcade.View):
     def on_click_restart(self, event):
         self.game_view.end_video()
         self.game_view.setup()
-        self.window.show_view(self.game_view)
+        self.show_new_view(self.game_view)
 
     def on_click_return(self, event):
         self.game_view.resume_video()
-        self.window.show_view(self.game_view)
+        self.show_new_view(self.game_view)
 
     def on_click_quit(self, event):
         self.game_view.end_video()
         menu = m.MenuView(self.game_view.cam_controller)
         menu.setup()
-        self.window.show_view(menu)
+        self.show_new_view(menu)
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -82,6 +82,13 @@ class PauseView(arcade.View):
         arcade.draw_text("Paused", self.window.width/2, self.window.height/2 + 200, 
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
     
+    def show_new_view(self, view):
+        """ Transition to a new view with teardown """
+        self.clear()
+        self.manager.clear()
+        self.manager.disable()
+        self.window.show_view(view)
+
     def on_update(self, delta_time):
         pass
 
