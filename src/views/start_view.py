@@ -1,6 +1,6 @@
 import arcade
 
-import src.views.menu_view as m
+from src.views.loading_view import LoadingView 
 
 BACKGROUND_PATH = "assets/backgrounds/"
 
@@ -30,6 +30,6 @@ class StartView(arcade.View):
         arcade.set_viewport(0, self.window.width, 0, self.window.height)
 
     def on_key_press(self, key, modifiers):
-        menu = m.MenuView()
-        menu.setup()
-        self.window.show_view(menu)
+        load_view = LoadingView()
+        load_view.setup()
+        self.window.show_view(load_view)

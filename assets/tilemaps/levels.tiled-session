@@ -289,11 +289,11 @@
             }
         },
         "lvl1.tmx": {
-            "scale": 0.33,
-            "selectedLayer": 0,
+            "scale": 1,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 778.7878787878788,
-                "y": 940.9090909090908
+                "x": 955,
+                "y": 873
             }
         },
         "texture_maps/door_sprite_sheet.tsx": {
@@ -428,13 +428,13 @@
     ],
     "project": "levels.tiled-project",
     "recentFiles": [
+        "lvl1.tmx",
         "texture_maps/door_sprite_sheet.tsx",
         "texture_maps/stone_edge_sprite_sheet.tsx",
         "texture_maps/water_sprite_sheet.tsx",
         "texture_maps/wall_sprite_sheet.tsx",
         "texture_maps/stone_wall_sprite_sheet.tsx",
         "texture_maps/wood_sprite_sheet.tsx",
-        "lvl1.tmx",
         "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx",
         "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/lvl1.tmx",
         "C:/DECO3801/design/assets/lvls/lvl1.tmx",

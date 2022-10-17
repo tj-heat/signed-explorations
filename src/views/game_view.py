@@ -7,6 +7,7 @@ from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 import src.actors.character as character
 import src.actors.items as items
 import src.views.pause_view as p
+import src.views.end_view as w
 import src.dialogue.speech_items as Speech
 from src.actors.event_triggers import *
 from src.actors.character import Task
@@ -15,8 +16,9 @@ from src.dialogue.dialogue_box import DialogueBox
 from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
+from src.views.book_view import BookView
 from src.views.sign_view import SignView
-from src.video.video_control import CAPTURING, display_video_t
+from src.video.video_control import CAPTURING, CameraControl, display_video_t
 
 MOVEMENT_SPEED = 3
 
@@ -87,6 +89,10 @@ class GameView(arcade.View):
         self.text_box = arcade.load_texture(TEXT_PATH)
         self.interact_icon = arcade.load_texture(ICON_PATH)
     
+    @property
+    def cam_controller(self) -> CameraControl:
+        return self._cc
+
     def setup(self):
         # Control variables
         self._seen_key = False
@@ -122,16 +128,18 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
-        video_t_closer = ThreadCloser()
+        print("d")
+        self.video_t_closer = ThreadCloser()
+        print("e")
         video_t = threading.Thread(
             target=display_video_t, 
-            args=(self._cc, self._cam_buf, video_t_closer)
+            args=(self._cc, self._cam_buf, self.video_t_closer)
         )
-
         # Track the video thread and closer
-        self._video_t = ThreadController(video_t, video_t_closer)
-
+        self._video_t = ThreadController(video_t, self.video_t_closer)
+        print("f")
         if CAPTURING:
+            print("g")
             self._video_t.start()
 
         #Create physics engine
@@ -141,7 +149,6 @@ class GameView(arcade.View):
             cartesian = self.tile_map.get_cartesian(npc.shape[0], npc.shape[1])
             if npc.name == "Dog":
                 body = character.Dog() 
-                self.npc_sprite = body
                 body.center_x, body.center_y = \
                     self.get_center_from_cartesian(cartesian)
                 self.dog_sprite = body
@@ -155,7 +162,6 @@ class GameView(arcade.View):
                 raise Exception(f"Unknown npc type {npc.name}")
 
         item_layer = self.tile_map.object_lists[LAYER_ITEMS]
-
         for item in item_layer:
             cartesian = self.tile_map.get_cartesian(item.shape[0], item.shape[1])
             if item.name == "Key":
@@ -237,11 +243,15 @@ class GameView(arcade.View):
         def npc_hit_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             npc_sprite.stop_follow()
             player_sprite.touched = True
+            npc_sprite.talk = True
+            self.start_interact_notify()
             return player_sprite.touched
             #ADD AS PREHANDLER
 
         def npc_separate_handler(player_sprite, npc_sprite, _arbiter, _space, _data):
             player_sprite.touched = False
+            npc_sprite.talk = False
+            self.end_interact_notify()
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
             if npc_sprite.task == item_sprite.task:
@@ -249,8 +259,7 @@ class GameView(arcade.View):
                     self.key_task(npc_sprite, item_sprite)
 
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
-            if npc_sprite.task == Task.DOOR:
-                return self.door_task(npc_sprite, door_sprite)
+            return self.door_task(npc_sprite, door_sprite)
 
         def event_hit_handler(_p, event_sprite, _a, _s, _d):
             # NOTE This post handler is not firing for some reason
@@ -290,7 +299,12 @@ class GameView(arcade.View):
             post_handler=player_near_item_handler, 
             separate_handler=player_leave_item_handler
         )
-        self.physics_engine.add_collision_handler("player", "npc", begin_handler= npc_hit_handler, separate_handler = npc_separate_handler)
+
+        self.physics_engine.add_collision_handler(
+            "player", "npc", 
+            begin_handler= npc_hit_handler, 
+            separate_handler = npc_separate_handler)
+
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", begin_handler = door_hit_handler)
         self.physics_engine.add_collision_handler("npc", "event", pre_handler=non_handler)
@@ -326,26 +340,20 @@ class GameView(arcade.View):
         """ Check if a given event can go ahead """
         return event.task and not self._in_event
 
-    def get_center_of_door(self, coordinates):
-        #[top left, top right, bottom right, bottom left]
-        #taking bottom left coord and adding 32 
-        x, y = coordinates[3]
-        center_x = x + 32
-        center_y = y + 32
-        return (x, y)
-
     def key_task(self, npc, key):
         npc.inventory.append(f"{key.type}")
         key.remove_from_sprite_lists()
-        npc.task = Task.NONE
+        npc.task = Task.DOOR
 
     def door_task(self, npc : character.Dog, door : items.Door):
         if door.key == "Key" and "Key" in npc.inventory:
             npc.inventory.remove("Key")
             self.npc_opens_door(door)
         
-        npc.task = Task.NONE
-        self._dbox = None
+        if "Key" not in npc.inventory:
+            npc.task = Task.NONE
+        
+        #self._dbox = None
         return True
 
     def create_dbox(self, text, speaker=None) -> DialogueBox:
@@ -401,7 +409,7 @@ class GameView(arcade.View):
         self._notify_interaction = False
 
     def check_items_in_radius(self, radius: int = RADIUS):
-        return self.check_in_radius(LAYER_ITEMS, radius)
+        return self.check_in_radius(LAYER_ITEMS, radius) #+ self.check_in_radius(LAYER_DOORS, radius) -- for door interaction
 
     def check_events_in_radius(self, radius: int = 96):
         """ Check for interactible events in a given radius around the player """
@@ -463,15 +471,15 @@ class GameView(arcade.View):
         if self.dog_sprite.follow == True:
             self.dog_sprite.set_goal((self.dog_sprite.center_x - self.player_sprite.center_x, 
                 self.dog_sprite.center_y - self.player_sprite.center_y))
-        elif self.dog_sprite.task != Task.NONE:
+        elif self.dog_sprite.task == Task.KEY:
             items = self.check_items_in_radius()
             if len(items) == 0:
-                self.dog_sprite.set_goal(self.dog_sprite.center_x, self.dog_sprite.center_y)
+                pass
             else:
                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
         
-        if self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE:
+        if (self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE):
             x, y = self.dog_sprite.goal
             if y > 0:
                 force = (0, -self.dog_sprite.force)
@@ -501,7 +509,7 @@ class GameView(arcade.View):
             self.left_pressed = True
         elif key in RIGHT_KEYS:
             self.right_pressed = True
-
+        
         elif key == arcade.key.E:
             pass
 
@@ -519,11 +527,11 @@ class GameView(arcade.View):
         
         elif key == arcade.key.E:
             items = self.check_items_in_radius(96)
-            events = self.check_events_in_radius()
-
             if items:
-                self.do_interact(items)
+                if self.do_interact(items):
+                    return # Stop additional processing from occurring
 
+            events = self.check_events_in_radius()
             if events:
                 event = events[0]
                 event.task()
@@ -531,10 +539,19 @@ class GameView(arcade.View):
                 # Remove the event once it has been interacted with
                 if isinstance(event, ContactEventTrigger):
                     event.kill()
+
+            if self.dog_sprite.talk == True:
+                self.talk_to_dog()
         
         elif key == arcade.key.Q:
-            self.dog_sprite.follow_cat()
-            self.player_sprite.start_meow(25)
+            if not self.in_dialogue():
+                self.dog_sprite.follow_cat()
+                self.player_sprite.start_meow(25)
+        
+        elif key == arcade.key.I:
+            book_view = BookView(self, self.dog_sprite)
+            book_view.setup()
+            self.window.show_view(book_view)
         
         elif key == arcade.key.ESCAPE:
             self.pause_video()
@@ -546,11 +563,26 @@ class GameView(arcade.View):
             if self.in_dialogue():
                 self._dbox.progress()
 
+    def talk_to_dog(self):
+        self.register_dialogue(self.create_dbox(self.dog_sprite.get_dialogue(), Speech.DOG_SPEAKER))
+    
     def do_interact(self, interactibles: List[arcade.Sprite]):
         """ Handle the interactions of the player character """
         target = interactibles[0]
 
-        if isinstance(target, items.Key):
+        # Check for signing action first
+        if self.player_sprite.is_touched():
+            if target.type == "Key":
+                goal = "KEY"
+                task = Task.KEY
+            
+                # FIXME to be more generic this should only fire for signables
+                sign_view = SignView(self, self.dog_sprite, goal, task, target)
+                sign_view.setup()
+                self.window.show_view(sign_view)
+
+        # If not signing then process as normal
+        elif isinstance(target, items.Key):
             if self._seen_key:
                 self.register_dialogue(self.create_dbox(
                     Speech.get_msgs(Speech.PUZZLE_INTERACT)
@@ -559,11 +591,6 @@ class GameView(arcade.View):
                 self._seen_key = True
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
-
-        if self.player_sprite.is_touched():
-            sign_view = SignView(self, self.npc_sprite, interactibles)
-            sign_view.setup()
-            self.window.show_view(sign_view)
 
     def on_draw(self):
         """ Draw everything """
@@ -709,6 +736,11 @@ class GameView(arcade.View):
                     return lambda: self.register_dialogue(
                         self.create_dbox(msg, speaker)
                     )
+            
+            elif event_type == EventType.WIN:
+                speaker = None
+                def task(msg, speaker=None):
+                    return lambda: self.endgame()
 
             # Create event
             body = event_data[EVENT_PERSIST](
@@ -721,6 +753,11 @@ class GameView(arcade.View):
             # Add event to scene
             body.center_x, body.center_y = mid_x, mid_y
             self.scene.add_sprite(LAYER_EVENTS, body)
+
+    def endgame(self):
+        win_view = w.EndView(self)
+        win_view.setup()
+        self.window.show_view(win_view)
 
     def get_center_from_cartesian(self, cartesian: Tuple[int]) -> Tuple[float]:
         """ Get the center position of a given cartesian"""
