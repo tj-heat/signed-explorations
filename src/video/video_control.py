@@ -29,8 +29,8 @@ class CameraException(Exception):
 
 # Classes
 class CameraControl():
-    ROI_WIDTH = 200
-    ROI_HEIGHT = 200
+    ROI_WIDTH = 350
+    ROI_HEIGHT = 350
 
     def __init__(self) -> None:
         self._cam = self.get_cam()

@@ -14,8 +14,8 @@ from src.dialogue.dialogue_box import DialogueBox
 from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
+from src.views.book_view import BookView
 from src.views.sign_view import SignView
-from src.views.Book_view import BookView
 from src.video.video_control import CAPTURING, CameraControl, display_video_t
 
 MOVEMENT_SPEED = 3
@@ -125,14 +125,18 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
+        print("d")
         self.video_t_closer = ThreadCloser()
+        print("e")
         video_t = threading.Thread(
             target=display_video_t, 
             args=(self._cc, self._cam_buf, self.video_t_closer)
         )
         # Track the video thread and closer
         self._video_t = ThreadController(video_t, self.video_t_closer)
+        print("f")
         if CAPTURING:
+            print("g")
             self._video_t.start()
 
         #Create physics engine
@@ -523,7 +527,7 @@ class GameView(arcade.View):
                 self.player_sprite.start_meow(25)
         
         elif key == arcade.key.I:
-            book_view = BookView(self, self.dog_sprite, items)
+            book_view = BookView(self, self.dog_sprite)
             book_view.setup()
             self.window.show_view(book_view)
         
@@ -549,13 +553,11 @@ class GameView(arcade.View):
             if target.type == "Key":
                 goal = "KEY"
                 task = Task.KEY
-            elif target.type == "Door":
-                goal == ""
-                task = Task.DOOR
             
-            sign_view = SignView(self, self.dog_sprite, "VUS", task, target)
-            sign_view.setup()
-            self.window.show_view(sign_view)
+                # FIXME to be more generic this should only fire for signables
+                sign_view = SignView(self, self.dog_sprite, goal, task, target)
+                sign_view.setup()
+                self.window.show_view(sign_view)
 
         # If not signing then process as normal
         elif isinstance(target, items.Key):
