@@ -73,7 +73,6 @@ class PauseView(arcade.View):
     
     def show_new_view(self, view):
         """ Transition to a new view with teardown """
-        self.clear()
         self.manager.clear()
         self.manager.disable()
         self.window.show_view(view)

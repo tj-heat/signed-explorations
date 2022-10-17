@@ -517,6 +517,7 @@ class GameView(arcade.View):
                 # Remove the event once it has been interacted with
                 if isinstance(event, ContactEventTrigger):
                     event.kill()
+                return # Stop additional processing from occurring
 
             if self.dog_sprite.talk == True:
                 self.talk_to_dog()
@@ -547,6 +548,7 @@ class GameView(arcade.View):
     def do_interact(self, interactibles: List[arcade.Sprite]):
         """ Handle the interactions of the player character """
         target = interactibles[0]
+        retval = False
 
         # Check for signing action first
         if self.player_sprite.is_touched():
@@ -558,6 +560,7 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.dog_sprite, goal, task, target)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+                retval = True
 
         # If not signing then process as normal
         elif isinstance(target, items.Key):
@@ -569,6 +572,9 @@ class GameView(arcade.View):
                 self._seen_key = True
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
+            retval = True
+
+        return retval
 
     def on_draw(self):
         """ Draw everything """
