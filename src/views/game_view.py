@@ -546,9 +546,10 @@ class GameView(arcade.View):
                 goal = "KEY"
                 task = Task.KEY
             
-            sign_view = SignView(self, self.npc_sprite, goal, task, target)
-            sign_view.setup()
-            self.window.show_view(sign_view)
+                # FIXME to be more generic this should only fire for signables
+                sign_view = SignView(self, self.npc_sprite, goal, task, target)
+                sign_view.setup()
+                self.window.show_view(sign_view)
 
         # If not signing then process as normal
         elif isinstance(target, items.Key):
