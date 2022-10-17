@@ -30,7 +30,7 @@ LETTERS = {
 }
 
 MODEL_DIR = os.path.join("data", "models")
-MODEL_NAME = "2022-08-28_124825_e25_%80.h5"
+MODEL_NAME = "2022-10-16_231009_e75_%91.h5"
 
 class Recogniser():
     def __init__(self) -> None:
