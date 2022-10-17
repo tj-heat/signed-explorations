@@ -322,6 +322,9 @@ class GameView(arcade.View):
 
             return event_sprite.collides
 
+        def event_collider_checker(_sprite, event, _a, _s, _d):
+            return event.collides
+
         def event_hit_separate_handler(_p, _e, _a, _s, _d):
             self.end_event()
 
@@ -355,7 +358,8 @@ class GameView(arcade.View):
 
         self.physics_engine.add_collision_handler("npc", "item", post_handler = item_hit_handler)
         self.physics_engine.add_collision_handler("npc", "door", begin_handler = door_hit_handler)
-        self.physics_engine.add_collision_handler("npc", "event", pre_handler=non_handler)
+        self.physics_engine.add_collision_handler("npc", "event", pre_handler = non_handler)
+        self.physics_engine.add_collision_handler("item", "event", pre_handler = event_collider_checker)
 
     def event_possible(self, event) -> bool:
         """ Check if a given event can go ahead """
