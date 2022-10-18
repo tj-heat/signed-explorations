@@ -5,7 +5,10 @@ import arcade
 MURAL_INTERACTIBLE = "mural"
 TORCH_LIT_INTERACTIBLE = "torch_lit"
 RUBY_INTERACTIBLE = "ruby_table"
-BOOKSHELF_INTERACTIBLE = "bookshelf"
+SHELF_BOOKS_INTERACTIBLE = "bookshelf_books"
+SHELF_EMPTY_INTERACTIBLE = "bookshelf_empty"
+SHELF_FULL_INTERACTIBLE = "bookshelf_full"
+SHELF_JARS_INTERACTIBLE = "bookshelf_jars"
 _INTERACTIBLE = ""
 
 class Interactible(arcade.Sprite):
@@ -41,11 +44,24 @@ class Interactible(arcade.Sprite):
         self.center_y = y + (self._tile_size * self._Y_OFFSET)
 
 
-class BookShelf(Interactible):
-    """ A sparsely populated bookshelf """
-    _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf.png"
-    _Y_OFFSET = 0
+class Shelves(Interactible):
+    """ An abstract class representing a set of shelf """
 
+class ShelfBooks(Shelves):
+    """ A Bookshelf full of books """
+    _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Books.png"
+
+class ShelfEmpty(Shelves):
+    """ An empty set of shelves """
+    _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Empty.png"
+
+class ShelfFull(Shelves):
+    """ A Bookshelf full of items """
+    _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Full.png"
+
+class ShelfJars(Shelves):
+    """ A Bookshelf with jars on its shelves """
+    _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Jars.png"
 
 class Mural(Interactible):
     """ A mural object that hangs on walls """
@@ -65,8 +81,11 @@ class TorchLit(Interactible):
 
 
 INTERACTIBLES = {
-    BOOKSHELF_INTERACTIBLE: BookShelf,
     MURAL_INTERACTIBLE: Mural,
     RUBY_INTERACTIBLE: TableRuby,
+    SHELF_BOOKS_INTERACTIBLE: ShelfBooks,
+    SHELF_EMPTY_INTERACTIBLE: ShelfEmpty,
+    SHELF_FULL_INTERACTIBLE: ShelfFull,
+    SHELF_JARS_INTERACTIBLE: ShelfJars,
     TORCH_LIT_INTERACTIBLE: TorchLit,
 }
