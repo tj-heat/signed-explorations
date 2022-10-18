@@ -666,6 +666,7 @@ class GameView(arcade.View):
             self.register_dialogue(self.create_dbox(
                 pre_msgs, Speech.CAT_SPEAKER
             ))
+            self.enable_dialogue(self.current_dbox)
 
         if post_msgs:
             self.register_dialogue(self.create_dbox(
@@ -676,7 +677,7 @@ class GameView(arcade.View):
             focus_view = FocusView(self, focus_texture)
             self.queue_new_view(focus_view)
 
-    def draw_interact_key(self) -> None:
+    def draw_interact_symbol(self) -> None:
         """ Draws a symbol showing the interact key """
         x, y = self.window.width / 2, self.window.height / 2
         
@@ -708,7 +709,7 @@ class GameView(arcade.View):
         self._ui_manager.draw()
 
         if self._notify_interaction:
-            self.draw_interact_key()
+            self.draw_interact_symbol()
 
         if self.player_sprite.cat_meowing():
             x = self.window.width/2
@@ -728,15 +729,15 @@ class GameView(arcade.View):
                 start_y = y + (SPRITE_SIZE) - 17 #magic number generated through much trial and error
             )
 
-        # If a new view should be shown, do so
-        if self._upcoming_views and not self.in_dialogue():
-            self.window.show_view(self._upcoming_views.pop(0))
-
     def on_update(self, delta_time):
         """ Movement and game logic """
         # Check for finished dialogue for removal
         if self._in_dialogue and not self.current_dbox.is_active():
             self.disable_dialogue(self.current_dbox)
+
+        # If a new view should be shown, do so
+        if self._upcoming_views and not self.in_dialogue():
+            self.window.show_view(self._upcoming_views.pop(0))
 
         # If a dbox is scheduled, display it and set dialogue on
         if self._dbox and self.current_dbox.is_active() and \
