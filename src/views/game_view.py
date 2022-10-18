@@ -88,18 +88,7 @@ class GameView(arcade.View):
 
         #load necessary textures
         self.text_box = arcade.load_texture(TEXT_PATH)
-        self.interact_icon = arcade.load_texture(ICON_PATH)
-
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
-   
-        book_button = arcade.gui.UITextureButton(x=500, y=325, width=50, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
-        self.v_box.add(book_button)
-
-        book_button.on_click = self.on_click_book_button
-
-        self.manager.add(self.v_box)
+        self.interact_icon = arcade.load_texture(ICON_PATH)        
     
     @property
     def cam_controller(self) -> CameraControl:
