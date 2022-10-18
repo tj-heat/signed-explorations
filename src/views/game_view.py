@@ -613,6 +613,7 @@ class GameView(arcade.View):
     def do_item_interact(self, interactibles: List[arcade.Sprite]):
         """ Handle the interactions of the player character with items """
         target = interactibles[0]
+        retval = False
 
         # Check for signing action first
         if self.player_sprite.is_touched():
@@ -624,6 +625,7 @@ class GameView(arcade.View):
                 sign_view = SignView(self, self.dog_sprite, goal, task, target)
                 sign_view.setup()
                 self.window.show_view(sign_view)
+                retval = True
 
         # If not signing then process as normal
         elif isinstance(target, items.Key):
@@ -635,6 +637,9 @@ class GameView(arcade.View):
                 self._seen_key = True
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
+            retval = True
+
+        return retval
 
     def do_object_interact(self, interactibles: List[Interactible]):
         """ Handle the interactions of the player character with objects """
