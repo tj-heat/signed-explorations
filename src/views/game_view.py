@@ -11,7 +11,7 @@ import src.views.end_view as w
 import src.dialogue.speech_items as Speech
 from src.actors.event_triggers import *
 from src.actors.character import Task
-from src.actors.interactibles import INTERACTIBLES
+from src.actors.interactibles import INTERACTIBLES, Interactible
 from src.dialogue.dialogue_box import DialogueBox
 from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
@@ -352,6 +352,12 @@ class GameView(arcade.View):
         )
 
         self.physics_engine.add_collision_handler(
+            "player", "interact", 
+            post_handler=player_near_item_handler, 
+            separate_handler=player_leave_item_handler
+        )
+
+        self.physics_engine.add_collision_handler(
             "player", "npc", 
             begin_handler= npc_hit_handler, 
             separate_handler = npc_separate_handler)
@@ -433,13 +439,18 @@ class GameView(arcade.View):
         """ Stop informing the player that they can interact with something """
         self._notify_interaction = False
 
-    def check_items_in_radius(self, radius: int = RADIUS):
+    def check_items_in_radius(self, radius: int = 96):
         return self.check_in_radius(LAYER_ITEMS, radius) #+ self.check_in_radius(LAYER_DOORS, radius) -- for door interaction
 
     def check_events_in_radius(self, radius: int = 96):
         """ Check for interactible events in a given radius around the player """
         events = self.check_in_radius(LAYER_EVENTS, radius)
         return list(filter(lambda e: e.interactible, events))
+
+    def check_objects_in_radius(self, radius: int = 128):
+        """ Check for interactible objects in a given radius around the player. 
+        """
+        return self.check_in_radius(LAYER_INTERACTS, radius)
 
     def check_in_radius(self, layer: str, radius: int):
         """ Check for all sprites on a given layer within a provided radius """
@@ -551,22 +562,30 @@ class GameView(arcade.View):
             self.right_pressed = False
         
         elif key == arcade.key.E:
-            items = self.check_items_in_radius(96)
-            if items:
+            processed = False # Could replace with if/else for performance hit
+
+            items = self.check_items_in_radius()
+            if items and not processed:
                 if self.do_interact(items):
-                    return # Stop additional processing from occurring
+                    processed = True # Stop additional processing
 
             events = self.check_events_in_radius()
-            if events:
+            if events and not processed:
                 event = events[0]
                 event.task()
 
                 # Remove the event once it has been interacted with
                 if isinstance(event, ContactEventTrigger):
                     event.kill()
+                processed = True
 
-            if self.dog_sprite.talk == True:
+            interactibles = self.check_objects_in_radius()
+            if interactibles and not processed:
+                self.do_object_interact(interactibles)
+
+            if self.dog_sprite.talk and not processed:
                 self.talk_to_dog()
+                processed = True
         
         elif key == arcade.key.Q:
             if not self.in_dialogue():
@@ -591,8 +610,8 @@ class GameView(arcade.View):
     def talk_to_dog(self):
         self.register_dialogue(self.create_dbox(self.dog_sprite.get_dialogue(), Speech.DOG_SPEAKER))
     
-    def do_interact(self, interactibles: List[arcade.Sprite]):
-        """ Handle the interactions of the player character """
+    def do_item_interact(self, interactibles: List[arcade.Sprite]):
+        """ Handle the interactions of the player character with items """
         target = interactibles[0]
 
         # Check for signing action first
@@ -616,6 +635,13 @@ class GameView(arcade.View):
                 self._seen_key = True
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
+
+    def do_object_interact(self, interactibles: List[Interactible]):
+        """ Handle the interactions of the player character with objects """
+        target = interactibles[0]
+        self.register_dialogue(self.create_dbox(
+            target.get_pre_msgs(), Speech.CAT_SPEAKER
+        ))
 
     def draw_interact_key(self) -> None:
         """ Draws a symbol showing the interact key """

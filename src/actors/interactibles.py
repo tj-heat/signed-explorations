@@ -1,4 +1,4 @@
-from pickle import NONE
+from typing import List
 import arcade
 
 # Constants
@@ -8,9 +8,12 @@ RUBY_INTERACTIBLE = "ruby_table"
 BOOKSHELF_INTERACTIBLE = "bookshelf"
 _INTERACTIBLE = ""
 
-class _Interactible(arcade.Sprite):
+class Interactible(arcade.Sprite):
     """ An abstract class that represents an interactible object """
-    _TEX_PATH = NONE
+    _TEX_PATH = None
+    _PRE_MSGS = ["Nothing"]
+    _POST_MSGS = ["Nothing again"]
+    _DISPLAY_IMG = None
     _X_OFFSET = 0
     _Y_OFFSET = 0
 
@@ -20,29 +23,42 @@ class _Interactible(arcade.Sprite):
         self._tile_size = tile_size
         self.texture = arcade.load_texture(self._TEX_PATH)
 
+    def get_pre_msgs(self) -> List[str]:
+        """ Return the pre-interaction messages for the object """
+        return self._PRE_MSGS
+
+    def get_post_msgs(self) -> List[str]:
+        """ Return the post-interaction messages for the object """
+        return self._POST_MSGS
+
+    def get_focus_texture(self) -> arcade.Texture:
+        """ Return the texture to display upon interaction """
+        return self._DISPLAY_IMG
+
     def set_center(self, x, y) -> None:
         """ Set the center position of the object's body """
         self.center_x = x + (self._tile_size * self._X_OFFSET)
         self.center_y = y + (self._tile_size * self._Y_OFFSET)
 
 
-class BookShelf(_Interactible):
+class BookShelf(Interactible):
     """ A sparsely populated bookshelf """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf.png"
-    _Y_OFFSET = -0.5
+    _Y_OFFSET = 0
 
 
-class Mural(_Interactible):
+class Mural(Interactible):
     """ A mural object that hangs on walls """
     _TEX_PATH = "assets/sprites/interactibles/Object_Sign.png"
 
 
-class TableRuby(_Interactible):
+class TableRuby(Interactible):
     """ A table with a ruby on it"""
     _TEX_PATH = "assets/sprites/interactibles/Object_Table.png"
+    _X_OFFSET = -0.5
 
 
-class TorchLit(_Interactible):
+class TorchLit(Interactible):
     """ A tall lit torch """
     _TEX_PATH = "assets/sprites/interactibles/Object_Light.png"
     _Y_OFFSET = 1
