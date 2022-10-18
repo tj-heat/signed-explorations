@@ -765,12 +765,6 @@ class GameView(arcade.View):
             self.move_player()
             self.move_dog()
 
-            # Check for nearby events
-            if self.check_events_in_radius():
-                self.start_interact_notify
-            else:
-                self.end_interact_notify
-
             if self.player_sprite.cat_meowing():
                 self.player_sprite.meow_count -= 1
             if self.player_sprite.cat_meowing() and self.player_sprite.meow_count == 0:
