@@ -130,7 +130,7 @@ class TableRuby(Table):
     _TEX_PATH = "assets/sprites/interactibles/Object_Table_Ruby.png"
     _PRE_MSGS = ["Wow, that looks shiny!"]
     _POST_MSGS = get_random_learn()
-    _DISPLAY_IMG = "assets/screens/R_screen.png"
+    _DISPLAY_IMG = "assets/screens/Y_screen.png"
 
 
 class TorchLit(Interactible):
