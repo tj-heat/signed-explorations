@@ -13,7 +13,6 @@ from src.actors.event_triggers import *
 from src.actors.character import Task
 from src.actors.interactibles import INTERACTIBLES, Interactible
 from src.dialogue.dialogue_box import DialogueBox
-from src.dialogue.speech_items import DIALOGUE_INTRODUCTION
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.book_view import BookView
@@ -197,7 +196,8 @@ class GameView(arcade.View):
         self._register_colliders()
 
         # Dialogue box object tracker
-        self._dbox = None
+        self._dbox = []
+        self._in_dialogue = False
 
         # Event tracker
         self._in_event = False
@@ -384,7 +384,6 @@ class GameView(arcade.View):
         if "Key" not in npc.inventory:
             npc.task = Task.NONE
         
-        #self._dbox = None
         return True
 
     def create_dbox(self, text, speaker=None) -> DialogueBox:
@@ -396,11 +395,19 @@ class GameView(arcade.View):
         )
 
     def register_dialogue(self, dbox: DialogueBox) -> None:
-        """ Keep track of a given dialogue box and register it with UI manager.
-        """
-        if not self._dbox:
-            self._dbox = dbox
-            self._ui_manager.add(self._dbox)
+        """ Keep track of a given dialogue box. """
+        self._dbox.append(dbox)
+
+    def enable_dialogue(self, dbox: DialogueBox) -> None:
+        """ Display a given dialogue box in the UI manager and flag dialogue """
+        self._in_dialogue = True
+        self._ui_manager.add(dbox)
+
+    def disable_dialogue(self, dbox: DialogueBox) -> None:
+        """ End dialogue being tracked and remove the dialogue box """
+        self._in_dialogue = False
+        self._ui_manager.remove(dbox)
+        self._dbox.remove(dbox)
 
     def npc_opens_door(self, door : items.Door):
         if door.dual_pos == "n":
@@ -417,11 +424,16 @@ class GameView(arcade.View):
         self.physics_engine.remove_sprite(door)
         self.dog_sprite.task = Task.NONE
 
+    @property
+    def current_dbox(self) -> DialogueBox:
+        """ Returns the current dialogue box """
+        return self._dbox[0]
+
     def in_dialogue(self) -> bool:
         """ (bool) Returns True if the game is currently in dialogue. False
         otherwise.
         """
-        return self._dbox and self._dbox.is_active()
+        return self._in_dialogue
 
     def start_event(self) -> None:
         """ Flag that the game is in an event """
@@ -605,7 +617,7 @@ class GameView(arcade.View):
         
         elif key == arcade.key.SPACE:
             if self.in_dialogue():
-                self._dbox.progress()
+                self.current_dbox.progress()
 
     def talk_to_dog(self):
         self.register_dialogue(self.create_dbox(self.dog_sprite.get_dialogue(), Speech.DOG_SPEAKER))
@@ -702,6 +714,13 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
+
+        # If a dbox is scheduled, display it and set dialogue on
+        if self._dbox and self.current_dbox.is_active() and \
+            not self.in_dialogue():
+            self._in_dialogue = True
+            self._ui_manager.add(self.current_dbox)
+
         if not self.in_dialogue():
             self.move_player()
             self.move_dog()
@@ -727,16 +746,20 @@ class GameView(arcade.View):
             self.center_camera_to_player()
 
         # Check for finished dialogue removal
-        if self._dbox and not self._dbox.is_active():
-                self._ui_manager.remove(self._dbox)
-                self._dbox = None
+        if self._in_dialogue and not self.current_dbox.is_active():
+            self.disable_dialogue(self.current_dbox)
 
     def on_show_view(self):
         self.center_camera_to_player()
         if not self._done_tutorial:
-            self.register_dialogue(
-                self.create_dbox(DIALOGUE_INTRODUCTION[Speech.MSGS])
-            )
+            # System message
+            self.register_dialogue(self.create_dbox(
+                Speech.DIALOGUE_INTRODUCTION_P1[Speech.MSGS]
+            ))
+            # Dog message
+            p2_msg = Speech.DIALOGUE_INTRODUCTION_P2[Speech.MSGS]
+            p2_speaker = Speech.DIALOGUE_INTRODUCTION_P2[Speech.SPEAKER]
+            self.register_dialogue(self.create_dbox(p2_msg, p2_speaker))
             self._done_tutorial = True
         
         return super().on_show_view()
