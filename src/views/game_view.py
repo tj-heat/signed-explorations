@@ -1,4 +1,3 @@
-from copyreg import constructor
 from typing import List, Optional
 
 import arcade, bisect, math, threading
