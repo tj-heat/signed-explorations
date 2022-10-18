@@ -4,7 +4,8 @@ import arcade
 # Constants
 MURAL_INTERACTIBLE = "mural"
 TORCH_LIT_INTERACTIBLE = "torch_lit"
-RUBY_INTERACTIBLE = "ruby_table"
+TABLE_INTERACTIBLE = "table_empty"
+RUBY_INTERACTIBLE = "table_ruby"
 SHELF_BOOKS_INTERACTIBLE = "bookshelf_books"
 SHELF_EMPTY_INTERACTIBLE = "bookshelf_empty"
 SHELF_FULL_INTERACTIBLE = "bookshelf_full"
@@ -47,31 +48,45 @@ class Interactible(arcade.Sprite):
 class Shelves(Interactible):
     """ An abstract class representing a set of shelf """
 
+
 class ShelfBooks(Shelves):
     """ A Bookshelf full of books """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Books.png"
+
 
 class ShelfEmpty(Shelves):
     """ An empty set of shelves """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Empty.png"
 
+
 class ShelfFull(Shelves):
     """ A Bookshelf full of items """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Full.png"
 
+
 class ShelfJars(Shelves):
     """ A Bookshelf with jars on its shelves """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Jars.png"
+
 
 class Mural(Interactible):
     """ A mural object that hangs on walls """
     _TEX_PATH = "assets/sprites/interactibles/Object_Sign.png"
 
 
-class TableRuby(Interactible):
-    """ A table with a ruby on it"""
-    _TEX_PATH = "assets/sprites/interactibles/Object_Table.png"
+class Table(Interactible):
+    """ Base class for the table objects """
     _X_OFFSET = -0.5
+
+
+class TableEmpty(Table):
+    """ An empty table """
+    _TEX_PATH = "assets/sprites/interactibles/Object_Table_Empty.png"
+
+
+class TableRuby(Table):
+    """ A table with a ruby on it"""
+    _TEX_PATH = "assets/sprites/interactibles/Object_Table_Ruby.png"
 
 
 class TorchLit(Interactible):
@@ -87,5 +102,6 @@ INTERACTIBLES = {
     SHELF_EMPTY_INTERACTIBLE: ShelfEmpty,
     SHELF_FULL_INTERACTIBLE: ShelfFull,
     SHELF_JARS_INTERACTIBLE: ShelfJars,
+    TABLE_INTERACTIBLE: TableEmpty,
     TORCH_LIT_INTERACTIBLE: TorchLit,
 }
