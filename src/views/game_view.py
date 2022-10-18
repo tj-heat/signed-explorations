@@ -218,7 +218,6 @@ class GameView(arcade.View):
             # Create instance of interactible
             obj_constructor = INTERACTIBLES.get(interactible.name)
             body = obj_constructor(self.tile_map.tile_width)
-
             body.set_center(*self.get_center_from_cartesian(cartesian))
 
             self.scene.add_sprite(LAYER_INTERACTS, body)
@@ -656,9 +655,20 @@ class GameView(arcade.View):
     def do_object_interact(self, interactibles: List[Interactible]):
         """ Handle the interactions of the player character with objects """
         target = interactibles[0]
-        self.register_dialogue(self.create_dbox(
-            target.get_pre_msgs(), Speech.CAT_SPEAKER
-        ))
+
+        pre_msgs = target.get_pre_msgs()
+        post_msgs = target.get_post_msgs()
+        closeup = target.get_focus_texture()
+
+        if pre_msgs:
+            self.register_dialogue(self.create_dbox(
+                pre_msgs, Speech.CAT_SPEAKER
+            ))
+
+        if post_msgs:
+            self.register_dialogue(self.create_dbox(
+                post_msgs, Speech.CAT_SPEAKER
+            ))
 
     def draw_interact_key(self) -> None:
         """ Draws a symbol showing the interact key """

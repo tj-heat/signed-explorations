@@ -1,4 +1,6 @@
 from typing import List
+import random
+
 import arcade
 
 # Constants
@@ -12,11 +14,26 @@ SHELF_FULL_INTERACTIBLE = "bookshelf_full"
 SHELF_JARS_INTERACTIBLE = "bookshelf_jars"
 _INTERACTIBLE = ""
 
+# Learn letter messages
+INITIAL_LEARN = [
+    "I think I just learnt a new letter!",
+    "I should check my spell book to be sure."
+]
+LEARN_MSGS = [
+    ["I think I just learnt something."],
+    ["It feels like knowledge just entered my head."],
+    ["Did I just get smarter?"],
+]
+
+def get_random_learn() -> List[str]:
+    """ Returns a random learn message set. """
+    return random.choice(LEARN_MSGS)
+
 class Interactible(arcade.Sprite):
     """ An abstract class that represents an interactible object """
     _TEX_PATH = None
-    _PRE_MSGS = ["Nothing"]
-    _POST_MSGS = ["Nothing again"]
+    _PRE_MSGS = []
+    _POST_MSGS = []
     _DISPLAY_IMG = None
     _X_OFFSET = 0
     _Y_OFFSET = 0
@@ -52,26 +69,48 @@ class Shelves(Interactible):
 class ShelfBooks(Shelves):
     """ A Bookshelf full of books """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Books.png"
+    _PRE_MSGS = ["I can't get any of the books out."]
 
 
 class ShelfEmpty(Shelves):
     """ An empty set of shelves """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Empty.png"
+    _PRE_MSGS = ["There's nothing here"]
 
 
 class ShelfFull(Shelves):
     """ A Bookshelf full of items """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Full.png"
+    _PRE_MSGS = ["That's a lot of stuff!"]
 
 
 class ShelfJars(Shelves):
     """ A Bookshelf with jars on its shelves """
     _TEX_PATH = "assets/sprites/interactibles/Object_Bookshelf_Jars.png"
+    _PRE_MSGS = ["I wonder what's in those jars..."]
 
 
 class Mural(Interactible):
     """ A mural object that hangs on walls """
     _TEX_PATH = "assets/sprites/interactibles/Object_Sign.png"
+    _PRE_MSGS = ["It looks like something is written here..."]
+    _POST_MSGS = get_random_learn()
+
+    def __init__(self, tile_size: int, **kwargs):
+        super().__init__(tile_size, **kwargs)
+        self.texture = arcade.load_texture(
+            self._TEX_PATH, 
+            hit_box_algorithm="None"
+        )
+
+        self._interacted = False
+
+    def get_post_msgs(self) -> List[str]:
+        if not self._interacted:
+            self._interacted = True
+            return INITIAL_LEARN
+        else:
+            return super().get_post_msgs()
 
 
 class Table(Interactible):
@@ -82,17 +121,22 @@ class Table(Interactible):
 class TableEmpty(Table):
     """ An empty table """
     _TEX_PATH = "assets/sprites/interactibles/Object_Table_Empty.png"
+    _PRE_MSGS = ["I could knock so much stuff off of this..."]
 
 
 class TableRuby(Table):
     """ A table with a ruby on it"""
     _TEX_PATH = "assets/sprites/interactibles/Object_Table_Ruby.png"
+    _PRE_MSGS = ["Wow, that looks shiny!"]
+    _POST_MSGS = get_random_learn()
 
 
 class TorchLit(Interactible):
     """ A tall lit torch """
     _TEX_PATH = "assets/sprites/interactibles/Object_Light.png"
     _Y_OFFSET = 1
+    _PRE_MSGS = ["There's something etched into the shaft."]
+    _POST_MSGS = get_random_learn()
 
 
 INTERACTIBLES = {
