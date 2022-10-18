@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "lvl1.tmx",
     "expandedProjectPaths": [
         "texture_maps",
         "."
@@ -289,16 +289,50 @@
             }
         },
         "lvl1.tmx": {
-            "scale": 1,
+            "scale": 0.33,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 955,
-                "y": 873
+                "x": 859.0909090909089,
+                "y": 906.060606060606
             }
+        },
+        "texture_maps/Ground_Dirt.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/Ground_Grass_1.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/Ground_Grass_2.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/Ground_Grass_3.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/Ground_Grass_4.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/Ground_Grass_5.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/Ground_Grass_steps.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/cliff-grass-rep.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/cliff-grasss-norep.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "texture_maps/door_sprite_sheet.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "texture_maps/floor-water-top.tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/light_overlay_sheet.tsx": {
+            "scaleInDock": 1
         },
         "texture_maps/stone_edge_sprite_sheet.tsx": {
             "scaleInDock": 1,
@@ -320,9 +354,18 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "texture_maps/water-pixilart.tsx": {
+            "scaleInDock": 1
+        },
         "texture_maps/water_sprite_sheet.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "texture_maps/waterfall-pixilart(1).tsx": {
+            "scaleInDock": 1
+        },
+        "texture_maps/waterfall.tsx": {
+            "scaleInDock": 1
         },
         "texture_maps/wood_sprite_sheet.tsx": {
             "scaleInDock": 1,
@@ -425,9 +468,12 @@
     "map.tileWidth": 64,
     "map.width": 25,
     "openFiles": [
+        "lvl1.tmx",
+        "texture_maps/cliff-grasss-norep.tsx"
     ],
     "project": "levels.tiled-project",
     "recentFiles": [
+        "texture_maps/cliff-grasss-norep.tsx",
         "lvl1.tmx",
         "texture_maps/door_sprite_sheet.tsx",
         "texture_maps/stone_edge_sprite_sheet.tsx",
@@ -438,8 +484,7 @@
         "C:/Users/treff/Documents/UQ/DECO3801/design/assets/lvls/lvl1.tmx",
         "C:/Users/Aditya/OneDrive/Desktop/University/Semester 8/DECO3801/lvl1.tmx",
         "C:/DECO3801/design/assets/lvls/lvl1.tmx",
-        "texture_maps/stone_sprite_sheet.tsx",
-        "texture_maps/stone_edges_sprite_sheet.tsx"
+        "texture_maps/stone_sprite_sheet.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
