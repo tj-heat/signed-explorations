@@ -128,18 +128,14 @@ class GameView(arcade.View):
 
         # Create video capture display thread
         self._cam_buf = RingBuffer()
-        print("d")
         self.video_t_closer = ThreadCloser()
-        print("e")
         video_t = threading.Thread(
             target=display_video_t, 
             args=(self._cc, self._cam_buf, self.video_t_closer)
         )
         # Track the video thread and closer
         self._video_t = ThreadController(video_t, self.video_t_closer)
-        print("f")
         if CAPTURING:
-            print("g")
             self._video_t.start()
 
         ### Create physics engine
@@ -565,9 +561,6 @@ class GameView(arcade.View):
             self.left_pressed = True
         elif key in RIGHT_KEYS:
             self.right_pressed = True
-        
-        elif key == arcade.key.E:
-            pass
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -711,7 +704,7 @@ class GameView(arcade.View):
         lvl_text = f"Level: {self.lvl}"
         arcade.draw_text(lvl_text, 10, 10, arcade.csscolor.WHITE, 18, 
             font_name="Kenney Mini Square" )
-        
+
         self._ui_manager.draw()
 
         if self._notify_interaction:
