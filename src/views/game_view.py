@@ -16,6 +16,7 @@ from src.dialogue.dialogue_box import DialogueBox
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 from src.views.book_view import BookView
+from src.views.focus_view import FocusView
 from src.views.sign_view import SignView
 from src.video.video_control import CAPTURING, CameraControl, display_video_t
 
@@ -201,6 +202,9 @@ class GameView(arcade.View):
 
         # Event tracker
         self._in_event = False
+
+        # View tracker
+        self._upcoming_views = []
 
         # Key press notifier
         self._notify_interaction = False
@@ -407,6 +411,11 @@ class GameView(arcade.View):
         self._in_dialogue = False
         self._ui_manager.remove(dbox)
         self._dbox.remove(dbox)
+
+    def queue_new_view(self, view: arcade.View) -> None:
+        """ Schedule a new view to show when available. This should only be used
+        to show views after events or dialogue. """
+        self._upcoming_views.append(view)
 
     def npc_opens_door(self, door : items.Door):
         if door.dual_pos == "n":
@@ -658,7 +667,7 @@ class GameView(arcade.View):
 
         pre_msgs = target.get_pre_msgs()
         post_msgs = target.get_post_msgs()
-        closeup = target.get_focus_texture()
+        focus_texture = target.get_focus_texture()
 
         if pre_msgs:
             self.register_dialogue(self.create_dbox(
@@ -669,6 +678,10 @@ class GameView(arcade.View):
             self.register_dialogue(self.create_dbox(
                 post_msgs, Speech.CAT_SPEAKER
             ))
+
+        if focus_texture:
+            focus_view = FocusView(self, focus_texture)
+            self.queue_new_view(focus_view)
 
     def draw_interact_key(self) -> None:
         """ Draws a symbol showing the interact key """
@@ -724,12 +737,18 @@ class GameView(arcade.View):
 
     def on_update(self, delta_time):
         """ Movement and game logic """
-
         # If a dbox is scheduled, display it and set dialogue on
         if self._dbox and self.current_dbox.is_active() and \
             not self.in_dialogue():
-            self._in_dialogue = True
-            self._ui_manager.add(self.current_dbox)
+            self.enable_dialogue(self.current_dbox)
+
+        # Check for finished dialogue removal
+        if self._in_dialogue and not self.current_dbox.is_active():
+            self.disable_dialogue(self.current_dbox)
+
+        # If a new view should be shown, do so
+        if self._upcoming_views and not self.in_dialogue():
+            self.window.show_view(self._upcoming_views.pop(0))
 
         if not self.in_dialogue():
             self.move_player()
@@ -754,10 +773,6 @@ class GameView(arcade.View):
 
             # Position the camera
             self.center_camera_to_player()
-
-        # Check for finished dialogue removal
-        if self._in_dialogue and not self.current_dbox.is_active():
-            self.disable_dialogue(self.current_dbox)
 
     def on_show_view(self):
         self.center_camera_to_player()

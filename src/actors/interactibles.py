@@ -52,8 +52,8 @@ class Interactible(arcade.Sprite):
         """ Return the post-interaction messages for the object """
         return self._POST_MSGS
 
-    def get_focus_texture(self) -> arcade.Texture:
-        """ Return the texture to display upon interaction """
+    def get_focus_texture(self) -> str:
+        """ Return the path of the texture to display upon interaction """
         return self._DISPLAY_IMG
 
     def set_center(self, x, y) -> None:
@@ -95,6 +95,7 @@ class Mural(Interactible):
     _TEX_PATH = "assets/sprites/interactibles/Object_Sign.png"
     _PRE_MSGS = ["It looks like something is written here..."]
     _POST_MSGS = get_random_learn()
+    _DISPLAY_IMG = "assets/screens/K_screen.png"
 
     def __init__(self, tile_size: int, **kwargs):
         super().__init__(tile_size, **kwargs)
@@ -129,6 +130,7 @@ class TableRuby(Table):
     _TEX_PATH = "assets/sprites/interactibles/Object_Table_Ruby.png"
     _PRE_MSGS = ["Wow, that looks shiny!"]
     _POST_MSGS = get_random_learn()
+    _DISPLAY_IMG = "assets/screens/R_screen.png"
 
 
 class TorchLit(Interactible):
@@ -137,6 +139,7 @@ class TorchLit(Interactible):
     _Y_OFFSET = 1
     _PRE_MSGS = ["There's something etched into the shaft."]
     _POST_MSGS = get_random_learn()
+    _DISPLAY_IMG = "assets/screens/E_screen.png"
 
 
 INTERACTIBLES = {
