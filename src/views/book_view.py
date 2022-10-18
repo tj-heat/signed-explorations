@@ -1,14 +1,15 @@
-import arcade, PIL, random
-from src.actors.character import Dog, Task
+import arcade
+from src.actors.character import Dog
 from src.views.book_view import *
 from src.video.video_control import *
 
 class BookView(arcade.View):
-    def __init__(self, game_view, npc : Dog):
+    def __init__(self, game_view, npc : Dog, found_list):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
+        self.found_list = found_list
 
         self.front_image = None
         self.back_image = None
@@ -24,37 +25,48 @@ class BookView(arcade.View):
         self.v_box.add(green_button)
         self.v_box.add(red_button)
 
-        a_label = arcade.gui.UILabel(x=134, y=524, width=36, height=50, text="A", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        b_label = arcade.gui.UILabel(x=234, y=524, width=36, height=50, text="B", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        c_label = arcade.gui.UILabel(x=334, y=524, width=36, height=50, text="C", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36) 
+        red_button.on_click = self.on_click_red_button
 
-        d_label = arcade.gui.UILabel(x=134, y=464, width=36, height=50, text="D", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        e_label = arcade.gui.UILabel(x=234, y=464, width=36, height=50, text="E", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        f_label = arcade.gui.UILabel(x=334, y=464, width=36, height=50, text="F", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
 
-        g_label = arcade.gui.UILabel(x=134, y=404, width=36, height=50, text="G", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        i_label = arcade.gui.UILabel(x=234, y=404, width=36, height=50, text="I", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        k_label = arcade.gui.UILabel(x=334, y=404, width=36, height=50, text="K", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36) 
+        a_label = arcade.gui.UILabel(x=134, y=524, width=36, height=50, text="A", text_color=(133,88,77), font_name="Kenney Mini Square", font_size= 36)   
+        b_label = arcade.gui.UILabel(x=234, y=524, width=36, height=50, text="B", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        c_label = arcade.gui.UILabel(x=334, y=524, width=36, height=50, text="C", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36) 
 
-        l_label = arcade.gui.UILabel(x=134, y=344, width=36, height=50, text="L", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        m_label = arcade.gui.UILabel(x=234, y=344, width=36, height=50, text="M", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        n_label = arcade.gui.UILabel(x=334, y=344, width=36, height=50, text="N", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
+        d_label = arcade.gui.UILabel(x=134, y=464, width=36, height=50, text="D", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        if "E" in self.found_list:
+            e_label = arcade.gui.UILabel(x=234, y=464, width=36, height=50, text="E", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)            
+        else:
+            e_label = arcade.gui.UILabel(x=234, y=464, width=36, height=50, text="E", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        f_label = arcade.gui.UILabel(x=334, y=464, width=36, height=50, text="F", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
 
-        o_label = arcade.gui.UILabel(x=134, y=284, width=36, height=50, text="O", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        p_label = arcade.gui.UILabel(x=234, y=284, width=36, height=50, text="P", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        q_label = arcade.gui.UILabel(x=334, y=284, width=36, height=50, text="Q", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36) 
+        g_label = arcade.gui.UILabel(x=134, y=404, width=36, height=50, text="G", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        i_label = arcade.gui.UILabel(x=234, y=404, width=36, height=50, text="I", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        if "K" in self.found_list:
+            k_label = arcade.gui.UILabel(x=334, y=404, width=36, height=50, text="K", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36) 
+        else:
+            k_label = arcade.gui.UILabel(x=334, y=404, width=36, height=50, text="K", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36) 
+        l_label = arcade.gui.UILabel(x=134, y=344, width=36, height=50, text="L", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        m_label = arcade.gui.UILabel(x=234, y=344, width=36, height=50, text="M", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        n_label = arcade.gui.UILabel(x=334, y=344, width=36, height=50, text="N", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
 
-        r_label = arcade.gui.UILabel(x=134, y=224, width=36, height=50, text="R", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        s_label = arcade.gui.UILabel(x=234, y=224, width=36, height=50, text="S", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        t_label = arcade.gui.UILabel(x=334, y=224, width=36, height=50, text="T", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
+        o_label = arcade.gui.UILabel(x=134, y=284, width=36, height=50, text="O", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        p_label = arcade.gui.UILabel(x=234, y=284, width=36, height=50, text="P", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        q_label = arcade.gui.UILabel(x=334, y=284, width=36, height=50, text="Q", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36) 
 
-        u_label = arcade.gui.UILabel(x=134, y=164, width=36, height=50, text="U", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        v_label = arcade.gui.UILabel(x=234, y=164, width=36, height=50, text="V", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        w_label = arcade.gui.UILabel(x=334, y=164, width=36, height=50, text="W", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36) 
+        r_label = arcade.gui.UILabel(x=134, y=224, width=36, height=50, text="R", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        s_label = arcade.gui.UILabel(x=234, y=224, width=36, height=50, text="S", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        t_label = arcade.gui.UILabel(x=334, y=224, width=36, height=50, text="T", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
 
-        x_label = arcade.gui.UILabel(x=134, y=104, width=36, height=50, text="X", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
-        y_label = arcade.gui.UILabel(x=234, y=104, width=36, height=50, text="Y", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)   
-        z_label = arcade.gui.UILabel(x=334, y=104, width=36, height=50, text="Z", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
+        u_label = arcade.gui.UILabel(x=134, y=164, width=36, height=50, text="U", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        v_label = arcade.gui.UILabel(x=234, y=164, width=36, height=50, text="V", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        w_label = arcade.gui.UILabel(x=334, y=164, width=36, height=50, text="W", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36) 
+
+        x_label = arcade.gui.UILabel(x=134, y=104, width=36, height=50, text="X", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
+        if "Y" in self.found_list:
+            y_label = arcade.gui.UILabel(x=234, y=104, width=36, height=50, text="Y", text_color=(0,0,0), font_name="Kenney Mini Square", font_size= 36)
+        else:
+            y_label = arcade.gui.UILabel(x=234, y=104, width=36, height=50, text="Y", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)   
+        z_label = arcade.gui.UILabel(x=334, y=104, width=36, height=50, text="Z", text_color=(211,211,211), font_name="Kenney Mini Square", font_size= 36)
 
         a_button = arcade.gui.UIInteractiveWidget(x=134, y=524, width=36, height=50)   
         b_button = arcade.gui.UIInteractiveWidget(x=234, y=524, width=36, height=50)
@@ -180,9 +192,13 @@ class BookView(arcade.View):
         if self.front_image is not None:
             arcade.draw_text("Your View", 610, 575, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
             arcade.draw_texture_rectangle(730, 475, 340, 240, self.front_image)
+        else:
+            arcade.draw_text("Not Yet discovered", 610, 575, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
         if self.back_image is not None:
             arcade.draw_text("Camera View", 570, 335, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
             arcade.draw_texture_rectangle(730, 225, 340, 240, self.back_image)
+        else:
+            arcade.draw_text("Not Yet discovered", 570, 335, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
         self.manager.draw()
     
     def on_update(self, delta_time):
@@ -192,17 +208,22 @@ class BookView(arcade.View):
         self.window.show_view(self.game_view)
 
     def on_click_red_button(self, event):
-        pass
+        self.window.show_view(self.game_view)
 
     def on_click_green_button(self, event):
         pass
 
     def on_click_letter_button(self, letter):
-        image_front = "assets\interface\\" + letter + "-FRONT-VIEW.PNG"
-        self.front_image = arcade.load_texture(image_front) 
-        if letter == "K" or letter == "E" or letter == "Y":
-            image_back = "assets\interface\\" + letter + "-BACK-VIEW.PNG"
-            self.back_image = arcade.load_texture(image_back) 
-        else:
+        if letter in self.found_list:
+            image_front = "assets\interface\\" + letter + "-FRONT-VIEW.PNG"
+            self.front_image = arcade.load_texture(image_front) 
+            if letter == "K" or letter == "E" or letter == "Y":
+                image_back = "assets\interface\\" + letter + "-BACK-VIEW.PNG"
+                self.back_image = arcade.load_texture(image_back) 
+            else:
+                self.back_image = None
+        else: 
+            self.front_image = None
             self.back_image = None
+
 

@@ -23,10 +23,14 @@ def show_image_windowed(img: np.ndarray, window: str = DEFAULT_WINDOW) -> None:
     cv2.imshow(window, img)
     cv2.waitKey(1)
 
+# Exceptions
+class CameraException(Exception):
+    """ An exception that indicates a camera is not available. """
+
 # Classes
 class CameraControl():
-    ROI_WIDTH = 200
-    ROI_HEIGHT = 200
+    ROI_WIDTH = 350
+    ROI_HEIGHT = 350
 
     def __init__(self) -> None:
         self._cam = self.get_cam()
@@ -64,8 +68,8 @@ class CameraControl():
             (VideoCapture) The retreived video caputure object.
 
         Raises:
-            (Exception) if the camera at the used index does not exist/ is not
-                captured.
+            (CameraException) if the camera at the used index does not exist/ is
+             not captured.
         """
         # Attempt to capture camera as on windows
         cam = cv2.VideoCapture(index, cv2.CAP_DSHOW)
@@ -75,7 +79,7 @@ class CameraControl():
 
         # If still no success, throw exception
         if not cam.isOpened():
-            raise Exception("Could not open camera")
+            raise CameraException("Could not open camera")
 
         return cam
 
@@ -100,9 +104,13 @@ class CameraControl():
         """ (np.ndarray) Returns the background image for the controller"""
         return self._background
 
-    def read_cam(self) -> np.ndarray:
+    def read_cam(self, rgb: bool = False) -> np.ndarray:
         """ Retrieve a single frame from a captured camera. 
         
+        Params:
+            rgb (bool): True if the output should be in RGB colorspace. False if
+                in BGR.
+
         Returns:
             (ndarray) The captured frame from the camera.
 
@@ -114,7 +122,8 @@ class CameraControl():
         if not success:
             raise Exception("Could not capture frame from camera")
 
-        return cv2.flip(frame, 1) # Flip frame horizontally
+        frame = cv2.flip(frame, 1) # Flip frame horizontally
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) if rgb else frame # in BGR
 
     def release_cam(self) -> None:
         """ Releases control of a camera object. """
@@ -138,7 +147,6 @@ def display_video_t(
         buffer (RingBuffer): Shared memory location for image producing.
     """
     recog = Recogniser()
-    controller.create_background()
     bg = controller.get_background()
 
     while not closer.is_killed():

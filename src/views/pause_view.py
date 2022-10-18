@@ -1,25 +1,14 @@
 import arcade
 import src.views.game_view as GameView
 import src.views.menu_view as m
+from src.util.style import uni_style
 
 BACKGROUND_PATH = "assets/backgrounds/"
-
-uni_style = {
-            "font_name" : "Kenney Mini Square",
-            "font_size" : 15,
-            "font_color" : arcade.color.WHITE,
-            "boarder_width" : 0,
-            "border_color" : None,
-            "bg_color" : arcade.color.BLACK,
-            "bg_color_pressed" : arcade.color.WHITE,
-            "border_color_pressed" : arcade.color.WHITE,
-            "font_color_pressed" : arcade.color.BLACK,
-        }
 
 class PauseView(arcade.View):
     def __init__(self, game_view : "GameView.GameView"):
         super().__init__()
-        self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed.png")
         self.game_view = game_view
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -59,17 +48,17 @@ class PauseView(arcade.View):
     def on_click_restart(self, event):
         self.game_view.end_video()
         self.game_view.setup()
-        self.window.show_view(self.game_view)
+        self.show_new_view(self.game_view)
 
     def on_click_return(self, event):
         self.game_view.resume_video()
-        self.window.show_view(self.game_view)
+        self.show_new_view(self.game_view)
 
     def on_click_quit(self, event):
         self.game_view.end_video()
-        menu = m.MenuView()
+        menu = m.MenuView(self.game_view.cam_controller)
         menu.setup()
-        self.window.show_view(menu)
+        self.show_new_view(menu)
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -77,11 +66,27 @@ class PauseView(arcade.View):
 
     def on_draw(self):
         self.clear()
-        arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
+        arcade.draw_texture_rectangle(
+            self.window.width / 2, self.window.height / 2, 
+            self.background.width, self.background.height, 
+            self.background
+        )        
         self.manager.draw()
-        arcade.draw_text("Paused", self.window.width/2, self.window.height/2 + 200, 
-            arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
+        
+        arcade.draw_text(
+            "Paused", 
+            self.window.width/2, self.window.height/2 + 200, 
+            arcade.color.WHITE, 
+            font_size=50, anchor_x="center", 
+            font_name="Kenney Pixel Square"
+        )
     
+    def show_new_view(self, view):
+        """ Transition to a new view with teardown """
+        self.manager.clear()
+        self.manager.disable()
+        self.window.show_view(view)
+
     def on_update(self, delta_time):
         pass
 

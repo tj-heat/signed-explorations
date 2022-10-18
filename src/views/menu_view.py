@@ -1,35 +1,28 @@
-import imp
-import arcade, threading
+import arcade
 
 import src.views.game_view as g
 from src.video.video_control import CameraControl, display_video_t
 from src.util.ring_buffer import RingBuffer
 from src.util.thread_control import ThreadCloser, ThreadController
 import arcade.experimental.uistyle as uistyle
+from src.util.style import uni_style
+import src.views.loading_view as LoadViews 
+
 
 BACKGROUND_PATH = "assets/backgrounds/"
 
-uni_style = {
-            "font_name" : "Kenney Mini Square",
-            "font_size" : 15,
-            "font_color" : arcade.color.WHITE,
-            "boarder_width" : 0,
-            "border_color" : None,
-            "bg_color" : arcade.color.BLACK,
-            "bg_color_pressed" : arcade.color.WHITE,
-            "border_color_pressed" : arcade.color.WHITE,
-            "font_color_pressed" : arcade.color.BLACK,
-        }
-
 class MenuView(arcade.View):
-    def __init__(self):
+    def __init__(self, cam_controller: CameraControl):
         super().__init__()
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed.png")
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
+
+        # Store camera controller
+        self._cc = cam_controller
 
         # Create a vertical BoxGroup to align buttons
         self.v_box = arcade.gui.UIBoxLayout()
@@ -38,11 +31,15 @@ class MenuView(arcade.View):
         # look at UITEXTUREBUTTON
         start_button = arcade.gui.UIFlatButton(text="Start Game", width=200, style = uni_style)
         self.v_box.add(start_button.with_space_around(bottom=20))
+        
+        background_button = arcade.gui.UIFlatButton(text="Background", width=200, style = uni_style)
+        self.v_box.add(background_button.with_space_around(bottom=20))
 
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
         self.v_box.add(exit_button)
 
         start_button.on_click = self.on_click_start
+        background_button.on_click = self.on_click_background
         exit_button.on_click = self.on_click_exit
 
         # Create a widget to hold the v_box widget, that will center the buttons
@@ -65,6 +62,12 @@ class MenuView(arcade.View):
     def on_click_exit(self, event):
         self.window.close()
 
+    def on_click_background(self, event):
+        self.manager.clear()
+        bg_gen = LoadViews.BackgroundGenView(self._cc)
+        bg_gen.setup()
+        self.window.show_view(bg_gen)
+
     def on_click_settings(self, event):
         pass
 
@@ -73,12 +76,14 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         self.clear()
-        arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
+        arcade.draw_texture_rectangle(
+            self.window.width / 2, self.window.height / 2, 
+            self.background.width, self.background.height, 
+            self.background
+        )        
         self.manager.draw()
         arcade.draw_text("Signed Explorations", self.window.width/2, self.window.height/2 + 200, 
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
 
     def setup(self):
-        # Video capture
-        # NOTE The camera control may take several seconds to get cam control
-        self._cc = CameraControl()
+        pass
