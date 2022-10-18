@@ -3,6 +3,8 @@ from typing import Optional, Tuple
 import numpy as np
 import cv2
 
+WHITE = (255, 255, 255)
+
 # Functions
 def add_roi(
     img: np.ndarray, 
@@ -78,6 +80,33 @@ def get_image_binary(img: np.ndarray, thresh: int):
     _, binary = cv2.threshold(img, thresh, 255, cv2.THRESH_BINARY)
     return binary
 
+
+def get_largest_contour_segment(img: np.ndarray) -> np.ndarray:
+    """ Masks an image so that it only contains pixels within the largest 
+    contour region.
+    
+    Params:
+        img (ndarray): The image to apply the mask to.
+
+    Returns:
+        (ndarray) the filtered image.
+    """
+    # Find largest contour
+    contours, heirarchy = cv2.findContours(
+        img, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+    if contours:
+        biggest_contour = max(contours, key=lambda item: cv2.contourArea(item))
+    
+        # Create mask of contour
+        mask = np.zeros_like(img)
+        cv2.drawContours(mask, [biggest_contour], -1, WHITE, cv2.FILLED)
+    
+        # Remove other bits
+        img = cv2.bitwise_and(img, img, mask=mask)
+
+    return img
+
 def preprocess_image(img: np.ndarray) -> np.ndarray:
     """ Converts an image into a grayscale and blurred image. """
     gray = get_image_gray(img)
@@ -126,8 +155,10 @@ def process_model_image(img: np.ndarray):
     """
     # Make 64x64
     scaled = cv2.resize(img, (64, 64))
-    # Convrt grayscale to RGB
-    coloured = cv2.cvtColor(scaled, cv2.COLOR_GRAY2RGB)
+    # Remove pixels that are not in the largest blob
+    filtered = get_largest_contour_segment(scaled)
+    # Convert grayscale to RGB
+    coloured = cv2.cvtColor(filtered, cv2.COLOR_GRAY2RGB)
     # Turn into array of 1x64x64 with three colour channels
     shaped = np.reshape(coloured, (1, coloured.shape[0], coloured.shape[1], 3))
     return shaped
