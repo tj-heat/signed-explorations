@@ -5,6 +5,49 @@ from src.actors.character import Dog
 from src.views.book_view import *
 from src.video.video_control import *
 
+
+class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
+    _FONT_FACE = "Kenney Mini Square"
+    _LETTER_SIZE = 36
+    _BAR_HEIGHT = 5
+
+    _INACTIVE_COLOUR = (215, 173, 115)
+    _ACTIVE_COLOUR = (133,88,77)
+
+    def __init__(
+        self, 
+        x: int, 
+        y: int, 
+        letter: str, 
+        active: bool, 
+        **kwargs
+    ) -> None:
+        self._active = active
+        self._colour = self._ACTIVE_COLOUR if active else self._INACTIVE_COLOUR
+
+        # Set up widgets
+        super().__init__(
+            x=x, y=y,
+            text=letter, 
+            text_color=self._colour,
+            font_name=self._FONT_FACE, 
+            font_size=self._LETTER_SIZE,
+            **kwargs
+        )
+
+    def do_render(self, surface):
+        self.prepare_render(surface)
+        surface.clear()
+
+        super().do_render(surface)
+
+        if self.hovered:
+            arcade.draw_xywh_rectangle_filled(
+                0, 0,
+                self.width - 4, self._BAR_HEIGHT,
+                self._colour
+            )
+
 class BookView(arcade.View):
     _FONT_FACE = "Kenney Mini Square"
     _INACTIVE_COLOUR = (215, 173, 115)
@@ -35,7 +78,7 @@ class BookView(arcade.View):
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
-        self.found = found_letters
+        self.found_letters = found_letters
 
         self.front_image = None
         self.back_image = None
@@ -75,23 +118,25 @@ class BookView(arcade.View):
             # Generate values
             x_pos = self._X_OFFSET + self._X_INC * (index % self._COL_COUNT)
             y_pos = self._Y_OFFSET + self._Y_INC * (index // self._COL_COUNT)
-            colour = self._ACTIVE_COLOUR if letter in self.found else \
+            colour = self._ACTIVE_COLOUR if letter in self.found_letters else \
                 self._INACTIVE_COLOUR
 
-            # Add label to page
-            label = arcade.gui.UILabel(
-                x=x_pos, y=y_pos,
-                text = letter, text_color=colour,
-                font_name=self._FONT_FACE, font_size=self._LETTER_BTN_SIZE
-            )
-            self.v_box.add(label)
+            # # Add label to page
+            # label = arcade.gui.UILabel(
+            #     x=x_pos, y=y_pos,
+            #     text = letter, text_color=colour,
+            #     font_name=self._FONT_FACE, font_size=self._LETTER_BTN_SIZE
+            # )
+            # self.v_box.add(label)
 
-            # Add interactive widget on top of label
-            # FIXME This should probably be a wrapper
-            btn = arcade.gui.UIInteractiveWidget(
-                x=x_pos, y=y_pos,
-                width=50, height=50,
-            )
+            # # Add interactive widget on top of label
+            # # FIXME This should probably be a wrapper
+            # btn = arcade.gui.UIInteractiveWidget(
+            #     x=x_pos, y=y_pos,
+            #     width=50, height=50,
+            # )
+            active = letter in self.found_letters
+            btn = LetterWidget(x_pos, y_pos, letter, active)
 
             def make_on_click(letter) -> Callable:
                 """ Generates a function for on_click events. Needed to escape
@@ -102,7 +147,8 @@ class BookView(arcade.View):
             self.v_box.add(btn)
 
             # Store ui elements for later
-            self._ui_letters[letter] = [label, btn]
+            # self._ui_letters[letter] = [label, btn]
+            self._ui_letters[letter] = btn
 
         self.manager.add(self.v_box)
 
@@ -140,6 +186,9 @@ class BookView(arcade.View):
 
     def on_click_letter_button(self, letter):
         self.front_image, self.back_image = self._textures.get(letter)
-        self.front_image = self.front_image if letter in self.found else None
+        self.front_image = self.front_image if letter in self.found_letters \
+            else None
+        self.back_image = self.back_image if letter in self.found_letters \
+            else None
 
 
