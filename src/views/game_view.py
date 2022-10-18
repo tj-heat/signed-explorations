@@ -76,6 +76,7 @@ class GameView(arcade.View):
         self.gui_camera = None
         self._ui_manager = None
         self.lvl = 1
+        self.found_list = ""
 
         # Control variables
         self._done_tutorial = False
@@ -88,6 +89,17 @@ class GameView(arcade.View):
         #load necessary textures
         self.text_box = arcade.load_texture(TEXT_PATH)
         self.interact_icon = arcade.load_texture(ICON_PATH)
+
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
+   
+        book_button = arcade.gui.UITextureButton(x=500, y=325, width=50, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        self.v_box.add(book_button)
+
+        book_button.on_click = self.on_click_book_button
+
+        self.manager.add(self.v_box)
     
     @property
     def cam_controller(self) -> CameraControl:
@@ -204,6 +216,15 @@ class GameView(arcade.View):
 
         # Key press notifier
         self._notify_interaction = False
+
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
+   
+        book_button = arcade.gui.UITextureButton(x=950, y=600, width=50, height=50, texture=arcade.load_texture('assets\interface\Settings_UI.png'))
+        self.v_box.add(book_button)
+
+        book_button.on_click = self.on_click_book_button
+
+        self._ui_manager.add(self.v_box)
 
     def _create_interactibles(self):
         """ Load all of the interactibles into the game """
@@ -623,7 +644,7 @@ class GameView(arcade.View):
                 self.player_sprite.start_meow(25)
         
         elif key == arcade.key.I:
-            book_view = BookView(self, self.dog_sprite)
+            book_view = BookView(self, self.dog_sprite, self.found_list)
             book_view.setup()
             self.window.show_view(book_view)
         
@@ -674,6 +695,13 @@ class GameView(arcade.View):
     def do_object_interact(self, interactibles: List[Interactible]):
         """ Handle the interactions of the player character with objects """
         target = interactibles[0]
+
+        if "Object_Sign" in target._TEX_PATH:
+            self.found_list += "K"
+        elif "Object_Table_Ruby" in target._TEX_PATH:
+            self.found_list += "Y"
+        elif "Object_Light" in target._TEX_PATH:
+            self.found_list += "E"
 
         pre_msgs = target.get_pre_msgs()
         post_msgs = target.get_post_msgs()
@@ -880,3 +908,8 @@ class GameView(arcade.View):
         y = int((cartesian[1] + 0.5) * TILE_SCALING * self.tile_map.tile_height)
         
         return (x, y)
+
+    def on_click_book_button(self, event):
+        book_view = BookView(self, self.dog_sprite, self.found_list)
+        book_view.setup()
+        self.window.show_view(book_view)
