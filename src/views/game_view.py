@@ -375,7 +375,7 @@ class GameView(arcade.View):
         npc.task = Task.DOOR
 
     def door_task(self, npc : character.Dog, door : items.Door):
-        if door.key == "Key" and "Key" in npc.inventory:
+        if door and door.key == "Key" and "Key" in npc.inventory:
             npc.inventory.remove("Key")
             self.npc_opens_door(door)
         
