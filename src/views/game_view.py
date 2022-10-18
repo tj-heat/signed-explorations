@@ -308,9 +308,9 @@ class GameView(arcade.View):
             return self.door_task(npc_sprite, door_sprite)
 
         def event_hit_handler(_p, event_sprite, _a, _s, _d):
-            # NOTE This post handler is not firing for some reason
-            if self.event_possible(event_sprite):
-                event_sprite.task()
+            # NOTE This might be needed later
+            # if self.event_possible(event_sprite):
+            #     event_sprite.task()
             self.start_event()
 
         def event_hit_pre_handler(_p, event_sprite, _a, _s, _d):
