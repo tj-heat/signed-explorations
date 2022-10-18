@@ -455,30 +455,47 @@ class GameView(arcade.View):
         """ Stop informing the player that they can interact with something """
         self._notify_interaction = False
 
-    def check_items_in_radius(self, radius: int = 96):
-        return self.check_in_radius(LAYER_ITEMS, radius) #+ self.check_in_radius(LAYER_DOORS, radius) -- for door interaction
+    def check_items_in_radius(
+        self, 
+        x_range: int = 96, 
+        y_range: int = 96
+    ) -> List[arcade.Sprite]:
+        return self.check_in_range(LAYER_ITEMS, x_range, y_range)
 
-    def check_events_in_radius(self, radius: int = 96):
+    def check_events_in_radius(
+        self, 
+        x_range: int = 96, 
+        y_range: int = 96
+    ) -> List[EventTrigger]:
         """ Check for interactible events in a given radius around the player """
-        events = self.check_in_radius(LAYER_EVENTS, radius)
+        events = self.check_in_range(LAYER_EVENTS, x_range, y_range)
         return list(filter(lambda e: e.interactible, events))
 
-    def check_objects_in_radius(self, radius: int = 128):
+    def check_objects_in_radius(
+        self, 
+        x_range: int = 96, 
+        y_range: int = 128
+    ) -> List[Interactible]:
         """ Check for interactible objects in a given radius around the player. 
         """
-        return self.check_in_radius(LAYER_INTERACTS, radius)
+        return self.check_in_range(LAYER_INTERACTS, x_range, y_range)
 
-    def check_in_radius(self, layer: str, radius: int):
+    def check_in_range(
+        self, 
+        layer: str, 
+        x_range: int, 
+        y_range: int
+    ) -> List[arcade.Sprite]:
         """ Check for all sprites on a given layer within a provided radius """
         sprites = self.scene.get_sprite_list(layer).sprite_list
         nearby = []
 
         for sprite in sprites:
-            dx = self.player_sprite.center_x - sprite.center_x
-            dy = self.player_sprite.center_y - sprite.center_y
+            dx = abs(self.player_sprite.center_x - sprite.center_x)
+            dy = abs(self.player_sprite.center_y - sprite.center_y)
 
             dist = (dx ** 2 + dy ** 2) ** 0.5
-            if dist < radius:
+            if dx < x_range and dy < y_range:
                 # Insert sorted by distance
                 bisect.insort(nearby, (sprite, dist), key=lambda s: s[1])
 
