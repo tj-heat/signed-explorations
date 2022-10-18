@@ -566,7 +566,7 @@ class GameView(arcade.View):
 
             items = self.check_items_in_radius()
             if items and not processed:
-                if self.do_interact(items):
+                if self.do_item_interact(items):
                     processed = True # Stop additional processing
 
             events = self.check_events_in_radius()
