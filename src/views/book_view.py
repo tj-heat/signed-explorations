@@ -7,9 +7,13 @@ from src.video.video_control import *
 
 
 class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
+    """ A class to act as a letter and button for the book view. Should display
+    a letter and allow for letter clicking.
+    """
     _FONT_FACE = "Kenney Mini Square"
     _LETTER_SIZE = 36
     _BAR_HEIGHT = 5
+    _WIDTH = 30
 
     _INACTIVE_COLOUR = (215, 173, 115)
     _ACTIVE_COLOUR = (133,88,77)
@@ -29,6 +33,8 @@ class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
         super().__init__(
             x=x, y=y,
             text=letter, 
+            width=self._WIDTH,
+            align="center",
             text_color=self._colour,
             font_name=self._FONT_FACE, 
             font_size=self._LETTER_SIZE,
@@ -44,7 +50,7 @@ class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
         if self.hovered:
             arcade.draw_xywh_rectangle_filled(
                 0, 0,
-                self.width - 4, self._BAR_HEIGHT,
+                self.width, self._BAR_HEIGHT,
                 self._colour
             )
 
