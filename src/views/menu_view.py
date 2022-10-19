@@ -1,12 +1,10 @@
 import arcade
 
 import src.views.game_view as g
-from src.video.video_control import CameraControl, display_video_t
-from src.util.ring_buffer import RingBuffer
-from src.util.thread_control import ThreadCloser, ThreadController
-import arcade.experimental.uistyle as uistyle
+from src.video.video_control import CameraControl
 from src.util.style import uni_style
-import src.views.loading_view as LoadViews 
+import src.views.loading_view as LoadViews
+from src.views.intro_view import IntroView 
 
 
 BACKGROUND_PATH = "assets/backgrounds/"
@@ -54,9 +52,9 @@ class MenuView(arcade.View):
 
     def on_click_start(self, event):
         self.manager.clear()
-        game = g.GameView(cam_controller=self._cc)
-        game.setup()
-        self.window.show_view(game)
+        intro = IntroView(cam_controller=self._cc)
+        intro.setup()
+        self.window.show_view(intro)
 
     #added brute force os exit, TODO: Close game gracefully and with all threads killed (currently, only the game engine is killed an model keeps running)
     def on_click_exit(self, event):
