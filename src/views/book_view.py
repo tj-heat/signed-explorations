@@ -120,8 +120,6 @@ class BookView(arcade.View):
             # Generate values
             x_pos = self._X_OFFSET + self._X_INC * (index % self._COL_COUNT)
             y_pos = self._Y_OFFSET + self._Y_INC * (index // self._COL_COUNT)
-            colour = self._ACTIVE_COLOUR if letter in self.found_letters else \
-                self._INACTIVE_COLOUR
 
             # Add label to page
             active = letter in self.found_letters
