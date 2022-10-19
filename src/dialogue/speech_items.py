@@ -13,16 +13,24 @@ MSGS = "msgs"
 SPEAKER = "speaker"
 
 # All dialogue
-DIALOGUE_INTRODUCTION = {
+DIALOGUE_INTRODUCTION_P1 = {
     MSGS: [
         "Before you stands a dog.",
         "He is happy to see you.",
         "In his hands is a keyboard. (Where did he get that from?)",
-        "You can use <W> <A> <S> <D> to move your character.",
-        "<E> is used to interact with the world around you.",
-        "<Q> can also call the dog to your side.",
+        "He uses it to give you a demonstration."
     ],
     SPEAKER: None,
+}
+
+DIALOGUE_INTRODUCTION_P2 = {
+    MSGS: [
+        "You can use <W> <A> <S> <D> to move about.",
+        "<E> is used to interact with the world around you.",
+        "<I> opens your spell(ing) book.",
+        "<Q> can also call me to your side.",
+    ],
+    SPEAKER: DOG_SPEAKER,
 }
 
 KEY_FIRST = {

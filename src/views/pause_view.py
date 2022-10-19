@@ -8,7 +8,7 @@ BACKGROUND_PATH = "assets/backgrounds/"
 class PauseView(arcade.View):
     def __init__(self, game_view : "GameView.GameView"):
         super().__init__()
-        self.background = arcade.load_texture(BACKGROUND_PATH + "placeholder_start_menu.jpg")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed.png")
         self.game_view = game_view
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -66,10 +66,20 @@ class PauseView(arcade.View):
 
     def on_draw(self):
         self.clear()
-        arcade.draw_texture_rectangle(1920, 1080, 3840, 2160, self.background)
+        arcade.draw_texture_rectangle(
+            self.window.width / 2, self.window.height / 2, 
+            self.background.width, self.background.height, 
+            self.background
+        )        
         self.manager.draw()
-        arcade.draw_text("Paused", self.window.width/2, self.window.height/2 + 200, 
-            arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
+        
+        arcade.draw_text(
+            "Paused", 
+            self.window.width/2, self.window.height/2 + 200, 
+            arcade.color.WHITE, 
+            font_size=50, anchor_x="center", 
+            font_name="Kenney Pixel Square"
+        )
     
     def show_new_view(self, view):
         """ Transition to a new view with teardown """
