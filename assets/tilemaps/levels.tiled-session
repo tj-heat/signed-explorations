@@ -292,8 +292,8 @@
             "scale": 1,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 955,
-                "y": 873
+                "x": 643,
+                "y": 1053
             }
         },
         "texture_maps/door_sprite_sheet.tsx": {

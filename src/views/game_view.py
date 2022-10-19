@@ -457,7 +457,7 @@ class GameView(arcade.View):
                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
         
-        if (self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE):
+        if (self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY):
             x, y = self.dog_sprite.goal
             if y > 0:
                 force = (0, -self.dog_sprite.force)
