@@ -121,6 +121,16 @@ EVENT_PERSIST = "persistence"
 EVENT_INTERACT = "interactible"
 
 EVENT_DATA = {
+    "door_locked": {
+        EVENT_TYPE: EventType.DIALOGUE,
+        EVENT_MSGS: [
+            "The door's locked...",
+            "I wonder what it says beside the door?"
+        ],
+        EVENT_PERSIST: SingleEventTrigger,
+        EVENT_INTERACT: False,
+        EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
+    },
     "bridge_mid": {
         EVENT_TYPE: EventType.THOUGHT, 
         EVENT_MSGS: "L'appel du vide",
@@ -129,7 +139,7 @@ EVENT_DATA = {
     },
     "marble_start": {
         EVENT_TYPE: EventType.THOUGHT,
-        EVENT_MSGS: "Cold feet",
+        EVENT_MSGS: "That marble's cold...",
         EVENT_PERSIST: ContactEventTrigger,
         EVENT_INTERACT: False,
         EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER

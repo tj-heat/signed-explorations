@@ -33,6 +33,13 @@ DIALOGUE_INTRODUCTION_P2 = {
     SPEAKER: DOG_SPEAKER,
 }
 
+DIALOGUE_INTRODUCTION_P3 = {
+    MSGS: [
+        "I think my body is just up ahead!",
+    ],
+    SPEAKER: CAT_SPEAKER,
+}
+
 KEY_FIRST = {
     MSGS: [
         "I left my keys in my other body.",

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="30" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="53">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="30" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="57">
  <tileset firstgid="1" source="texture_maps/wood_sprite_sheet.tsx"/>
  <tileset firstgid="6" source="texture_maps/stone_sprite_sheet.tsx"/>
  <tileset firstgid="9" source="texture_maps/stone_wall_sprite_sheet.tsx"/>
@@ -111,11 +111,11 @@
 23,0,0,0,0,0,0,0,0,0,0,24,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="4" name="Characters">
+ <objectgroup id="4" name="Characters" locked="1">
   <object id="1" name="Cat" x="351.667" y="1761.67"/>
   <object id="2" name="Dog" x="352.667" y="1569"/>
  </objectgroup>
- <objectgroup id="10" name="Interactibles">
+ <objectgroup id="10" name="Interactibles" locked="1">
   <object id="40" name="mural" x="479.667" y="740.667"/>
   <object id="41" name="torch_lit" x="1054.67" y="1117.33"/>
   <object id="43" name="torch_lit" x="992" y="221.333"/>
@@ -125,20 +125,21 @@
   <object id="47" name="bookshelf_books" x="1310.67" y="102.667"/>
   <object id="48" name="table_ruby" x="1505.33" y="1305.33"/>
  </objectgroup>
- <objectgroup id="5" name="Doors">
+ <objectgroup id="5" name="Doors" locked="1">
   <object id="29" name="orthogonal_Key_n_n_1" x="384" y="704" width="64" height="64"/>
   <object id="35" name="side_Key_left_top_2" class="2" x="0" y="320" width="64" height="64"/>
   <object id="36" name="side_Key_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="6" name="Items">
-  <object id="10" name="Key" x="541.67" y="1141.67"/>
-  <object id="28" name="Key" class="key" x="481.63" y="964.21"/>
+ <objectgroup id="6" name="Items" locked="1">
+  <object id="28" name="Key" class="key" x="543.63" y="926.71"/>
+  <object id="54" name="Key" x="1248" y="353"/>
  </objectgroup>
  <objectgroup id="7" name="Events">
   <object id="38" name="bridge_mid" x="824.833" y="1290" width="13.0371" height="109.333"/>
-  <object id="39" name="marble_start" x="1104.33" y="1249" width="95.3333" height="185.667"/>
+  <object id="39" name="marble_start" x="1104.33" y="1290.5" width="75.8333" height="107.667"/>
   <object id="40" name="win" x="8" y="321.333" width="12.6667" height="126"/>
   <object id="51" name="bounds" x="197.5" y="1857.25" width="307.5" height="55.75"/>
+  <object id="56" name="door_locked" x="324.75" y="777" width="182.5" height="41"/>
  </objectgroup>
  <layer id="10" name="Lighting" width="25" height="30" locked="1">
   <data encoding="csv">

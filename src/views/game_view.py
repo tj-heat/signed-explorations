@@ -684,6 +684,7 @@ class GameView(arcade.View):
         """ Handle the interactions of the player character with objects """
         target = interactibles[0]
 
+        # Register known letters
         if "Object_Sign" in target._TEX_PATH:
             self.found_letters += "K"
         elif "Object_Table_Ruby" in target._TEX_PATH:
@@ -802,10 +803,19 @@ class GameView(arcade.View):
             self.register_dialogue(self.create_dbox(
                 Speech.DIALOGUE_INTRODUCTION_P1[Speech.MSGS]
             ))
+
             # Dog message
-            p2_msg = Speech.DIALOGUE_INTRODUCTION_P2[Speech.MSGS]
-            p2_speaker = Speech.DIALOGUE_INTRODUCTION_P2[Speech.SPEAKER]
-            self.register_dialogue(self.create_dbox(p2_msg, p2_speaker))
+            self.register_dialogue(self.create_dbox(
+                Speech.DIALOGUE_INTRODUCTION_P2[Speech.MSGS],
+                Speech.DIALOGUE_INTRODUCTION_P2[Speech.SPEAKER]
+            ))
+
+            # Cat message
+            self.register_dialogue(self.create_dbox(
+                Speech.DIALOGUE_INTRODUCTION_P3[Speech.MSGS],
+                Speech.DIALOGUE_INTRODUCTION_P3[Speech.SPEAKER]
+            ))
+
             self._done_tutorial = True
         
         return super().on_show_view()
