@@ -17,7 +17,8 @@ _INTERACTIBLE = ""
 # Learn letter messages
 INITIAL_LEARN = [
     "I think I just learnt a new letter!",
-    "I should check my spell book to be sure."
+    "I should check my spell book to be sure.",
+    "I wonder if there's anything else I can learn from around here."
 ]
 LEARN_MSGS = [
     ["I think I just learnt something."],

@@ -4,6 +4,8 @@ from src.views.book_view import *
 
 from src.video.video_control import *
 
+import src.dialogue.speech_items as Speech
+
 class SignView(arcade.View):
     _TARGET_DURATION = 10
 
@@ -109,6 +111,14 @@ class SignView(arcade.View):
             self.progress_sign()
         
             if self.goal_reached():
+                # Check if this is the first key found
+                if not self.game_view.seen_key:
+                    self.game_view.seen_key = True
+                    self.game_view.register_dialogue(self.game_view.create_dbox(
+                        Speech.GOT_FIRST_KEY[Speech.MSGS],
+                        Speech.GOT_FIRST_KEY[Speech.SPEAKER]
+                    ))
+
                 self.npc.task = self._complete_task
                 self.show_new_view(self.game_view)
 

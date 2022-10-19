@@ -47,6 +47,14 @@ KEY_FIRST = {
     SPEAKER: CAT_SPEAKER
 }
 
+GOT_FIRST_KEY = {
+    MSGS: [
+        "I think that could open the door!",
+        "I might have to push the dog through, however."
+    ],
+    SPEAKER: CAT_SPEAKER
+}
+
 BRIDGE_MIDDLE = {
     MSGS: [
         "L'appel du vide...",
