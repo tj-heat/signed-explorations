@@ -22,15 +22,13 @@ DOOR = 2
 #Cat Constants
 MEOW = ["Meow!", "meow...", "Meow!!!", "Meowver here!", "Meow", "Nya..."]
 WOOF = [
-    ["He wags his tail... he seems happy that you're here"],
-    ["He sits down and pants; its important to rest..."],
+    ["He wags his tail...", "He seems happy that we're here"],
+    ["He sits down and pants", "Its important to rest..."],
     ["He's as confused as you are."],
     ["Dog factoid: dogs can't talk."],
     ["Woof"],
-    ["Woof :3c"],
     ["The dog seems to be... winking at you.", "You wink back."],
-    ["Dog factoid: dogs can't open doors.", "Dogs George who opens 5000 doors a day", "is a statistical outlier", "and should not be included."],
-    ]
+]
 
 KEY_WOOF = [
     ["The dog tries to give you the key", "But it falls to the ground...","The key is now dirty"],
@@ -38,14 +36,14 @@ KEY_WOOF = [
     ["The dog is holding the key in his mouth.", "That must not be comfortable."],
     ["Dog factoid: you love the dog"],
     ["Do dogs dream of sheep?"],
-    ]
+]
 
 DOOR_WOOF = [
     ["The dog looks with confusion at the lock."],
     ["The dog pushes with all his might!!!","... but the door will not yeild."],
     ["The dog bites the door handle.", "Nothing happens."],
     ["Its locked..."],
-    ]
+]
 
 class Task(Enum):
     NONE = 0

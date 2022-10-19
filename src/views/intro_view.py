@@ -35,7 +35,7 @@ class IntroView(StatefulView):
         "You must explore the world and solve puzzles to find your body.",
         LINE_SPACER,
         "As you are a ghost, you cannot talk with your dog companion directly.",
-        "To communicate you must sign your intentions to the dog.",
+        "To communicate you must call the dog over and then sign your intentions.",
         LINE_SPACER,
         "Explore the world and interact with objects to better learn",
         "the signs you might need."

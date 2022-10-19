@@ -139,7 +139,7 @@ EVENT_DATA = {
     },
     "marble_start": {
         EVENT_TYPE: EventType.THOUGHT,
-        EVENT_MSGS: "That marble's cold...",
+        EVENT_MSGS: "Cold marble...",
         EVENT_PERSIST: ContactEventTrigger,
         EVENT_INTERACT: False,
         EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
