@@ -1,8 +1,6 @@
-from cgitb import text
 from typing import Callable
 import arcade
 from src.actors.character import Dog
-from src.views.book_view import *
 from src.video.video_control import *
 
 
@@ -56,7 +54,6 @@ class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
 
 class BookView(arcade.View):
     _FONT_FACE = "Kenney Mini Square"
-    _INACTIVE_COLOUR = (215, 173, 115)
     _ACTIVE_COLOUR = (133,88,77)
     _LETTER_BTN_SIZE = 36
     _X_OFFSET = 165
@@ -65,7 +62,6 @@ class BookView(arcade.View):
     _Y_INC = -60
     _COL_COUNT = 3
 
-    
     _LETTERS = (
         "A", "B", "C", "D", "E", "F", "G", "I", "K", "L", "M", "N", "O", 
         "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" 
@@ -151,19 +147,44 @@ class BookView(arcade.View):
         #arcade.start_render()
         arcade.draw_lrwh_rectangle_textured(35, 0, 930, 650, self.background)
         
+        # Add view labels 575
+        self.draw_label("Your View", 575)
+        self.draw_label("Camera View", 335)
+
         if self.front_image:
-            arcade.draw_text("Your View", 610, 575, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
             arcade.draw_texture_rectangle(730, 475, 340, 240, self.front_image)
         else:
-            arcade.draw_text("Not Yet discovered", 610, 575, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
-        
+            self.draw_undiscovered(y=475)
         if self.back_image:
-            arcade.draw_text("Camera View", 570, 335, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
             arcade.draw_texture_rectangle(730, 225, 340, 240, self.back_image)
         else:
-            arcade.draw_text("Not Yet discovered", 570, 335, arcade.color.BLACK, 36, 80, font_name="Kenney Mini Square")
+            self.draw_undiscovered(y=235)
         self.manager.draw()
     
+    def draw_label(self, text, y):
+        """ Draw labels for the book images """
+        arcade.draw_text(
+            text, 
+            745, y, 
+            self._ACTIVE_COLOUR, 
+            36, 400, 
+            anchor_x="center", align="center", 
+            font_name="Kenney Mini Square"
+        )
+
+
+    def draw_undiscovered(self, y):
+        """ Draw text for the undiscovered image """
+        arcade.draw_text(
+            "Not Yet discovered", 
+            650, y, 
+            self._ACTIVE_COLOUR, 
+            font_size=24,
+            width=200,
+            align="center",
+            font_name="Kenney Mini Square"
+        )
+
     def on_update(self, delta_time):
         pass
 
