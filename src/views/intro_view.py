@@ -1,12 +1,9 @@
-import PIL, random
 from enum import Enum
 
 import arcade
 
-from src.video.image_processing import add_roi
 from src.views.stateful_view import new_button, new_ui_text, StatefulView
-import src.views.menu_view as MenuView
-from views.game_view import GameView
+from src.views.game_view import GameView
 
 LINE_SPACER = " "
 
@@ -33,7 +30,15 @@ class IntroView(StatefulView):
         "their forgotten language."
     ]
     _TUTORIAL = [
-        "",
+        "You play as an undead cat wizard on a quest to get resurrected.",
+        LINE_SPACER,
+        "You must explore the world and solve puzzles to find your body.",
+        LINE_SPACER,
+        "As you are a ghost, you cannot talk with your dog companion directly.",
+        "To communicate you must sign your intentions to the dog.",
+        LINE_SPACER,
+        "Explore the world and interact with objects to better learn",
+        "the signs you might need."
     ]
 
     def __init__(self, cam_controller):
@@ -76,9 +81,9 @@ class IntroView(StatefulView):
             box.add(new_ui_text(text))
 
         # Add proceed button
-        self._begin_btn = new_button("Begin")
+        self._begin_btn = new_button("Proceed")
         self._begin_btn.on_click = lambda e: self.set_state(IntroState.TUTORIAL)
-        box.add(self._begin_btn.with_space_around(top=10, bottom=25))
+        box.add(self._begin_btn.with_space_around(top=25, bottom=25))
 
         self._ui_manager.add(arcade.gui.UIAnchorWidget(
             anchor_x="center_x",
@@ -103,9 +108,9 @@ class IntroView(StatefulView):
             box.add(new_ui_text(text))
 
         # Add proceed button
-        self._begin_btn = new_button("Proceed")
-        self._begin_btn.on_click = lambda e: self.set_state(IntroState.TUTORIAL)
-        box.add(self._begin_btn.with_space_around(top=10, bottom=25))
+        self._begin_btn = new_button("Begin")
+        self._begin_btn.on_click = lambda e: self._end_tutorial_state()
+        box.add(self._begin_btn.with_space_around(top=25, bottom=25))
 
         self._ui_manager.add(arcade.gui.UIAnchorWidget(
             anchor_x="center_x",
