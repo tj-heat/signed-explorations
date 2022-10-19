@@ -76,7 +76,7 @@ class GameView(arcade.View):
         self.gui_camera = None
         self._ui_manager = None
         self.lvl = 1
-        self.found_list = ""
+        self.found_letters = ""
 
         # Control variables
         self._done_tutorial = False
@@ -633,7 +633,7 @@ class GameView(arcade.View):
                 self.player_sprite.start_meow(25)
         
         elif key == arcade.key.I:
-            book_view = BookView(self, self.dog_sprite, self.found_list)
+            book_view = BookView(self, self.dog_sprite, self.found_letters)
             book_view.setup()
             self.window.show_view(book_view)
         
@@ -686,11 +686,11 @@ class GameView(arcade.View):
         target = interactibles[0]
 
         if "Object_Sign" in target._TEX_PATH:
-            self.found_list += "K"
+            self.found_letters += "K"
         elif "Object_Table_Ruby" in target._TEX_PATH:
-            self.found_list += "Y"
+            self.found_letters += "Y"
         elif "Object_Light" in target._TEX_PATH:
-            self.found_list += "E"
+            self.found_letters += "E"
 
         pre_msgs = target.get_pre_msgs()
         post_msgs = target.get_post_msgs()
@@ -899,6 +899,6 @@ class GameView(arcade.View):
         return (x, y)
 
     def on_click_book_button(self, event):
-        book_view = BookView(self, self.dog_sprite, self.found_list)
+        book_view = BookView(self, self.dog_sprite, self.found_letters)
         book_view.setup()
         self.window.show_view(book_view)
