@@ -7,7 +7,7 @@ from src.video.video_control import *
 import src.dialogue.speech_items as Speech
 
 class SignView(arcade.View):
-    _TARGET_DURATION = 10
+    _TARGET_DURATION = 7
 
     def __init__(
         self, 
