@@ -186,7 +186,7 @@ class BookView(arcade.View):
     def on_update(self, delta_time):
         pass
 
-    def on_key_press(self, symbol: int, modifiers: int):
+    def on_key_release(self, symbol: int, modifiers: int):
         self.window.show_view(self.game_view)
 
     def on_click_red_button(self, event):
