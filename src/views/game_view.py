@@ -1,4 +1,3 @@
-from copyreg import constructor
 from typing import List, Optional
 
 import arcade, bisect, math, threading
@@ -30,7 +29,7 @@ SPRITE_SCALING = 0.3 #must match what is in character.py
 SPRITE_IMAGE_SIZE = 250
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING)
 
-PLAYER_MOVE_FORCE = 3000
+PLAYER_MOVE_FORCE = 1800
 
 RADIUS = 200.0
 
@@ -386,7 +385,7 @@ class GameView(arcade.View):
         npc.task = Task.DOOR
 
     def door_task(self, npc : character.Dog, door : items.Door):
-        if door.key == "Key" and "Key" in npc.inventory:
+        if door and door.key == "Key" and "Key" in npc.inventory:
             npc.inventory.remove("Key")
             self.npc_opens_door(door)
         
@@ -781,12 +780,6 @@ class GameView(arcade.View):
         if not self.in_dialogue():
             self.move_player()
             self.move_dog()
-
-            # Check for nearby events
-            if self.check_events_in_radius():
-                self.start_interact_notify
-            else:
-                self.end_interact_notify
 
             if self.player_sprite.cat_meowing():
                 self.player_sprite.meow_count -= 1

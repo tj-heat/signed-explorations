@@ -93,6 +93,10 @@ class LoadingView(StatefulView):
         self._state = LoadingState.HAS_CAM
         self._do_draw = self._draw_has_cam
         self._do_teardown = None
+
+        bg_gen = BackgroundGenView(self._cc)
+        bg_gen.setup()
+        self.window.show_view(bg_gen)
     
     def _init_no_cam(self):
         """ Set up the loading screen for the no cam state """
