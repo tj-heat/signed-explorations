@@ -8,7 +8,7 @@ class StartView(arcade.View):
     def __init__(self):
         super().__init__()
         self.window.set_mouse_visible(True)
-        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed.png")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed_x2.png")
 
     def setup(self):
         """Set up screen here"""

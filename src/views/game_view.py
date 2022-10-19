@@ -205,9 +205,9 @@ class GameView(arcade.View):
         # Key press notifier
         self._notify_interaction = False
 
-        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width = self.window.width - 60, height= self.window.height - 60)
    
-        book_button = arcade.gui.UITextureButton(x=950, y=600, width=50, height=50, texture=arcade.load_texture('assets\interface\Settings_UI.png'))
+        book_button = arcade.gui.UITextureButton(x= self.window.width - 60, y=self.window.height - 60, width=50, height=50, texture=arcade.load_texture('assets\interface\Settings_UI.png'))
         self.v_box.add(book_button)
 
         book_button.on_click = self.on_click_book_button
@@ -557,7 +557,7 @@ class GameView(arcade.View):
                 self.dog_sprite.set_goal((self.dog_sprite.center_x - items[0].center_x, 
                 self.dog_sprite.center_y - items[0].center_y))
         
-        if (self.dog_sprite.follow == True or self.dog_sprite.task != Task.NONE):
+        if (self.dog_sprite.follow == True or self.dog_sprite.task == Task.KEY):
             x, y = self.dog_sprite.goal
             if y > 0:
                 force = (0, -self.dog_sprite.force)
