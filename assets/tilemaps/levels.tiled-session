@@ -3,10 +3,10 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "lvl1.tmx",
     "expandedProjectPaths": [
-        "texture_maps",
-        "."
+        ".",
+        "texture_maps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -292,13 +292,16 @@
             "scale": 1,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 955,
-                "y": 873
+                "x": 643,
+                "y": 1053
             }
         },
         "texture_maps/door_sprite_sheet.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "texture_maps/floor-water-top.tsx": {
+            "scaleInDock": 1
         },
         "texture_maps/stone_edge_sprite_sheet.tsx": {
             "scaleInDock": 1,
@@ -425,6 +428,7 @@
     "map.tileWidth": 64,
     "map.width": 25,
     "openFiles": [
+        "lvl1.tmx"
     ],
     "project": "levels.tiled-project",
     "recentFiles": [

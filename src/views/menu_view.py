@@ -15,7 +15,7 @@ class MenuView(arcade.View):
 
         # --- Required for all code that uses UI element,
         # a UIManager to handle the UI.
-        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed.png")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed_x2.png")
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
