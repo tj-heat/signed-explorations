@@ -126,7 +126,7 @@ class SignView(arcade.View):
         self.show_new_view(self.game_view)
 
     def on_click_blue_button(self, event):
-        book_view = BookView(self, self.npc, self.game_view.found_list)
+        book_view = BookView(self, self.npc, self.game_view.found_letters)
         book_view.setup()
         self.show_new_view(book_view)
 
