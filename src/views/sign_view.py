@@ -5,7 +5,7 @@ from src.views.book_view import *
 from src.video.video_control import *
 
 class SignView(arcade.View):
-    _TARGET_DURATION = 7
+    _TARGET_DURATION = 10
 
     def __init__(
         self, 
