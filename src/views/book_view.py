@@ -127,20 +127,7 @@ class BookView(arcade.View):
             colour = self._ACTIVE_COLOUR if letter in self.found_letters else \
                 self._INACTIVE_COLOUR
 
-            # # Add label to page
-            # label = arcade.gui.UILabel(
-            #     x=x_pos, y=y_pos,
-            #     text = letter, text_color=colour,
-            #     font_name=self._FONT_FACE, font_size=self._LETTER_BTN_SIZE
-            # )
-            # self.v_box.add(label)
-
-            # # Add interactive widget on top of label
-            # # FIXME This should probably be a wrapper
-            # btn = arcade.gui.UIInteractiveWidget(
-            #     x=x_pos, y=y_pos,
-            #     width=50, height=50,
-            # )
+            # Add label to page
             active = letter in self.found_letters
             btn = LetterWidget(x_pos, y_pos, letter, active)
 
@@ -153,7 +140,6 @@ class BookView(arcade.View):
             self.v_box.add(btn)
 
             # Store ui elements for later
-            # self._ui_letters[letter] = [label, btn]
             self._ui_letters[letter] = btn
 
         self.manager.add(self.v_box)
