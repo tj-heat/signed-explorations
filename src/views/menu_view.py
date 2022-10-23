@@ -4,7 +4,8 @@ import src.views.game_view as g
 from src.video.video_control import CameraControl
 from src.util.style import uni_style
 import src.views.loading_view as LoadViews
-from src.views.intro_view import IntroView 
+from src.views.intro_view import IntroView
+import src.views.practice_view as Practice
 
 
 BACKGROUND_PATH = "assets/backgrounds/"
@@ -32,12 +33,16 @@ class MenuView(arcade.View):
         
         background_button = arcade.gui.UIFlatButton(text="Background", width=200, style = uni_style)
         self.v_box.add(background_button.with_space_around(bottom=20))
+        
+        practice_button = arcade.gui.UIFlatButton(text="Practice", width=200, style = uni_style)
+        self.v_box.add(practice_button.with_space_around(bottom=20))
 
         exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
         self.v_box.add(exit_button)
 
         start_button.on_click = self.on_click_start
         background_button.on_click = self.on_click_background
+        practice_button.on_click = self.on_click_practice
         exit_button.on_click = self.on_click_exit
 
         # Create a widget to hold the v_box widget, that will center the buttons
@@ -65,6 +70,12 @@ class MenuView(arcade.View):
         bg_gen = LoadViews.BackgroundGenView(self._cc)
         bg_gen.setup()
         self.window.show_view(bg_gen)
+
+    def on_click_practice(self, event):
+        self.manager.clear()
+        practice = Practice.PracticeView(self, self._cc)
+        practice.setup()
+        self.window.show_view(practice)
 
     def on_click_settings(self, event):
         pass
