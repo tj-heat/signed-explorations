@@ -98,6 +98,7 @@ class PracticeView(arcade.View):
 
 
     def on_key_release(self, symbol: int, modifiers: int):
+        self._menu.setup()
         self.show_new_view(self._menu)
 
     def get_current_target(self) -> str:
