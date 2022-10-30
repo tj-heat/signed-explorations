@@ -122,7 +122,11 @@ class SignView(arcade.View):
                 self.npc.task = self._complete_task
                 self.show_new_view(self.game_view)
 
-    def on_key_release(self, symbol: int, modifiers: int):
+    def on_key_release(self, key: int, modifiers: int):
+
+        if key == arcade.key.P:
+            self.npc.task = self._complete_task
+            
         self.show_new_view(self.game_view)
 
     def on_click_blue_button(self, event):
