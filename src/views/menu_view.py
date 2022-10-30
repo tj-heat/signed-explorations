@@ -23,38 +23,6 @@ class MenuView(arcade.View):
         # Store camera controller
         self._cc = cam_controller
 
-        # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxLayout()
-
-        # Create the buttons
-        # look at UITEXTUREBUTTON
-        start_button = arcade.gui.UIFlatButton(text="Start Game", width=200, style = uni_style)
-        self.v_box.add(start_button.with_space_around(bottom=20))
-        
-        background_button = arcade.gui.UIFlatButton(text="Background", width=200, style = uni_style)
-        self.v_box.add(background_button.with_space_around(bottom=20))
-        
-        practice_button = arcade.gui.UIFlatButton(text="Practice", width=200, style = uni_style)
-        self.v_box.add(practice_button.with_space_around(bottom=20))
-
-        exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
-        self.v_box.add(exit_button)
-
-        start_button.on_click = self.on_click_start
-        background_button.on_click = self.on_click_background
-        practice_button.on_click = self.on_click_practice
-        exit_button.on_click = self.on_click_exit
-
-        # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                anchor_x="center_x",
-                anchor_y="center_y",
-                child=self.v_box,
-                size_hint = (1,1)
-            )
-        )
-
     def on_click_start(self, event):
         self.manager.clear()
         intro = IntroView(cam_controller=self._cc)
@@ -95,4 +63,34 @@ class MenuView(arcade.View):
             arcade.csscolor.GHOST_WHITE, font_size=50, anchor_x="center", font_name="Kenney Pixel Square")
 
     def setup(self):
-        pass
+        # Create a vertical BoxGroup to align buttons
+        self.v_box = arcade.gui.UIBoxLayout()
+
+        # Create the buttons
+        # look at UITEXTUREBUTTON
+        start_button = arcade.gui.UIFlatButton(text="Start Game", width=200, style = uni_style)
+        self.v_box.add(start_button.with_space_around(bottom=20))
+        
+        background_button = arcade.gui.UIFlatButton(text="Background", width=200, style = uni_style)
+        self.v_box.add(background_button.with_space_around(bottom=20))
+        
+        practice_button = arcade.gui.UIFlatButton(text="Practice", width=200, style = uni_style)
+        self.v_box.add(practice_button.with_space_around(bottom=20))
+
+        exit_button = arcade.gui.UIFlatButton(text="Exit", width=200, style = uni_style)
+        self.v_box.add(exit_button)
+
+        start_button.on_click = self.on_click_start
+        background_button.on_click = self.on_click_background
+        practice_button.on_click = self.on_click_practice
+        exit_button.on_click = self.on_click_exit
+
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                anchor_x="center_x",
+                anchor_y="center_y",
+                child=self.v_box,
+                size_hint = (1,1)
+            )
+        )
