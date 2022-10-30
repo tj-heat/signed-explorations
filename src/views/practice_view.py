@@ -133,7 +133,13 @@ class PracticeView(arcade.View):
         """ Transition to a new view with teardown """
         self.manager.clear()
         self.manager.disable()
+        self.end_video()
         self.window.show_view(view)
+
+    def end_video(self):
+        """ Stops the video thread """
+        # Wait for thread to finish   
+        self._video_t.finish()
 
 def practice_video_t(
     controller: CameraControl, 
