@@ -11,12 +11,12 @@ Play as an undead cat wizard on a quest to be resurrected. You'll need to explor
 
 ## The Team
 
-- Treffery Webb | Developer
-- Joseph Metcalfe | Developer
-- Hannah Hinckfuss | Designer
-- Ethan Roderick | Developer
-- Aditya Modi | Designer
-- Thomas Webber | Designer
+- Treffery Webb ([@tweeeb](https://github.com/tweeeb)) | Developer
+- Joseph Metcalfe ([@Josephjmet](https://github.com/Josephjmet)) | Developer
+- Hannah Hinckfuss ([@HannahHinckfuss](https://github.com/HannahHinckfuss)) | Designer
+- Ethan Roderick ([@E-Roderick](https://github.com/E-Roderick)) | Developer
+- Aditya Modi ([@Airo1011](https://github.com/Airo1011)) | Designer
+- Thomas Webber ([@tomwebber4398](https://github.com/tomwebber4398)) | Designer
 
 ## Game Development
 ### Dependencies
