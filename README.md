@@ -9,6 +9,15 @@ Signed Explorations is an exploratory puzzle game that aim's to teach users Ausl
 
 Play as an undead cat wizard on a quest to be resurrected. You'll need to explore the world and solve puzzles in order to rediscover your body. As a ghost, you can't directly affect the world, so you'll need to work together with your friend, a helpful dog, to make your way. To communicate, you must sign your intentions. Explore the world and interact with objects to better learn the signs you might need to talk to your friend.
 
+## The Team
+
+- Treffery Webb | Developer
+- Joseph Metcalfe | Developer
+- Hannah Hinckfuss | Designer
+- Ethan Roderick | Developer
+- Aditya Modi | Designer
+- Thomas Webber | Designer
+
 ## Game Development
 ### Dependencies
 
@@ -99,14 +108,3 @@ env/Scripts/python.exe main.py
 # On Mac/linux
 env/bin/python main.py
 ```
-
-
-
-## Team Members
-
-- Ethan Roderick, 44792215
-- Treffery Webb, 4503374
-- Hannah Hinckfuss, 45840047
-- Joseph Metcalfe, 44822279
-- Aditya Modi, 45892046
-- Thomas Webber, 44349945
