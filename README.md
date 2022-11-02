@@ -1,6 +1,15 @@
-# TJ Heat
+# Signed Explorations
 
-## Game
+Signed Explorations is an exploratory puzzle game that aim's to teach users Auslan fingerspelling. 
+
+> *Sometimes the end is a new beginning, especially for those who have power over MAGIC.
+ Wielders of this forgotten art are never truly gone
+ Their souls, guarded by an ancient being of unfathomable power can be ignited once again.
+ So long as they have the power to learn the ways of their forgotten language*
+
+Play as an undead cat wizard on a quest to be resurrected. You'll need to explore the world and solve puzzles in order to rediscover your body. As a ghost, you can't directly affect the world, so you'll need to work together with your friend, a helpful dog, to make your way. To communicate, you must sign your intentions. Explore the world and interact with objects to better learn the signs you might need to talk to your friend.
+
+## Game Development
 ### Dependencies
 
 - python 3.10.4
@@ -32,7 +41,7 @@ env/bin/pip3 install protobuf==3.19.4
 
 ### Development
 
-#### Starting Working
+#### Starting Work
 
 When working on the project, development should be carried out inside of the virtual environment. There are several ways of doing so.
 
@@ -95,8 +104,8 @@ env/bin/python main.py
 
 ## Team Members
 
-- Ethan Roderick, 44792215.
-- Treffery Webb, 4503374.
+- Ethan Roderick, 44792215
+- Treffery Webb, 4503374
 - Hannah Hinckfuss, 45840047
 - Joseph Metcalfe, 44822279
 - Aditya Modi, 45892046
