@@ -1,3 +1,5 @@
+![](https://github.com/tj-heat/design/blob/52d52ed50460cc3514872dc23b7ee76aae2786e9/assets/banner-fill.png)
+
 # Signed Explorations
 
 Signed Explorations is an exploratory puzzle game that aim's to teach users Auslan fingerspelling. 
