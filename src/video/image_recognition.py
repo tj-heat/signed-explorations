@@ -49,5 +49,4 @@ class Recogniser():
         predictions = self.predict(img)
         letter = np.argmax(predictions)
         max_val =  np.max(predictions)
-        print(max_val)
         return LETTERS[letter] if max_val >= self._MIN_RECOG else None
