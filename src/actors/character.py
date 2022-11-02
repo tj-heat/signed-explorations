@@ -50,7 +50,6 @@ class Task(Enum):
     KEY = 1
     DOOR = 2
     FOLLOW = 3
-    NO_KEY = 4
 
 def load_texture_pair(filename):
     """

@@ -3,6 +3,7 @@ from src.actors.character import Task
 
 KEY_PATH = "assets/sprites/items/Key.PNG"
 DOOR_PATH = "assets/sprites/door/Door_stone"
+BOOK_PATH = "assets/sprites/items/Object_Book.png"
 
 
 class Key(arcade.Sprite):
@@ -42,6 +43,15 @@ class Door(arcade.Sprite):
 
     def open_door(self):
         self.texture = self.open_texture_pair[1]
+
+class Book(arcade.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.type = "Book"
+        self.task = "Book"
+        self.texture = arcade.load_texture(BOOK_PATH)
+        self.hit_box = self.texture.hit_box_points
+        self.ghost_touch = False
 
     
 

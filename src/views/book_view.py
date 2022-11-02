@@ -2,6 +2,8 @@ from typing import Callable
 import arcade
 from src.actors.character import Dog
 from src.video.video_control import *
+import src.views.game_view as GameView
+import src.dialogue.speech_items as Speech
 
 
 class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
@@ -21,7 +23,7 @@ class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
         x: int, 
         y: int, 
         letter: str, 
-        active: bool, 
+        active: bool,
         **kwargs
     ) -> None:
         self._active = active
@@ -75,12 +77,13 @@ class BookView(arcade.View):
         """ Returns the path to a back texture """
         return f"assets/interface/{letter}-BACK-VIEW.PNG"
 
-    def __init__(self, game_view, npc : Dog, found_letters):
+    def __init__(self, game_view : GameView, npc : Dog, found_letters, access_num : int):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
         self.npc = npc
         self.found_letters = found_letters
+        self.access_num = access_num
 
         self.front_image = None
         self.back_image = None
@@ -137,6 +140,10 @@ class BookView(arcade.View):
             self._ui_letters[letter] = btn
 
         self.manager.add(self.v_box)
+
+        if self.access_num == 1:
+            msgs, speaker = Speech.get_dialogue(Speech.OPEN_SPELLBOOK)
+            self.game_view.register_dialogue(self.game_view.create_dbox(msgs, speaker))
 
 
     def on_draw(self):

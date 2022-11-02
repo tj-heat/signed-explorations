@@ -45,6 +45,7 @@ LAYER_EDGES = "Edges"
 
 TEXT_PATH = "assets/ui/text_box.PNG"
 ICON_PATH = "assets/ui/interact_icon.PNG"
+BOOK_PATH = "assets/interface/Settings_UI.png"
 
 UP_KEYS = (arcade.key.UP, arcade.key.W)
 DOWN_KEYS = (arcade.key.DOWN, arcade.key.S)
@@ -87,7 +88,13 @@ class GameView(arcade.View):
 
         #load necessary textures
         self.text_box = arcade.load_texture(TEXT_PATH)
-        self.interact_icon = arcade.load_texture(ICON_PATH)        
+        self.interact_icon = arcade.load_texture(ICON_PATH)
+        self.book_texture = arcade.load_texture(BOOK_PATH)
+
+        #initialise tutorial variables
+        self.body_dialogue = False
+        self.obtained_spellbook = False
+        self.access_spellbook = 0     
     
     @property
     def cam_controller(self) -> CameraControl:
@@ -164,7 +171,11 @@ class GameView(arcade.View):
                 body = items.Key()
                 body.center_x, body.center_y = \
                     self.get_center_from_cartesian(cartesian)
-
+                self.scene.add_sprite(LAYER_ITEMS, body)
+            elif item.name == "Book":
+                body = items.Book()
+                body.center_x, body.center_y = \
+                    self.get_center_from_cartesian(cartesian)
                 self.scene.add_sprite(LAYER_ITEMS, body)
             else:
                 raise Exception (f"Unknown item type {item.name}")
@@ -208,11 +219,21 @@ class GameView(arcade.View):
         # Seen key tracker
         self.seen_key = False
 
-        self.v_box = arcade.gui.UILayout(x=0, y=0, width = self.window.width - 60, height= self.window.height - 60)
-   
-        book_button = arcade.gui.UITextureButton(x= self.window.width - 60, y=self.window.height - 60, width=50, height=50, texture=arcade.load_texture('assets\interface\Settings_UI.png'))
-        self.v_box.add(book_button)
+        self.v_box = arcade.gui.UILayout(
+            x=0, 
+            y=0, 
+            widt =self.window.width - 60, 
+            height=self.window.height - 60
+        )
 
+        book_button = arcade.gui.UITextureButton(
+            x=self.window.width - 60, 
+            y=self.window.height - 60, 
+            width=50, 
+            height=50, 
+            texture=self.book_texture
+        )
+        self.v_box.add(book_button)
         book_button.on_click = self.on_click_book_button
 
         self._ui_manager.add(self.v_box)
@@ -312,9 +333,8 @@ class GameView(arcade.View):
             self.end_interact_notify()
 
         def item_hit_handler(npc_sprite, item_sprite, _arbiter, _space, _data):
-            if npc_sprite.task == item_sprite.task:
-                if npc_sprite.task == Task.KEY:
-                    self.key_task(npc_sprite, item_sprite)
+            if npc_sprite.task == item_sprite.task and npc_sprite.task == Task.KEY:
+                self.key_task(npc_sprite, item_sprite)
 
         def door_hit_handler(npc_sprite, door_sprite, _arbiter, _space, _data):
             return self.door_task(npc_sprite, door_sprite)
@@ -341,9 +361,13 @@ class GameView(arcade.View):
 
         def player_near_item_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
             self.start_interact_notify()
+            if isinstance(_event_sprite, items.Book):
+                _event_sprite.ghost_touch = True
 
         def player_leave_item_handler(_player_sprite, _event_sprite, _arbiter, _space, _data):
             self.end_interact_notify()
+            if isinstance(_event_sprite, items.Book):
+                _event_sprite.ghost_touch = False
 
         def non_handler(_n, _e, _a, _s, _d):
             """ Collision pre handler that will cause no collisions to occur """
@@ -634,8 +658,9 @@ class GameView(arcade.View):
                 self.dog_sprite.follow_cat()
                 self.player_sprite.start_meow(25)
         
-        elif key == arcade.key.I:
-            book_view = BookView(self, self.dog_sprite, self.found_letters)
+        elif key == arcade.key.I and self.obtained_spellbook == True:
+            self.access_spellbook += 1
+            book_view = BookView(self, self.dog_sprite, self.found_letters, self.access_spellbook)
             book_view.setup()
             self.window.show_view(book_view)
         
@@ -680,6 +705,16 @@ class GameView(arcade.View):
                 msgs, speaker = Speech.get_dialogue(Speech.KEY_FIRST)
                 self.register_dialogue(self.create_dbox(msgs, speaker))
             retval = True
+
+        elif isinstance(target, items.Book):
+            if target.ghost_touch == True:
+                self.obtained_spellbook = True
+                target.remove_from_sprite_lists()
+
+                msgs, speaker = Speech.get_dialogue(Speech.PICK_UP_SPELLBOOK)
+                self.register_dialogue(self.create_dbox(msgs, speaker))
+            retval = True
+
 
         return retval
 
@@ -874,7 +909,7 @@ class GameView(arcade.View):
                     return lambda: self.register_dialogue(
                         self.create_dbox(msg, speaker)
                     )
-            
+
             elif event_type == EventType.WIN:
                 speaker = None
                 def task(msg, speaker=None):

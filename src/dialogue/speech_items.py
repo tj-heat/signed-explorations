@@ -17,7 +17,10 @@ DIALOGUE_INTRODUCTION_P1 = {
     MSGS: [
         "Before you stands a dog.",
         "He is happy to see you.",
-        "In his hands is a keyboard. (Where did he get that from?)",
+        "He starts barking at you, but you don't understand Dog.",
+        "You meow back, but he looks confused.",
+        "He turns around and suddenly there is a keyboard in his mouth.",
+        "Where did he get that from?",
         "He uses it to give you a demonstration."
     ],
     SPEAKER: None,
@@ -27,12 +30,12 @@ DIALOGUE_INTRODUCTION_P2 = {
     MSGS: [
         "You can use <W> <A> <S> <D> to move about.",
         "<E> is used to interact with the world around you.",
-        "<I> opens your spell(ing) book.",
-        "<Q> can also call me to your side.",
     ],
     SPEAKER: DOG_SPEAKER,
 }
 
+
+#remove
 DIALOGUE_INTRODUCTION_P3 = {
     MSGS: [
         "I think my body is just up ahead!",
@@ -40,17 +43,39 @@ DIALOGUE_INTRODUCTION_P3 = {
     SPEAKER: CAT_SPEAKER,
 }
 
+PICK_UP_SPELLBOOK = {
+    MSGS: [
+        "You've found a spell(ing) book!",
+        "as you hover above it, the spell[ing] book disappears.",
+        "Use <I> to open the spell(ing) book.",
+    ],
+    SPEAKER: CAT_SPEAKER,
+}
+
+OPEN_SPELLBOOK = {
+    MSGS: [
+        "This is where you stored your fingerspelling spells!",
+        "Each of these signs correlates to a letter.",
+        "If you fingerspell out multiple letters to form a word"
+        "you can cast powerful magic.",
+        "It doesn't look like any of the spells are active.",
+        "You should look around more.",
+        "Maybe you can use it to talk."
+    ],
+    SPEAKER: CAT_SPEAKER,
+}
+
 KEY_FIRST = {
     MSGS: [
-        "I left my keys in my other body.",
+        "You think you might need this key later.",
     ],
     SPEAKER: CAT_SPEAKER
 }
 
 GOT_FIRST_KEY = {
     MSGS: [
-        "I think that could open the door!",
-        "I might have to push the dog through, however."
+        "You think that could open the door!",
+        "You might have to push the dog through, however."
     ],
     SPEAKER: CAT_SPEAKER
 }
@@ -64,14 +89,14 @@ BRIDGE_MIDDLE = {
 
 PUZZLE_INTERACT = {
     MSGS: [
-        "Your paw passes straight through.",
+        "Your ghostly paw passes straight through.",
     ],
     SPEAKER: None,
 }
 
 MARBLE_FLOOR = {
     MSGS: [
-        "This marble feels cold... I think?",
+        "You wonder if the merble feels cold",
     ],
     SPEAKER: CAT_SPEAKER,
 }

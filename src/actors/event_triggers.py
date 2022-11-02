@@ -157,4 +157,16 @@ EVENT_DATA = {
         EVENT_INTERACT: False,
         EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
     },
+    "body": {
+        EVENT_TYPE: EventType.DIALOGUE,
+        EVENT_MSGS: [
+            "You can feel your body just up ahead!",
+            "But the dog whines at you as you walk away.",
+            "Use <Q> to meow back at him and call him to your side."
+        ],
+        EVENT_PERSIST: SingleEventTrigger,
+        EVENT_INTERACT: False,
+        EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
+        
+    }
 }

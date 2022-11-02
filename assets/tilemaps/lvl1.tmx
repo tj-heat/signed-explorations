@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="30" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="57">
+<map version="1.9" tiledversion="1.9.1" orientation="orthogonal" renderorder="right-down" width="25" height="30" tilewidth="64" tileheight="64" infinite="0" nextlayerid="11" nextobjectid="65">
  <tileset firstgid="1" source="texture_maps/wood_sprite_sheet.tsx"/>
  <tileset firstgid="6" source="texture_maps/stone_sprite_sheet.tsx"/>
  <tileset firstgid="9" source="texture_maps/stone_wall_sprite_sheet.tsx"/>
@@ -130,9 +130,10 @@
   <object id="35" name="side_Key_left_top_2" class="2" x="0" y="320" width="64" height="64"/>
   <object id="36" name="side_Key_left_bottom_2" class="2" x="0" y="384" width="64" height="64"/>
  </objectgroup>
- <objectgroup id="6" name="Items" locked="1">
+ <objectgroup id="6" name="Items">
   <object id="28" name="Key" class="key" x="543.63" y="926.71"/>
   <object id="54" name="Key" x="1248" y="353"/>
+  <object id="60" name="Book" x="224" y="1124"/>
  </objectgroup>
  <objectgroup id="7" name="Events">
   <object id="38" name="bridge_mid" x="824.833" y="1290" width="13.0371" height="109.333"/>
@@ -140,6 +141,8 @@
   <object id="40" name="win" x="8" y="321.333" width="12.6667" height="126"/>
   <object id="51" name="bounds" x="197.5" y="1857.25" width="307.5" height="55.75"/>
   <object id="56" name="door_locked" x="324.75" y="777" width="182.5" height="41"/>
+  <object id="58" name="body" x="130" y="987" width="443" height="50"/>
+  <object id="59" name="body" x="736" y="1285" width="32" height="116"/>
  </objectgroup>
  <layer id="10" name="Lighting" width="25" height="30" locked="1">
   <data encoding="csv">

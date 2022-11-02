@@ -8,7 +8,7 @@ BACKGROUND_PATH = "assets/backgrounds/"
 class PauseView(arcade.View):
     def __init__(self, game_view : "GameView.GameView"):
         super().__init__()
-        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed.png")
+        self.background = arcade.load_texture(BACKGROUND_PATH + "main_screen_dimmed_x2.png")
         self.game_view = game_view
         self.manager = arcade.gui.UIManager()
         self.manager.enable()

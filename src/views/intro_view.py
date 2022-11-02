@@ -30,15 +30,17 @@ class IntroView(StatefulView):
         "their forgotten language."
     ]
     _TUTORIAL = [
-        "You play as an undead cat wizard on a quest to get resurrected.",
+        "...",
+        "What happened to you? It's dark here",
+        "Oh that's right...",
         LINE_SPACER,
-        "You must explore the world and solve puzzles to find your body.",
+        "You died.",
         LINE_SPACER,
-        "As you are a ghost, you cannot talk with your dog companion directly.",
-        "To communicate you must call the dog over and then sign your intentions.",
+        "But don't worry there's still time, you're a wizard after all.",
+        "As long as you make your way into the centre of the cat-acombs,"
+        "you can be resurrected",
         LINE_SPACER,
-        "Explore the world and interact with objects to better learn",
-        "the signs you might need."
+        "Good luck in getting your body back"
     ]
 
     def __init__(self, cam_controller):
