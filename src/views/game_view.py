@@ -45,7 +45,7 @@ LAYER_EDGES = "Edges"
 
 TEXT_PATH = "assets/ui/text_box.PNG"
 ICON_PATH = "assets/ui/interact_icon.PNG"
-BOOK_PATH = "assets/interface/Settings_UI.png"
+BOOK_PATH = "assets/interface/book_HUD.png"
 
 UP_KEYS = (arcade.key.UP, arcade.key.W)
 DOWN_KEYS = (arcade.key.DOWN, arcade.key.S)

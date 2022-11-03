@@ -3,7 +3,7 @@ from src.actors.character import Task
 
 KEY_PATH = "assets/sprites/items/Key.PNG"
 DOOR_PATH = "assets/sprites/door/Door_stone"
-BOOK_PATH = "assets/sprites/items/Object_Book.png"
+BOOK_PATH = "assets/sprites/items/Book_Object.png"
 
 
 class Key(arcade.Sprite):
