@@ -290,10 +290,10 @@
         },
         "lvl1.tmx": {
             "scale": 1,
-            "selectedLayer": 5,
+            "selectedLayer": 6,
             "viewCenter": {
-                "x": 643,
-                "y": 1053
+                "x": 467,
+                "y": 1227.5
             }
         },
         "texture_maps/door_sprite_sheet.tsx": {

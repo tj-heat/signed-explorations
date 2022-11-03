@@ -131,6 +131,16 @@ EVENT_DATA = {
         EVENT_INTERACT: False,
         EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
     },
+    "exit_locked": {
+        EVENT_TYPE: EventType.DIALOGUE,
+        EVENT_MSGS: [
+            "Locked again...",
+            "Maybe there's another key somewhere?"
+        ],
+        EVENT_PERSIST: SingleEventTrigger,
+        EVENT_INTERACT: False,
+        EVENT_MSG_SPEAKER: Speech.CAT_SPEAKER
+    },
     "bridge_mid": {
         EVENT_TYPE: EventType.THOUGHT, 
         EVENT_MSGS: "L'appel du vide",

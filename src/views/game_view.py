@@ -627,7 +627,7 @@ class GameView(arcade.View):
         elif key in RIGHT_KEYS:
             self.right_pressed = False
         
-        elif key == arcade.key.E:
+        elif key == arcade.key.E and not self.in_dialogue():
             processed = False # Could replace with if/else for performance hit
 
             items = self.check_items_in_radius()

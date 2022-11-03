@@ -1,6 +1,6 @@
 import arcade, PIL, random
 from src.actors.character import Dog, Task
-from src.views.book_view import *
+import src.views.book_view as b
 
 from src.video.video_control import *
 
@@ -35,26 +35,26 @@ class SignView(arcade.View):
         self.state = True
 
         self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
-
         self.background = arcade.load_texture("assets\interface\Puzzle_UI.png") 
-
-        red_button = arcade.gui.UITextureButton(x=34, y=524, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
-        blue_button = arcade.gui.UITextureButton(x=34, y=440, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
-        self.v_box.add(blue_button)
-        self.v_box.add(red_button)
-
-        blue_button.on_click = self.on_click_blue_button
-        red_button.on_click = self.on_click_red_button
-
-        self.manager.add(self.v_box)
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
         #replace with camera feed
 
     def setup(self):
+        self.manager.enable()
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
+
+        red_button = arcade.gui.UITextureButton(x=34, y=524, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
+        blue_button = arcade.gui.UITextureButton(x=34, y=440, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Blue.png'))
+        self.v_box.add(blue_button)
+        self.v_box.add(red_button)
+
+        blue_button.on_click = self.on_click_book_button
+        red_button.on_click = self.on_click_game_button
+
+        self.manager.add(self.v_box)
+
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
     def switch(self, count, length):
@@ -122,15 +122,24 @@ class SignView(arcade.View):
                 self.npc.task = self._complete_task
                 self.show_new_view(self.game_view)
 
-    def on_key_release(self, symbol: int, modifiers: int):
-        self.show_new_view(self.game_view)
+    def on_key_release(self, key: int, modifiers: int):
+        # Swap to game view by default
+        new_view = self.game_view
 
-    def on_click_blue_button(self, event):
-        book_view = BookView(self, self.npc, self.game_view.found_letters)
+        if key == arcade.key.P:
+            self.npc.task = self._complete_task
+        elif key == arcade.key.I:
+            new_view = b.BookView(self.game_view, self.npc, self.game_view.found_letters, self)
+            new_view.setup()
+            
+        self.show_new_view(new_view)
+
+    def on_click_book_button(self, event):
+        book_view = b.BookView(self.game_view, self.npc, self.game_view.found_letters, self)
         book_view.setup()
         self.show_new_view(book_view)
 
-    def on_click_red_button(self, event):
+    def on_click_game_button(self, event):
         self.window.show_view(self.game_view)
 
     def get_current_target(self) -> str:

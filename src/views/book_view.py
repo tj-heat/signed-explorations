@@ -4,6 +4,7 @@ from src.actors.character import Dog
 from src.video.video_control import *
 import src.views.game_view as GameView
 import src.dialogue.speech_items as Speech
+import src.views.sign_view as s
 
 
 class LetterWidget(arcade.gui.UILabel, arcade.gui.UIInteractiveWidget):
@@ -77,7 +78,7 @@ class BookView(arcade.View):
         """ Returns the path to a back texture """
         return f"assets/interface/{letter}-BACK-VIEW.PNG"
 
-    def __init__(self, game_view : GameView, npc : Dog, found_letters, access_num : int):
+    def __init__(self, game_view : GameView, npc : Dog, found_letters, access_num : int, sign_view = None):
         super().__init__()
         self.game_view = game_view
         self.gui_camera = None
@@ -85,21 +86,13 @@ class BookView(arcade.View):
         self.found_letters = found_letters
         self.access_num = access_num
 
+        self._sign_view = sign_view
+
         self.front_image = None
         self.back_image = None
 
         self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
 
-        self.background = arcade.load_texture("assets\interface\Guide_UI.png") 
-
-        red_button = arcade.gui.UITextureButton(x=34, y=524, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
-        green_button = arcade.gui.UITextureButton(x=34, y=354, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Green.png'))
-        self.v_box.add(green_button)
-        self.v_box.add(red_button)
-
-        red_button.on_click = self.on_click_red_button
 
         # Generate textures for use
         self._textures = {}
@@ -117,7 +110,20 @@ class BookView(arcade.View):
     def setup(self):
         self.gui_camera = arcade.Camera(self.window.width, self.window.height)
 
-                # Generate UI buttons
+        self.manager.enable()
+        self.v_box = arcade.gui.UILayout(x=0, y=0, width=1000, height=650)
+
+        self.background = arcade.load_texture("assets\interface\Guide_UI.png") 
+
+        red_button = arcade.gui.UITextureButton(x=34, y=524, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Red.png'))   
+        green_button = arcade.gui.UITextureButton(x=34, y=354, width=36, height=50, texture=arcade.load_texture('assets\interface\Book_UI_Tabs_Green.png'))
+        self.v_box.add(green_button)
+        self.v_box.add(red_button)
+
+        red_button.on_click = self.on_click_game_button
+        green_button.on_click = self.on_click_sign_button
+
+        # Generate UI buttons
         self._ui_letters = {}
         for index, letter in enumerate(self._LETTERS):
             # Generate values
@@ -194,13 +200,15 @@ class BookView(arcade.View):
         pass
 
     def on_key_release(self, symbol: int, modifiers: int):
-        self.window.show_view(self.game_view)
+        self.show_new_view(self.game_view)
 
-    def on_click_red_button(self, event):
-        self.window.show_view(self.game_view)
+    def on_click_game_button(self, event):
+        self.show_new_view(self.game_view)
 
-    def on_click_green_button(self, event):
-        pass
+    def on_click_sign_button(self, event):
+        if self._sign_view is not None:
+            self._sign_view.setup()
+            self.show_new_view(self._sign_view)
 
     def on_click_letter_button(self, letter):
         self.front_image, self.back_image = self._textures.get(letter)
@@ -208,5 +216,11 @@ class BookView(arcade.View):
             else None
         self.back_image = self.back_image if letter in self.found_letters \
             else None
+
+    def show_new_view(self, view):
+        """ Transition to a new view with teardown """
+        self.manager.clear()
+        self.manager.disable()
+        self.window.show_view(view)
 
 

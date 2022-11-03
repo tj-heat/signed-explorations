@@ -37,7 +37,7 @@ class IntroView(StatefulView):
         "You died.",
         LINE_SPACER,
         "But don't worry there's still time, you're a wizard after all.",
-        "As long as you make your way into the centre of the cat-acombs,"
+        "As long as you make your way into the centre of the cat-acombs,",
         "you can be resurrected",
         LINE_SPACER,
         "Good luck in getting your body back"
@@ -127,7 +127,7 @@ class IntroView(StatefulView):
         """ Tear down states that use UI """
         self._ui_manager.clear()
         self._ui_manager.disable()
-        self._ui_manager = None
+        #self._ui_manager = None
 
     def _end_tutorial_state(self):
         """ Tear down the tutorial state """

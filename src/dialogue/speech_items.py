@@ -19,7 +19,8 @@ DIALOGUE_INTRODUCTION_P1 = {
         "He is happy to see you.",
         "He starts barking at you, but you don't understand Dog.",
         "You meow back, but he looks confused.",
-        "He turns around and suddenly there is a keyboard in his mouth.",
+        "He turns around and suddenly and there's...",
+        "a keyboard in his mouth?",
         "Where did he get that from?",
         "He uses it to give you a demonstration."
     ],
